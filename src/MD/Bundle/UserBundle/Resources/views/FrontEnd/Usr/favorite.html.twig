@@ -1,0 +1,96 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block page %}
+{% set la = "En" %}
+
+{% if app.request.cookies.has('ChangeLanguage') %}
+{% set la = app.request.cookies.get('ChangeLanguage') %}
+{% endif %}
+<div class="page_container">
+    <div class="page_left">
+        {% if la == "En" %}
+            <a href="{{path("fe_usr_edit", {  "id" : app.user.id })}}" class="main_links ">My Profile</a>
+            <a href="{{path("fe_my_favorite_supplier")}}" class="main_links current">Favorite Suppliers</a>
+            <a href="{{path("fe_my_supplier")}}" class="main_links ">MY Suppliers</a>
+            <a href="{{path("fe_pre_change_password")}}" class="main_links  ">Change Password</a>
+            <a href="{{ url('user_logout') }}" class="main_links">Log Out</a>
+			      {% else %}
+            <a href="{{path("fe_usr_edit", {  "id" : app.user.id })}}" class="main_links ">حسابي</a>
+            <a href="{{path("fe_my_favorite_supplier")}}" class="main_links current">الموردون المفضلون</a>
+            <a href="{{path("fe_my_supplier")}}" class="main_links">موردونى</a>
+            <a href="{{path("fe_pre_change_password")}}" class="main_links ">تغيير كلمة المرور</a>
+            <a href="{{ url('user_logout') }}" class="main_links">خروج</a>
+			      {% endif %}
+        </div><!-- Page_left -->
+        <div class="page_right">
+            <div class="title">
+                <h1>{% if la == "En" %}favorite suppliers{% else %}الموردون المفضلون{% endif %}</h1>
+            </div>
+            <div class="supplier_content">
+                <ul>
+                                {%if suppliers|length > 0%}
+
+                {% for supplier in suppliers %}
+                {% if supplier %}
+                        <li>
+                            <span {% if supplier.generalRate == 1 or supplier.generalRate == 2 or supplier.generalRate == 0 %}  class="rate red" {% elseif  supplier.generalRate == 3 or supplier.generalRate == 4 %} class="rate yellow" {% else %} class="rate green" {% endif %}>
+                                <span class="text">{% if la == "En" %}RATE{% else %}التقييم{% endif %}</span>
+                                <span class="no">{{supplier.generalRate}}</span>
+                            </span><!--/.rate -->
+                            <div class="supplier_data">
+                                <span class="supplier_img">
+                                    <a href="{{ path('fe_supplier_details_slug', { 'sSlug': supplier.htmlSlug }) }}" title="{{ supplier.title }}"><img {% if supplier.logoImage %}src="{{ asset("uploads/suppliers/" ~ supplier.id ~ "/" ~ "th" ~ supplier.logoImage.id) }}" {% else  %} src="" {%endif%} alt="{{ supplier.title }}" title="{{ supplier.title }}" /></a>
+                                </span><!--/.supplier_img -->
+                                <div class="left">
+                                    <span class="supplier_title">
+                                        <span class="text">{%if supplier.premium == 1%}<img class="left" src="{{asset('bundles/fe/images/star.png')}}" alt="{{ supplier.title }} is a premium supplier" title="{{ supplier.title }} is a premium supplier" />{%endif%}<a href="{{ path('fe_supplier_details_slug', { 'sSlug': supplier.htmlSlug }) }}" title="{{ supplier.title }}">{{ supplier.title }}</a></span>
+                                        {% if supplier.supplierHaveBadge() %}  <a class="padge">
+                                            <span class="txt">
+                                                <span class="arrow"></span>
+                                                Qualified</span>
+                                              {%endif%}
+                                        </a>
+                                        <br class="clear"/>
+                                    </span>
+                                    <p>{{ supplier.description }}</p>
+                                    <span class="location">{{ supplier.area.getLaTitle(la) }}</span>
+                                </div><!--/.left -->
+                                <br class="clear"/>
+                            </div><!-- supplier_data -->
+                            <div class="supplier_type">
+                                <div class="left">
+                                    <img class="left" {% if supplier.activities[0].category.logo %} src="{{ asset("uploads/categories/" ~ supplier.activities[0].category.id ~ "/"  ~ supplier.activities[0].category.logo.id) }}" {% else %}  src="" {% endif %} />
+                                    <span class="serv_name">{{ supplier.activities[0].category.getLaTitle(la) }}</span>
+                                    <span class="serv_desc">{% for activity  in supplier.activities %}
+			                {{ activity.getLaTitle(la) }}{% if loop.last != loop.index%} , {% endif %}
+                  			{% endfor %}</span>
+                                    </div><!--/.left -->
+                                    <div class="right">
+                                        <span {%if supplier.reviewCount == 0%}class="grey review"{%else%}class="review"{%endif%}><a href="{{ path('fe_supplier_details_slug', { 'sSlug': supplier.htmlSlug }) }}"> {{ supplier.reviews.count}} {% if la == "En" %}reviews{% else %}تعليق{% endif %}</a></span>
+                                    </div><!--/.right -->
+                                    <br class="clear"/>
+                                </div><!--/.supplier_type -->
+                            </li>
+                        {%else%}
+                            <br />
+                            {% if la == "En" %}
+                            <div class="error">You don't have any favourite suppliers. <a href="{{ path('fe_supplier_filter') }}"> Click here to check our suppliers.</a> </div>
+                            {% else %}
+                            <div class="error">ليس لديك أي موردين في القائمة المفضلة. <a href="{{ path('fe_supplier_filter') }}"> إضغط هنا لتصفح الموردين.</a> </div>
+                            {% endif %}
+                        {%endif%}
+	        {% endfor %}
+                        {%else%}
+                            <br />
+                            {% if la == "En" %}
+                            <div class="error">You don't have any favourite suppliers. <a href="{{ path('fe_supplier_filter') }}"> Click here to check our suppliers.</a> </div>
+                            {% else %}
+                            <div class="error">ليس لديك أي موردين في القائمة المفضلة. <a href="{{ path('fe_supplier_filter') }}"> إضغط هنا لتصفح الموردين.</a> </div>
+                            {% endif %}
+                        {%endif%}
+
+                        </ul>
+                    </div>
+                </div><!-- page_right -->
+                <br class="clear"/>
+            </div><!-- page_container -->
+{% endblock %}

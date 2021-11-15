@@ -1,0 +1,48 @@
+{% extends 'AdminTemplateBundle::base.html.twig' %}
+{% set page_title %}Category (level 2) Edit{% endset %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/admintemplate/assets/plugins/validator/bootstrapValidator.min.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block body -%}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h6 class="panel-title"><i class="icon-bubble4"></i> {{ page_title }}</h6>
+        </div>
+        <div class="panel-body">
+            <form class="form bootstrap-validator-form" id="yadaweyaform" action="{{ path('category_update', { 'id': entity.id}) }}" role="form" method="POST">
+                <input type="hidden" name="_method" value="PUT" />  
+                {{ form_widget(edit_form) }}
+                <br />
+                <fieldset>
+                    <legend>SEO</legend>
+                    {{ form_widget(formSeo) }}
+                </fieldset>
+                <div class="form-group text-right">
+                    <button class="btn btn-success" type="submit"><i class="fa fa-check"></i> Update</button>
+                    <button class="btn btn-danger" type="reset"><i class="fa fa-refresh"></i> Reset</button>
+                </div>
+            </form>
+            <div >
+                <a href="{{ path('category',{'pId':entity.superCategory.id}) }}" class="btn btn-warning">Back to the list</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('bundles/admintemplate/assets/plugins/slug/jquery.slug.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/admintemplate/assets/plugins/validator/bootstrapValidator.min.js') }}"></script>
+    <script type="text/javascript">
+        $(function() {
+            $('#yadaweyaform').validate();
+
+            $("#md_bundle_cmsbundle_category_name").slug({
+                slug: 'slug', // class of input / span that contains the generated slug 
+                hide: false        // hide the text input, true by default 
+            });
+        });
+    </script>   
+{% endblock %}

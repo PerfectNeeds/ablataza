@@ -1,0 +1,72 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}{{ ask.question }}{% endblock %}
+
+{% block breadcrumb %}
+    <div class="home-carousel-one carousel-second-style owl-carousel">
+        {{ render(controller('CMSBundle:FrontEnd/Banner:Banner' , {'placment' : 1 })) }}
+    </div>
+    <div class="page-banner" style="background: #5cb85c">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2 class="page-title"><i class="fa fa-question"></i> إسالي أبلة طازة</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li><a href="{{ path('fe_home') }}">الرئيسية</a></li>
+                        <li><a href="{{ path('fe_ask-ablatazza') }}">إسالي أبلة طازة</a></li>
+                        <li class="active">{{ ask.question }}</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    <section class="user-profile">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7">
+                    <div class="current-user">
+                        <div class="user-details">
+                            <h2 class="user-name">{{ ask.question }}</h2>
+                            <p>{{ ask.answer }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5 recipe-request-form-column">
+                    <form id="register" method="post" action="{{ path('fe_ask_create') }}">
+                        <div class="form-group col-md-12">
+                            <label for="comments">إكتبي إيميلك <span class="requir">*</span></label> 
+                            <input type="email" class="required" name="data[email]" placeholder="إكتبي إيميلك" data-msg-required="برجاء كتابة إيميلك." data-msg-email="برجاء كتابة إيميلك صحيح."/>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label for="comments">إكتبي سؤالك هنا <span class="requir">*</span></label> 
+                            <textarea id="comments" class="required" name="data[ask]" placeholder="إكتبي سؤالك هنا"  data-msg-required="برجاء كتابة سؤالك."></textarea>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <input type="submit" class="submit-recipe-search-button" style="margin: 0 auto;display: block" value="إسالي أبلة طازة">
+                        </div>
+                    </form>
+                    <aside id="sidebar" class="sidebar">
+                        <section class="widget">
+                            {{ render(controller('CMSBundle:FrontEnd/Banner:showOneBanner' , {'placment' : 4 })) }}
+                        </section>
+                    </aside>
+                </div>
+            </div>
+        </div>
+        <!-- .container -->
+    </section>
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/fe/js/contact.js') }}"></script>
+{% endblock %}

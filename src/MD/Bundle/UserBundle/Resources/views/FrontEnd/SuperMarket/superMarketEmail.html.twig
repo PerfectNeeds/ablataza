@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>E-mail</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body style="background: #efefef;direction: rtl; text-align:right;font-family:Helvetica;padding: 15px 0;">
+        <div style="width: 640px;margin: 30px auto">
+            <div style="clear: both;text-align: center;">
+                <img src="{{ app.request.scheme ~ "://" ~ app.request.host }}{{ asset('bundles/fe/images/logo.png') }}" alt="أبلة طازة"/>
+                <p style="color:#373737;margin:5px auto;font-weight:bold;font-size:16px">
+                    <span style='border-top:1px solid #373737;border-bottom:1px solid #373737;padding: 10px 0;display: block;'>
+                صديقتك تريد مشاركة متطلبات السوق  معك     </span><br/>
+                    {{ msg }}
+                </p>
+            </div>
+            <div style="border: 1px solid #cdcbcc;overflow: hidden;background: #fff;width: 90%;margin: 0 auto;">
+                <div style="width: 90%;margin-top: 10px;padding: 0 5%;clear: both;overflow: hidden">
+                    <div style="width: 100%;clear: both;">
+                        {% for ingredientCategory in ingredientCategories if ingredientCategory.supermarkItems|length > 0 %}
+                        <div style="width: 100%;">
+                            <h2 style="font-weight: bold;color: #373737;margin:5px auto;font-weight: bold;font-size: 18px;text-decoration: underline;">{{ ingredientCategory.title }}</h2>
+                            <ol style="color: #e82327;font-size: 14px;font-weight: 400;text-align: right;" >
+                                {% for supermarkItem in ingredientCategory.supermarkItems %}
+                                <li {% if supermarkItem.checked ==true %}{% endif %}>{{ supermarkItem.title }}</li>
+                                {% endfor %}
+                            </ol>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

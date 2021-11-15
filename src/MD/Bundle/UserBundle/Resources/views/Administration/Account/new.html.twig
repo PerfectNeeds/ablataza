@@ -1,0 +1,43 @@
+{% extends 'AdminTemplateBundle::base.html.twig' %}
+{%  block title %}Users{%  endblock %}
+{% block body %}
+{{parent()}}
+<section id="content">
+                {% if errorMessage %}<div class="error">{{errorMessage}}</div>{% endif %}
+        <h1>add new admin</h1>
+        <form action="{{ path('usr_create') }}" method="post" >
+            <span class="field">
+                <label>username</label>
+                <input type="text" placeholder="Full Name" id="full_name" name="username"/>
+            </span>
+            <span class="field">
+                <label>email</label>
+                <input type="text" placeholder="Email Address" id="email" name="email"/>
+            </span>
+            <span class="field">
+                <label>password</label>
+                <input type="password" placeholder="Password" id="pasword" name="password"/>
+            </span>
+            <span class="gender">
+                <label>Gender</label>
+                <span>
+                    <input type="radio" id="male" name="gender" checked="checked"/>
+                    <label for="male">Male</label>                            
+                </span>
+                <span>
+                    <input type="radio" id="female" name="gender"/>
+                    <label for="female">Female</label>                            
+                </span>
+                <label>  Active  </label>            
+                <input type="checkbox" checked="" name="active" value="{{1}}">
+
+                <br class="clear"/>
+            </span>
+            <input type="submit" class="green" value="create"/>
+            <br class="clear"/>
+        </form>
+    </section>
+ {% endblock %}
+
+{% block javascripts %}
+  {% endblock %}

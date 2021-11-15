@@ -1,0 +1,65 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}نسيت كلمة السر{% endblock %}
+{% block breadcrumb %}
+<div class="page-banner" style="background: #79b22b;">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <h2 class="page-title"><i class="fa fa-sign-in"></i> نسيت كلمة المرور</h2>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <ol class="breadcrumb">
+                    <li><a href="{{ path('fe_home') }}">الرئيسية</a></li>
+                    <li class="active">نسيت كلمة المرور</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+<div class="page-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-main">
+                <main id="main" class="main">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-6 col-cs-12 forms-wrapper login col-md-offset-4 col-sm-offset-3 col-xs-offset-0 pull-left" style="padding-top: 30px;">
+                            <div class="login-form-wrapper">
+                                <h2 class="form-heading heading-bottom-line">نسيت كلمة المرور </h2>
+                                <form id="register" class="register-form" action="{{ path("fe_pre_forgot_password") }}" method="post">
+                                    <p class="col-md-12">
+                                        <label>البريد الإلكترونى <span class="requir">*</span></label>
+                                        <input id="email" class="email required" name="email" type="text" placeholder="البريد الإلكتروني" data-msg-required="برجاء كتابة بريدك الإلكتروني." data-msg-email="برجاء كتابة بريدك الإلكتروني صحيح.">
+                                    </p>
+                                    <div class="col-md-12">
+                                        <input type="submit" class="submit-btn" name="submit" value="إرسال">
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- .forms-wrapper -->
+                </main>
+                <!-- .main -->
+            </div>
+            <!-- .col-main -->
+        </div>
+        <!-- .row -->
+    </div>
+    <!-- .container -->
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+<script src="{{ asset('bundles/fe/js/contact.js') }}"></script>
+{% endblock %} 

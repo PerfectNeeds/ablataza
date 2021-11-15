@@ -1,0 +1,12 @@
+<ul>
+    {% for superCategory in superCategoris %}
+        {% if superCategory.id == 1 %}
+            {% set superCategoryPath= path('fe_recipe', {'slug':superCategory.seo.slug})%}
+        {% else %}
+            {% set superCategoryPath= path('fe_article', {'slug':superCategory.seo.slug})%}
+        {% endif %}
+        <li class="col-md-6 col-sm-6 col-xs-6"><a href="{{ superCategoryPath }}"><i class="fa fa-angle-left"></i> {{ superCategory.name }}</a></li>
+        {% endfor %}
+    <li class="col-md-6 col-sm-6 col-xs-6"><a href="{{ path('fe_fadfada') }}"><i class="fa fa-angle-left"></i> فضفضة</a></li>
+    <li class="col-md-6 col-sm-6 col-xs-6"><a href="{{ path('fe_privacy') }}"><i class="fa fa-angle-left"></i> الشروط والأحكام</a></li>
+</ul>

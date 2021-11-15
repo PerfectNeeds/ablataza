@@ -1,0 +1,37 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}{% trans %}شكرا {% endtrans %}{% endblock %}
+
+{% block breadcrumb %}
+<div class="home-carousel-one carousel-second-style owl-carousel">
+    {{ render(controller('CMSBundle:FrontEnd/Banner:Banner' , {'placment' : 1 })) }}
+</div>
+{% block content %}
+<section class="page-content products">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center" style="margin:50px auto;">
+                <h3>{% trans %}شكرا {% endtrans %} {{ name }}!</h3>
+                <p class="alert alert-success">
+                    {% trans %}رسالتك وصلت لأبلة طازة و حتتواصل معاكى {% endtrans %}<br/><br/>
+                    {% trans %}من خلال بريدك الإلكترونى {% endtrans %} <b>{{ email }}</b>.
+                </p>
+            </div>
+        </div>
+
+        <div class="spacer-lg"></div>
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/fe/vendor/fhmm.js') }}"></script>
+    <script src="{{ asset('bundles/fe/vendor/jquery.flickrfeed.js') }}"></script>
+    <script src="{{ asset('bundles/fe/vendor/owl-carousel/owl.carousel.min.js') }}"></script>
+    <script src="{{ asset('bundles/fe/vendor/isotope/isotope.pkgd.min.js') }}"></script>
+    <script src="{{ asset('bundles/fe/vendor/isotope/jquery.imagesloaded.min.js') }}"></script>
+    <script src="{{ asset('bundles/fe/vendor/magnific-popup/jquery.magnific-popup.js') }}"></script>
+    <script src="{{ asset('bundles/fe/js/custom.js') }}"></script>
+{% endblock %} 

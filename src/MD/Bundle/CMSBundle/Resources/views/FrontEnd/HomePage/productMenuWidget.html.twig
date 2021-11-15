@@ -1,0 +1,3 @@
+{% for collection in collections %}
+    <li class="menu-item menu-item-type-post_type menu-item-object-page "><a href="{{ path('fe_product_category', {'slug':collection.seo.slug}) }}"><i class="menu_icon fa blank"></i><span>{{ collection.name }}</span><span class="plus"></span></a></li>
+{% endfor %}

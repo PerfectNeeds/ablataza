@@ -1,0 +1,133 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}{% trans %}إضافة المقالة{% endtrans %}{% endblock %}
+
+{% block stylesheet %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/fe/css/datepicker.min.css') }}"/>
+{% endblock %}
+
+{% block breadcrumb %}
+    <div class="home-carousel-one carousel-second-style owl-carousel hidden-xs">
+        {{ render(controller('CMSBundle:FrontEnd/Banner:Banner' , {'placment' : 1 })) }}
+    </div>
+    <div class="page-banner" style="background: #d7790b;">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2 class="page-title"><i class="fa fa-plus"></i> إضافة المقالة</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li><a href="{{ path('fe_home') }}">الرئيسية</a></li>
+                        <li><a href="{{ path('fe_my_profile') }}">الملف الشخصي</a></li>
+                        <li class="active">إضافة المقالة</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+{% block content %}
+    <div id="page-layer-styled" class="page-wrapper">
+        <div id="left-layer"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-main">
+                    <main id="main" class="main">
+                        <div class="row">
+                            <div class="col-md-8 forms-wrapper" style="padding-top: 30px;">
+                                <div class="register-form-wwrapper">
+                                    <h2 class="form-heading heading-bottom-line">إضافة المقالة</h2>
+                                    <p class="alert alert-warning" style="padding:3px 7px;margin:0 15px 10px">لن ينشر المقال على الموقع قبل مرور ٢٤ ساعة حتى يتم مراجعته أولا قبل النشر.</p>
+                                    <form id="register" class="register-form" action="{{ path('fe_article_create') }}" method="post" novalidate="novalidate" enctype="multipart/form-data">
+                                        <div class="clearfix">
+                                            <p class="col-md-6 col-sm-6 col-xs-12">
+                                                <label>عنوان المقال<span class="requir"><span class="requir">*</span></span></label>
+                                                <input id="fName" class="required" name="data[title]" type="text" placeholder="عنوان المقال" data-msg-required="برجاء كتابة إسم الوصفة">
+                                            </p>
+                                            <p class="col-md-6 col-sm-6 col-xs-12">
+                                                <label>التصنيف</label>
+                                                <select id="recipe-skill-level" name="data[superCategories][]" class="form-control chosen-select">
+                                                    {% for superCategory in superCategories %}
+                                                        <option value="{{ superCategory.id }}">{{ superCategory.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </p>
+                                        </div>
+                                        <div class="clearfix">
+                                            {{ tinymce_init() }} 
+                                            <p class="col-md-12 col-sm-12 col-xs-12">
+                                                <label>تفاصيل المقال  </label> 
+                                                <textarea class="required tinymce" data-theme="bbcode" id="recipe-description" name="post[description]" data-msg-required="الرجاء كتابة طريقة عمل الوصفة " data-rule-required="true" aria-required="true"></textarea>
+                                            </p>
+                                        </div>
+                                        <div class="clearfix">
+                                            <label class="col-md-12 col-sm-12 col-xs-12"></label>
+                                            <div class="col-md-1"></div>
+                                            <div class="col-md-5 col-sm-5 col-xs-12">
+                                                <label>تحميل الصور</label>
+                                                <p style="color: red;">يرجى إضافة الصور التى تريدينها ان تظهر فالصفحات الخاصة</p> 
+                                            </div>
+                                            <div class="col-md-6 col-sm-6 col-xs-12 submit-image">
+                                                <div class="pics_photos">
+                                                    <span class="btn btn-block">
+                                                        {{ form_row(form._token) }}
+                                                        <input id="fileupload" type="file" name="files[]" multiple="" style="padding: 10px;" class="btn-block btn">
+                                                    </span>
+                                                </div><!--/.pics_photos -->
+                                            </div>
+                                        </div>
+                                        {#<div class="clearfix">
+                                            <p class="col-md-12 col-sm-12 col-xs-12">
+                                                <label>فيديو</label>
+                                                <input id="video" class="required" name="video" type="text" placeholder="فيديو">
+                                            </p>
+                                        </div>#}
+                                        <div class="clearfix col-md-12 col-sm-12 col-xs-12 text-center">
+                                            <button type="submit" value="submit" name="action" class="submit-btn btn btn-success" style="display: inline-block; padding: 7px 30px;">ضيفي المقال</button>
+                                            <button type="submit" value="draft" class="btn btn-danger" style="display: inline-block;padding: 7px 30px;">حفظ كمسودة</button>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sidebar">
+                                <aside id="sidebar" class="sidebar">
+                                    <section class="widget">
+                                        {{ render(controller('CMSBundle:FrontEnd/Banner:showOneBanner' , {'placment' : 3 })) }}
+                                    </section>
+                                </aside>
+                                <!-- .sidebar -->
+                            </div>
+                        </div>
+                        <!-- .forms-wrapper -->
+                    </main>
+                    <!-- .main -->
+                </div>
+                <!-- .col-main -->
+            </div>
+            <!-- .row -->
+        </div>
+        <!-- .container -->
+    </div>
+
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/fe/js/contact.js') }}"></script>
+    <script src="{{ asset('bundles/fe/js/bootstrap-datepicker.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            $(function () {
+                $('#datepicker').datepicker();
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% for result in entity.result %}
+    <li>
+        {{ result.answer }} - %{{ result.rate }}
+        <div class="progress"> 
+            <div style="width:{{ result.rate }}%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="{{ result.rate }}" role="progressbar" class="progress-bar progress-bar-warning"> 
+                <span class="sr-only">{{ result.rate }}% Complete</span> 
+            </div> 
+        </div>
+    </li>
+{% endfor %}

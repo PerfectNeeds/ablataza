@@ -1,0 +1,77 @@
+{% extends 'AdminTemplateBundle::base.html.twig' %}
+{% set page_title %}Article's Comments{% endset %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/admintemplate/assets/plugins/datatable/css/bootstrap.datatable.min.css') }}" rel="stylesheet">
+{% endblock %}
+{% block body -%}
+
+    <div class="the-box">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover" id="datatable-example">
+                <thead class="the-box dark full">
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Comment</th>
+                        <th>Publish</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entity in entities %}
+                        <tr>
+                            <td>{{ entity.id }}</td>
+                            <td>{{ entity.name }}</td>
+                            <td>{{ entity.comment }}</td>
+                            <td>
+                                {% if entity.publish == true %}
+                                    <div class="label label-success">Yes</div> 
+                                {% else %}
+                                    <div class="label label-danger">No</div> 
+                                {% endif %}
+                            </td>
+                            <td>{% if entity.created %}{{ entity.created|date('d/m/Y H:i:s') }}{% endif %}</td>
+                            <td>
+                                <a href="#" onclick="javascript:publish({{entity.id}})" class="btn btn-warning" data-toggle="tooltip" title="{% if entity.publish == true %}Publish{% else %}Unpublish{% endif %}"><i class="fa {% if entity.publish == true %}fa-lock{% else %}fa-unlock{% endif %}"></i></a>
+                                <a href="#" onclick="javascript:del({{entity.id}})" class="btn btn-danger" data-toggle="tooltip" title="Delete"><i class="fa fa-minus"></i></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div>
+                <a href="{{ path('article') }}" class="btn btn-warning">Back to the list</a>
+            </div>
+        </div>
+    </div>
+    <form hidden name="delete_form" id="delete_form" action="{{ path('articlecomment_delete') }}" method="POST"  >
+        <input type="hidden" name="id" id="entityId" />
+    </form>
+    <form hidden name="publish_form" id="publish_form" action="{{ path('articlecomment_publish') }}" method="POST"  >
+        <input type="hidden" name="id" id="publishEntityId" />
+    </form>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('bundles/admintemplate/assets/plugins/datatable/js/jquery.dataTables.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/admintemplate/assets/plugins/datatable/js/bootstrap.datatable.js') }}"></script>
+    <script>
+        function del(id) {
+            if (confirm("Are you sure you want to delete?"))
+            {
+                $('#entityId').val(id);
+                $('#delete_form').submit();
+            }
+        }
+        function publish(id) {
+            if (confirm("Are you sure you want to change this item?"))
+            {
+                $('#publishEntityId').val(id);
+                $('#publish_form').submit();
+            }
+        }
+    </script>
+{% endblock %}  

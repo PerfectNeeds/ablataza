@@ -1,0 +1,74 @@
+{% extends 'AdminTemplateBundle::base.html.twig' %}
+{% set page_title %}Banner List{% endset %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/admintemplate/assets/plugins/datatable/css/bootstrap.datatable.min.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block body -%}
+    <div class="the-box">
+        <div class="table-responsive">
+            <div class="row">
+                <div class="col-md-12">
+                    <a class="btn btn-success pull-right" style="margin-bottom: 10px;" href="{{ path('banner_new') }}">Create a new entry</a>
+                </div>
+            </div>
+            <table class="table table-striped table-hover" id="datatable-example">
+                <thead class="the-box dark full">
+                    <tr>
+                        <th>Title</th>
+                        <th>Placement</th>
+                        <th>Url</th>
+                        <th>Banner Image</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entity in entities %}
+                        <tr>
+                            <td>{{ entity.title }}</td>
+                            <td>
+                                {% if entity.placement == 1 %}
+                                    Home Page Banner
+                                {% elseif entity.placement == 2 %}
+                                    Contact us
+                                {% elseif entity.placement == 3 %}
+                                    Careers
+                                {% endif %}
+                            </td>     
+                            <td>{{ entity.url }}</td>     
+                            <td>
+                                {%  if entity.image %}  
+                                    <img src="{{ asset("uploads/banner/" ~ entity.id ~ "/"  ~ entity.image.id) }}" width="50" height="60"> 
+                                {%endif%}
+                            </td>
+                            <td>
+                                <a href="{{ path('banner_edit', { 'id': entity.id }) }}" class="btn btn-info" title="Edit"><i class="fa fa-pencil"></i></a>
+                                <a  href="#" onclick="javascript:del({{entity.id}})" class="btn btn-danger" title="Delete"><i class="fa fa-minus"></i></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <form hidden name="delete_form" id="delete_form" action="{{ path('banner_delete') }}" method="POST"  >
+        <input type="hidden" name="id" id="entityId" />
+    </form>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('bundles/admintemplate/assets/plugins/datatable/js/jquery.dataTables.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/admintemplate/assets/plugins/datatable/js/bootstrap.datatable.js') }}"></script>
+    <script>
+        function del(id) {
+            if (confirm("Are you sure you want to delete?"))
+            {
+                $('#entityId').val(id);
+                $('#delete_form').submit();
+            }
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,472 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}{{ menuPlanner.seo.title }}{% endblock %}
+{% block metaTag %}
+
+    {% set recipe = menuPlanner.recipe %}
+    {% if recipe != null %}
+        {% if recipe.post.mainImage %}
+            {% set mainImage = asset("uploads/recipe/image/" ~ recipe.post.id ~ "/"  ~ recipe.post.mainImage.id)  %}
+        {% else %}
+            {% set mainImage = asset('bundles/fe/images/placeholders/topRecipe-placeholder.jpg') %}
+        {% endif %}
+    {% else %}
+        {% set mainImage = asset('bundles/fe/images/placeholders/topRecipe-placeholder.jpg') %}
+    {% endif %}
+    <meta property="og:image" content="{{ app.request.scheme ~ "://" ~ app.request.host ~ mainImage }}" />
+
+    {% if menuPlanner.title|length > 1 %}
+        <meta property="og:title" content="{{ menuPlanner.title|slice(0, 180) }}" />
+    {% endif %}
+    {% if menuPlanner.description|length > 1 %}
+        <meta property="og:description" content="{{ menuPlanner.description|slice(0, 180) }}" />
+    {% endif %}
+{% endblock %}
+
+{% block breadcrumb %}
+    <div class="home-carousel-one carousel-second-style owl-carousel hidden-xs">
+        {{ render(controller('CMSBundle:FrontEnd/Banner:Banner' , {'placment' : 1 })) }}
+    </div>
+    <div class="page-banner" style="background: #79b22b;">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2 class="page-title pull-right"><i class="fa fa-folder"></i> تفاصيل المجلد</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li>
+                            <a href="{{ path('fe_home') }}">الرئيسية</a>
+                        </li>
+                        {% if permission == true %}
+                            <li>
+                                <a href="{{ path('fe_menu_planner') }}">إدارة المجلدات</a>
+                            </li>
+                        {% endif %}
+                        <li class="active">{{ menuPlanner.title }}</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    <div id="page-layer-styled" class="page-wrapper blog">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 col-main">
+                    {% if permission == true %}
+                        <form action="{{ path('fe_menu_planner_update',{'slug':menuPlanner.seo.slug}) }}" method="post" class="editFolders">
+                            <input type="text" value="{{ menuPlanner.title }}" name="title" data-msg-required="من فضلك أكتب إسم المجلد" data-rule-required="true" aria-required="true" class="editTitle" placeholder="من فضلك أكتب إسم المجلد">
+                            <h3 class="heading-bottom-line folderName" style="padding-bottom: 16px;margin-bottom: 15px"><a herf="javascript:;" class="edit-folder-name"><i class="fa fa-edit"></i></a> قائمة {{ menuPlanner.title }}</h3>
+                            <div class="clearfix">
+                                {% if entities|length > 0 %}
+                                    <div class="col-md-5 sorts" style="margin-bottom:10px;padding:0px;">
+                                        <label class='pull-right' style='margin: 10px 0px 0px; font-weight: bold;'>الترتيب حسب : </label>
+                                        <select class="form-control chosen-select">
+                                            <option {% if app.request.get('sort') == 1 %}selected=""{% endif %} data-url="{{ path(app.request.attributes.get('_route'),app.request.attributes.get('_route_params')|merge({'page':1, 'sort':1})) }}">تاريخ الإضافة</option>
+                                            <option {% if app.request.get('sort') == 2 %}selected=""{% endif %} data-url="{{ path(app.request.attributes.get('_route'),app.request.attributes.get('_route_params')|merge({'page':1, 'sort':2})) }}">الترتيب الأبجدى</option>
+                                            <option {% if app.request.get('sort') == 3 %}selected=""{% endif %} data-url="{{ path(app.request.attributes.get('_route'),app.request.attributes.get('_route_params')|merge({'page':1, 'sort':3})) }}">وقت الطهى</option>
+                                        </select>
+                                    </div>
+                                {% endif %}
+                                <div class="col-md-7 pull-left" style="padding:0px;">
+                                    <div class="pull-left btn-danger addss col-md-6" style="margin-bottom:10px;">
+                                        <select class="form-control chosen-select" style='width:auto!important;'>
+                                            <option><i class="fa fa-plus"></i> ضيفي وصفة</option>
+                                            <option data-url="{{ path('fe_add_recipe') }}">ضيفي وصفة جديدة</option>
+                                            <option data-url="{{ path('fe_recipe', {'slug':category.seo.slug}) }}">ضيفي وصفة من أبلة طازة</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="folderDesc"> 
+                                <p class="folderDesc" style="margin-bottom:10px;min-height: 130px;">
+                                    {% if menuPlanner.description %}
+                                        {{ menuPlanner.description }}
+                                    {% else %}
+                                        يمكنك كتابة وصف للمجلد هنا
+                                    {% endif %}
+                                </p>
+                                <div class="col-md-12 text-center bts">
+                                    <div class="col-md-6 recipe-top-meta">
+                                        <div id="share-icons">
+                                            <div class="social-media-icons">
+                                                <a class="facebook" target="_blank" href="http://www.facebook.com/sharer/sharer.php?u={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_menu_planner_show', {'slug':menuPlanner.seo.slug}) }}" title="Share on Facebook"><i class="fa fa-facebook fa-lg"></i></a>
+                                                <a class="mail share-mail" href="javascript:;"><i class="fa fa-envelope fa-lg"></i></a>
+                                                <span id="close-share-icons" class="close"><i class="fa fa-close fa-lg"></i></span>
+                                            </div>
+                                        </div>
+                                        <a href="javascript:;" id="share-this"><i class="fa fa-share-alt"></i> مشاركة</a>
+                                    </div>
+                                    <div class="col-md-6"><a href="#" onclick="javascript:delMenu({{ menuPlanner.id }});"><i class="fa fa-remove"></i> حذف المجلد</a></div>
+                                </div>
+                                <textarea name="description" class="editsDescription" placeholder="ماذا تريد أن تقول عن المجلد">{% if menuPlanner.description %}{{ menuPlanner.description }}{% endif %}</textarea>
+                                <div class="col-md-12 text-center">
+                                    <button type="submit" class="btn btn-success saveEdits">حفظ التغييرات</button>
+                                    <a href="javascript:;" class="btn cancel">إلغاء التعديلات</a>
+                                </div>
+                            </div>
+                        </form>
+                    {% else %}
+                        <h3 class="heading-bottom-line folderName" style="padding-bottom: 16px;margin-bottom: 15px"> قائمة {{ menuPlanner.title }}</h3>
+                        {% if entities|length > 0 %}
+                            <div class="row">
+                                <div class="col-md-5 sorts" style="margin-bottom:10px;">
+                                    <label class='pull-right' style='margin: 10px 0 0 0;'>الترتيب حسب : </label>
+                                    <select class="form-control chosen-select">
+                                        <option {% if app.request.get('sort') == 1 %}selected=""{% endif %} data-url="{{ path(app.request.attributes.get('_route'),app.request.attributes.get('_route_params')|merge({'page':1, 'sort':1})) }}">تاريخ الإضافة</option>
+                                        <option {% if app.request.get('sort') == 2 %}selected=""{% endif %} data-url="{{ path(app.request.attributes.get('_route'),app.request.attributes.get('_route_params')|merge({'page':1, 'sort':2})) }}">الترتيب الأبجدى</option>
+                                        <option {% if app.request.get('sort') == 3 %}selected=""{% endif %} data-url="{{ path(app.request.attributes.get('_route'),app.request.attributes.get('_route_params')|merge({'page':1, 'sort':3})) }}">وقت الطهى</option>
+                                    </select>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="folderDesc">
+                            <p class="folderDesc" style="margin-bottom:10px;min-height: 130px;">
+                                {% if menuPlanner.description %}
+                                    {{ menuPlanner.description }}
+                                {% else %}
+                                    يمكنك كتابة وصف للمجلد هنا
+                                {% endif %}
+                            </p>
+                            <div class="col-md-12 text-center bts">
+                                <div class="{% if app.user == null %}col-md-12{% else %}col-md-6{% endif %} recipe-top-meta">
+                                    <div id="share-icons">
+                                        <div class="social-media-icons">
+                                            <a class="facebook" target="_blank" href="http://www.facebook.com/sharer/sharer.php?u={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_menu_planner_show', {'slug':menuPlanner.seo.slug}) }}" title="Share on Facebook"><i class="fa fa-facebook fa-lg"></i></a>
+                                            <a class="mail share-mail" href="javascript:;"><i class="fa fa-envelope fa-lg"></i></a>
+                                            <span id="close-share-icons" class="close"><i class="fa fa-close fa-lg"></i></span>
+                                        </div>
+                                    </div>
+                                    <a href="javascript:;" id="share-this"><i class="fa fa-share-alt"></i> مشاركة</a>
+                                </div>
+                                {% if app.user != null and app.user.person.id != menuPlanner.person.id %}
+                                    <div class="col-md-6">
+                                        <a href="{{ path('fe_menu_planner_copy',{'slug':menuPlanner.seo.slug}) }}" class="read-more"><i class="fa fa-remove"></i> نسخ</a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if entities|length > 0 %}
+                        <div class="row recipe-wrapper">
+                            {% for entity in entities %}
+                                <div class="col-xs-12 col-sm-6 col-md-6 recipe-column" id="{{ entity.id }}">
+                                    <article class="recipe recipe-grid hentry clearfix">
+                                        <figure class="recipe-thumbnail thumbnail-hover">
+                                            {% if entity.youtubeUrl != null %}
+                                                <img src="{{ asset('bundles/fe/images/play-btn.png') }}" class="plays">
+                                            {% endif %}
+                                            {% if entity.post.mainImage %}
+                                                {% set mainImage = asset("uploads/recipe/image/" ~ entity.post.id ~ "/"  ~ entity.post.mainImage.id)  %}
+                                            {% elseif entity.youtubeUrl != null %}
+                                                {% set mainImage = asset('bundles/fe/images/placeholders/recipe-placeholderVideo.jpg') %}
+                                            {% else %}
+                                                {% set mainImage = asset('bundles/fe/images/placeholders/recipe-placeholder.jpg') %}
+                                            {% endif %}
+                                            <img class="img-responsive" src="{{ mainImage }}" alt="{{ entity.title }}" style="height: 202px;"> 
+                                            {% if entity.youtubeUrl != null %}
+                                                <a class="swipebox-video view-thumbnail" data-gallery="youtubevideos" data-toggle="lightbox" href="{{ entity.youtubeUrl }}" style="background-color:rgba(232,35,39, 0.75);"><i class="fa fa-youtube-play thumbnail-view-icon"></i></a>
+                                                {% else %}
+                                                <a class="view-thumbnail" href="{{ path('fe_show_recipe', {'slug':entity.seo.slug}) }}" style="background-color:rgba(232,35,39, 0.75);">
+                                                    <i class="fa fa-eye thumbnail-view-icon"></i>
+                                                </a>
+                                            {% endif %}
+                                        </figure>
+                                        <div class="recipe-top-meta clearfix">
+                                            <span class="entry-author author vcard pull-right"><span class="screen-reader-text">بواسطة:</span> <a href="{{ path('fe_show_profile', {'slug':entity.person.seo.slug}) }}">{{ entity.person.firstName }}</a></span>
+                                            <a href="{{ path('fe_show_profile', {'slug':entity.person.seo.slug}) }}">
+                                                {% if entity.person.image != null %}
+                                                    <img src="{{ asset('uploads/person/'~entity.person.id~'/'~entity.person.image.id) }}" class="img-circle user" alt="{{entity.person.firstName}}"/>
+                                                {% elseif entity.person.firstAccount.userFacebook != null %}
+                                                    <img src="https://graph.facebook.com/{{ entity.person.firstAccount.userFacebook.facebookId }}/picture?type=large&width=201&height=201" class="img-circle user" alt="{{entity.person.firstName}}"/>
+                                                {% else %}    
+                                                    <img src="{{ asset('bundles/fe/images/user-2.jpg') }}" class="img-circle user" alt="{{entity.person.firstName}}"/>
+                                                {% endif %}
+                                            </a>
+                                            <div class="rating pull-left" data-rating="{{ entity.generalRationg }}">
+                                                <i class="fa fa-star-o one"></i> 
+                                                <i class="fa fa-star-o two"></i> 
+                                                <i class="fa fa-star-o three"></i>
+                                                <i class="fa fa-star-o four"></i>
+                                                <i class="fa fa-star-o five"></i>
+                                            </div>
+                                        </div>
+                                        <div class="recipe-details" style="border-top-color:#e82327;">
+                                            <h2 class="entry-title recipe-title"><a href="{{ path('fe_show_recipe', {'slug':entity.seo.slug}) }}">{{ entity.title }}</a></h2>
+                                            <div class="recipe-desc">
+                                                {% if entity.post.content.recipe|length > 75 %}
+                                                    <p>{% if entity.post.content.recipe is defined %}{{ entity.post.content.recipe|striptags|replace({'&nbsp;':' '})|slice(0, 75) }}...{% endif %}</p>
+                                                {% else %}
+                                                    <p>{% if entity.post.content.recipe is defined %}{{ entity.post.content.recipe|striptags|replace({'&nbsp;':' '}) }}{% endif %}</p>
+                                                {% endif %}
+                                            </div>
+                                            <footer class="entry-meta recipe-entry-meta recipe-bottom-meta clearfix">
+                                                <span class="published-date">
+                                                    <i class="fa fa-clock-o"></i> <time class="entry-date published">{{ entity.preparationTime }} دقيقة</time>
+                                                </span> 
+                                                <div class="share-icons">
+                                                    <div class="social-media-icons">
+                                                        <a class="facebook" target="_blank" href="http://www.facebook.com/sharer/sharer.php?u={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_recipe', {'slug':entity.seo.slug}) }}" title="Share on Facebook"><i class="fa fa-facebook fa-lg"></i></a>
+                                                        <a class="twitter" target="_blank" href="http://twitter.com/share?text={{ entity.title }}&url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_recipe', {'slug':entity.seo.slug}) }}"><i class="fa fa-twitter fa-lg"></i></a>
+                                                        <a class="linkedin" target="_blank" href="https://www.pinterest.com/pin/create/button/?url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_recipe', {'slug':entity.seo.slug}) }}&description={{ entity.title }}"><i class="fa fa-pinterest fa-lg"></i></a>
+                                                        <a class="gplus" target="_blank" href="https://plus.google.com/share?url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_recipe', {'slug':entity.seo.slug}) }}"><i class="fa fa-google-plus fa-lg"></i></a>
+                                                        <a class="mail" target="_blank" href="mailto:?subject={{ entity.title }}&body={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_recipe', {'slug':entity.seo.slug}) }}"><i class="fa fa-envelope fa-lg"></i></a>
+                                                        <span class="close-share-icons close"><i class="fa fa-close fa-lg"></i></span>
+                                                    </div>
+                                                </div>
+                                                <a href="javascript:;" class="share-this read-more"><i class="fa fa-share-alt"></i> مشاركة</a>
+                                                {% if app.user is not null %}
+                                                    <a href="javascript:;" class="read-more fav {% if entity.isResipeFavByUserId(app.user.person.id) == true %}active{% endif %}"><i class="fa fa-heart"></i> تفضيل</a>
+                                                {% endif %}
+                                                {% if permission == true %}
+                                                    <div class="text-center">
+                                                        <a href="#" onclick="javascript:del('{{ entity.id }}');"><i class="fa fa-remove"></i> حذف</a>
+                                                    </div>
+                                                {% endif %}
+                                            </footer>
+                                        </div>
+                                    </article>
+                                </div>
+                            {% endfor %}
+                            {{ include('CMSBundle:FrontEnd/HomePage:Pagination.html.twig', {'paginator':paginator}) }}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning">هذا المجلد لا يحتوى على أى وصفة</div>
+                    {% endif %}
+                </div>
+                <!-- .col-main -->
+                <div class="col-md-4 col-xs-12 col-sidebar">
+                    <aside id="sidebar" class="sidebar">
+                        <section class="widget category-widget myBox" style="overflow: hidden;">
+                            <h3 class="widget-title heading-bottom-line">صندوق الوصفات</h3>
+                            <ul>
+                                {% if menuPlanners|length > 0 %}
+                                    {% for otherMenuPlanner in menuPlanners %}
+                                        <li class="fold">
+                                            <a href="{{ path('fe_menu_planner_show', {'slug':otherMenuPlanner.seo.slug}) }}" {% if otherMenuPlanner.id == menuPlanner.id  %}class="hl"{% endif %}>
+                                                <i class="fa fa-angle-left"></i> {{ otherMenuPlanner.title }} <span class="pull-left">({{ otherMenuPlanner.menuPlannerHasRecipes|length }})</span>
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                {% else %}
+                                    <li><div class="alert alert-warning" style="padding:2px 5px;">برجاء إضافة مجلد جديد</div></li>
+                                    {% endif %}
+                                    {% if app.user %}
+                                    <li class="text-center">
+                                        <a href="javascript:;" class="btn btn-danger add-new-folder">أضف مجلد جديد</a>
+                                        <a href="{{ path('fe_menu_planner_manage') }}" class="btn btn-info">إدارة المجلدات</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </section>
+                    </aside>
+                    <!-- .sidebar -->
+                </div>
+                <!-- .col-sidebar -->
+            </div>
+            <!-- .row -->
+        </div>
+        <!-- .container -->
+    </div>
+    {% if app.user %}
+        <form hidden name="delete_form_item" id="delete_form_item" action="{{ path('fe_menu_planner_recipe_delete',{'slug':menuPlanner.seo.slug}) }}" method="POST"  >
+            <input type="hidden" name="id" id="entityId_item" />
+        </form>
+        <form hidden name="delete_form" id="delete_form" action="{{ path('fe_menu_planner_delete')}}" method="POST"  >
+            <input type="hidden" name="id" id="entityId" />
+        </form>
+    {% endif %}
+
+    <div class="lightbox"></div>
+    <div class="lighbox_content">
+        <div class="close-lightbox fa fa-remove" style="display: block"></div>
+        <div class="send_to_mail">
+            <div class="text-center">
+                <h2 class="widget-title heading-bottom-line" style="margin-bottom: 5px;padding-bottom: 5px">مشاركة بواسطة البريد الإلكتروني</h2>
+            </div>
+            <div class="product-descriptions col-md-12 popUp-msg">
+                <form action="{{ path('fe_menu_planner_send_mail', {'slug':menuPlanner.seo.slug}) }}" method="post" id="register" class="addingNewFolderForm">
+                    <div style="margin-bottom:15px;">
+                        <input id="email" class="email required" name="email" type="text" placeholder="البريد الإلكتروني" data-msg-required="برجاء كتابة بريدك الإلكتروني." data-msg-email="برجاء كتابة بريدك الإلكتروني صحيح.">
+                    </div>
+                    <div style="margin-bottom:15px;">
+                        <textarea style="height: 92px;" placeholder="أكتب رسالتك" class="required" data-msg-required="برجاء كتابة رسالتك" name="message"></textarea>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-danger" value="">إرسال</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="add_folder">
+            <div class="text-center">
+                <h2 class="widget-title heading-bottom-line" style="margin-bottom: 5px;padding-bottom: 5px">أضف مجلد جديد</h2>
+            </div>
+            <div class="product-descriptions col-md-12 popUp-msg">
+                <form action="{{ path('fe_menu_planner_create') }}" method="post" class="addingNewFolderForm" id="recipe-request-form">
+                    <div class="form-group">
+                        <input id="fName" name="title" data-msg-required='برجاء كتابة إسم المجلد' type="text" placeholder="إسم المجلد">
+                    </div>
+                    <div class="form-group">
+                        <textarea name="description" style="height: 122px;" placeholder="ماذا تريد أن تقول عن المجلد"></textarea>
+                    </div>
+                    <div class="form-group text-center">
+                        <button type="submit" class="btn btn-danger">أضف المجلد</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascript %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/fe/js/contact.js') }}"></script>
+    <script type="text/javascript">
+        {% if app.user %}
+                        function del(id) {
+                            if (confirm("هل أنت متأكد أنك تريد الحذف الوصفة؟")) {
+                                $('#entityId_item').val(id);
+                                $('#delete_form_item').submit();
+                            }
+                        }
+                        function delMenu(id) {
+                            if (confirm("هل أنت متأكد أنك تريد الحذف صندوق الوصفات؟")) {
+                                $('#entityId').val(id);
+                                $('#delete_form').submit();
+                            }
+                        }
+        {% endif %}
+                        $("#sort").change(function (e) {
+                            var location = $(this).find('option:selected').data('url');
+                            if (location !== '') {
+                                window.location = location;
+                            }
+
+                            e.preventDefault();
+                            return false;
+                        });
+                        $(".addss select").change(function (e) {
+                            var link = $(this).find('option:selected').data('url');
+                            if (link !== '') {
+                                window.location = link;
+                            }
+                            e.preventDefault();
+                            return false;
+                        });
+                        $('.fav').click(function () {
+                            var recipe_id = $(this).parent().parent().parent().parent().attr("id");
+                            $this = $(this);
+                            $.ajax({
+                                type: "POST",
+                                url: "{{ path('fe_recipe_favorite_ajax') }}",
+                                data: {'id': recipe_id},
+                                success: function (result) {
+                                    if (result == 1) {
+                                        $this.addClass('active');
+                                    }
+                                    if (result == 0) {
+                                        $this.removeClass('active');
+                                    }
+                                }
+                            });
+                        });
+                        $(document).ready(function ($) {
+
+            $(document).delegate('*[data-toggle="lightbox"]:not([data-gallery="navigateTo"])', 'click', function(event) {
+                event.preventDefault();
+                return $(this).ekkoLightbox({
+                    onShown: function() {
+                            if (window.console) {
+                                    return console.log('onShown event fired');
+                            }
+                    },
+                    onContentLoaded: function() {
+                            if (window.console) {
+                                    return console.log('onContentLoaded event fired');
+                            }
+                    },
+                    onNavigate: function(direction, itemIndex) {
+                            if (window.console) {
+                                    return console.log('Navigating '+direction+'. Current item: '+itemIndex);
+                            }
+                    }
+                });
+            });
+
+            $('#open-image').click(function (e) {
+                    e.preventDefault();
+                    $(this).ekkoLightbox();
+            });
+            $('#open-youtube').click(function (e) {
+                    e.preventDefault();
+                    $(this).ekkoLightbox();
+            });
+
+            $(document).delegate('*[data-gallery="navigateTo"]', 'click', function(event) {
+                    event.preventDefault();
+                    return $(this).ekkoLightbox({
+                            onShown: function() {
+                                    var lb = this;
+                                    $(lb.modal_content).on('click', '.modal-footer a#jumpit', function(e) {
+                                            e.preventDefault();
+                                            lb.navigateTo(2);
+                                    });
+                                    $(lb.modal_content).on('click', '.modal-footer a#closeit', function(e) {
+                                            e.preventDefault();
+                                            lb.close();
+                                    });
+                            }
+                    });
+            });
+        });
+                        $(document).ready(function () {
+                            $('.add-new-folder').click(function () {
+                                $('.lighbox_content, .lightbox, .add_folder').fadeIn();
+                            });
+                            $('.share-mail').click(function () {
+                                $('.lighbox_content, .lightbox, .send_to_mail').fadeIn();
+                            });
+                            $('.fa-remove').click(function () {
+                                $('.lighbox_content, .lightbox, .add_folder, .send_to_mail').fadeOut();
+                            });
+                            $('.add-to-folder').click(function () {
+                                $('.lighbox_content, .lightbox, .add_to_folder').fadeIn();
+                            });
+                            $('.addNewFolder a').click(function () {
+                                var folder = $('.newFolder').val();
+                                var folderName = '<li>' + folder + '</li>';
+                                $('.folders').append(folderName);
+                            });
+        {% if permission == true %}
+                            $('.edit-folder-name').click(function () {
+                                $('.editTitle').addClass('active');
+                                $('.editsDescription').slideDown();
+                                $('.saveEdits').slideDown();
+                                $('.cancel').slideDown();
+                                $('p.folderDesc').slideUp();
+                                $('.bts').slideUp();
+                            });
+                            $('.cancel').click(function () {
+                                $('.editTitle').removeClass('active');
+                                $('.editsDescription').slideUp();
+                                $('.saveEdits').slideUp();
+                                $('.cancel').slideUp();
+                                $('p.folderDesc').slideDown();
+                                $('.bts').slideDown();
+                            });
+        {% endif %}
+        {#$('.editFolders').submit(function(){
+            $('.editTitle').removeClass('active');
+            $('.editDescription').removeClass('active');
+            $('.saveEdits').slideUp();
+        });#}
+                        });
+    </script>
+{% endblock %}

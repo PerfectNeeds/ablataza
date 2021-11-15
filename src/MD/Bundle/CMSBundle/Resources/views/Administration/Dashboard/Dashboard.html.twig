@@ -1,0 +1,11 @@
+{% extends 'AdminTemplateBundle::base.html.twig' %}
+{% set page_title %}Dashboard{% endset %}
+{% block body -%}
+    <h1>Under Constraction</h1>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('bundles/admintemplate/assets/js/highcharts.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,148 @@
+<ul class="primary-menu clearfix">
+    {% for superCategory in superCategoris %}
+        {% if superCategory.id == 1 %}
+            <li class="home-menu-item">
+                <a href="{{ path('fe_recipe', {'slug':superCategory.seo.slug}) }}"><i class="fa fa-cutlery"></i> {{ superCategory.name }}</a>
+                <ul class="sub-menu">
+                    {% for category in superCategory.categories|slice(1) %}
+                        {% if category.id == 2 %}
+                            {% set icon = asset('bundles/fe/images/navatk-featured.png') %}
+                        {% elseif category.id == 3 %}
+                            {% set icon = asset('bundles/fe/images/navatk-new.png') %}
+                        {% elseif category.id == 4 %}
+                            {% set icon = asset('bundles/fe/images/navatk-easy.png') %}
+                        {% elseif category.id == 5 %}
+                            {% set icon = asset('bundles/fe/images/navatk-healthy.png') %}
+                        {% endif %}
+                        <li>
+                            <a href="{{ path('fe_recipe', {'slug':category.seo.slug}) }}">
+                                <img src="{{ icon }}"/>
+                                {{ category.name }}
+                            </a>
+                            {% if category.id == 1 %}
+                                <ul class="sub-menu">
+                                    {% for subCategory in category.subCategories %}
+                                        <li>
+                                            <a href="{{ path('fe_recipe', {'slug':subCategory.seo.slug}) }}">
+                                                {{ subCategory }}
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                    <li>
+                        <a href="{{ path('fe_abla_tazza_menu_planner') }}">
+                            <img src="{{ asset('bundles/fe/images/dinner.png') }}"/>
+                            عزومات أبلة طازة
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ path('fe_chef_month') }}">
+                            <img src="{{ asset('bundles/fe/images/chef.png') }}"/>
+                            طباخ الشهر
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ path('fe_food_measurment') }}">
+                            <img src="{{ asset('bundles/fe/images/dinner.png') }}"/>
+                            معايير الطعام
+                        </a>
+                    </li>
+                    {% set category = superCategory.categories[0] %}
+                    <li>
+                        <a href="{{ path('fe_recipe', {'slug':category.seo.slug}) }}">
+                            <img src="{{ asset('bundles/fe/images/navatk-cats.png')  }}"/>
+                            {{ category.name }}
+                        </a>
+                        {% if category.id == 1 %}
+                            <ul class="sub-menu">
+                                {% for subCategory in category.subCategories %}
+                                    <li>
+                                        <a href="{{ path('fe_recipe', {'slug':subCategory.seo.slug}) }}">
+                                            {{ subCategory }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </li>
+                </ul>
+            </li>
+        {% else %}
+            {% if superCategory.id == 2 %}
+                {% set elementClass %}blog-menu-item{% endset %}
+                {% set icon %}<i class="fa fa-home"></i>{% endset %}
+            {% elseif superCategory.id== 3 %}
+                {% set elementClass %}recipe-menu-item{% endset %}
+                {% set icon %}<i class="icon-premother"></i>{% endset %}
+            {% elseif superCategory.id== 4 %}
+                {% set elementClass %}mother-menu-item{% endset %}
+                {% set icon %}<i class="icon-mother"></i>{% endset %}
+            {% elseif superCategory.id== 5 %}
+                {% set elementClass %}life-menu-item{% endset %}
+                {% set icon %}<i class="icon-life"></i>{% endset %}
+            {% elseif superCategory.id== 6 %}
+                {% set elementClass %}safety-menu-item{% endset %}
+                {% set icon %}<i class="fa fa-heartbeat"></i>{% endset %}
+            {% endif %}
+            <li class="{{ elementClass }}">
+                <a href="{{ path('fe_article',{'slug':superCategory.seo.slug}) }}">
+                    {{ icon }} {{ superCategory.name }}
+                </a>
+                {% if superCategory.id == 3 or superCategory.id == 5 or superCategory.id == 6 %}
+                <ul class="sub-menu">
+                    {% if superCategory.id == 3  %}
+                    <li><a href="{{ path('fe_due_date') }}"><img src="{{ asset('bundles/fe/images/dueIcon2.png') }}"/> إحسبي ميعاد الولادة</a></li>
+                    {% endif %}
+                    {% if superCategory.id == 5  %}
+                    <li><a href="{{ path('fe_abla_tazza_quote') }}"><i class="fa fa-quote-left" style="font-size: 19px;float: right;margin:5px 0 0 5px"></i> على رأى أبلة طازة</a></li>
+                    {% endif %}
+                    {% if superCategory.id == 6 %}
+                    <li><a href="{{ path('fe_calculator') }}"><img src="{{ asset('bundles/fe/images/bmi2.png') }}"/> موشر كتلة الجسم</a></li>
+                    {% endif %}
+                </ul>
+                {% endif %}
+            </li>
+        {% endif %}
+    {% endfor %}
+    <li class="fadfada-menu-item"><a href="{{ path('fe_fadfada') }}"><i class="fa fa-comments"></i> فضفضة</a></li>
+    {% if app.user %}
+    <li class="visible-sm visible-xs"><a href="{{ path('fe_menu_planner') }}"><i class="fa fa-folder"></i> صندوق الوصفات </a></li> 
+    <li class="visible-sm visible-xs"><a href="{{ path('fe_super_market') }}"><i class="fa fa-shopping-cart"></i> السوق </a></li> 
+    <li class="visible-sm visible-xs"><a href="{{ path('fe_my_profile') }}"><i class="fa fa-edit"></i> الملف الشخصي </a></li>
+    <li class="visible-xs btn btn-danger" style="width: 95%;margin:5px auto"><a href="{{ path('logout') }}"><i class="fa fa-sign-out"></i> تسجيل خروج </a></li>
+    {% else %} 
+    <li class="visible-sm visible-xs btn btn-primary" style="width: 95%;margin:5px auto"><a href="{{ path('facebook_request') }}">الإشتراك عن طريق الفيسبوك<i class="fa fa-facebook"></i></a></li>
+    <li class="visible-sm visible-xs btn btn-success" style="width: 95%;margin:5px auto"><a href="{{ path('fe_login') }}">الدخول <i class="fa fa-sign-in"></i></a></li>
+    <li class="visible-sm visible-xs btn btn-danger" style="width: 95%;margin:5px auto"><a href="{{ path('fe_user_new') }}">التسجيل <i class="fa fa-lock"></i></a></li>
+    {% endif %} 
+    <li class="visible-xs"><a href="{{ path('fe_contact') }}" title="إتصل بنا"><i class="fa fa-phone"></i> إنصل بنا</a></li>
+    <li class="visible-xs"><a href="https://www.facebook.com/AblaTazza.Kitchen/" target="_blank"><i class="fa fa-facebook"></i> فيسبوك</a></li>
+    <li class="visible-xs"><a href="https://twitter.com/?lang=en" target="_blank"><i class="fa fa-twitter"></i> تويتر</a></li>
+    <li class="visible-xs"><a href="https://www.pinterest.com/ablatazza/" target="_blank"><i class="fa fa-pinterest"></i> بنتريست</a></li>
+    <li class="visible-xs"><a href="https://www.instagram.com/ablatazza796" target="_blank"><i class="fa fa-instagram"></i> إنستجرام</a></li>
+    <li class="visible-xs"><a href="https://plus.google.com/u/0/" target="_blank"><i class="fa fa-google-plus"></i> جوجل بلس</a></li>
+    <li class="visible-xs"><a href="https://www.youtube.com/channel/UCP-9PsBIKSh076HXKtpaRYw" target="_blank"><i class="fa fa-youtube"></i> يو تيوب</a></li>
+</ul>
+{#<li {% if  cr == 'fe_recipe' and app.request.query.get('c') is defined and app.request.query.get('c')  == '3' %} {% endif %} ><a href="{{ path('fe_recipe', {'c':3}) }}"><img src="{{ asset('bundles/fe/images/navatk-new.png') }}"/>جديد</a></li>
+<li {% if  cr == 'fe_recipe' and app.request.query.get('c') is defined and app.request.query.get('c')  == '4' %} {% endif %} ><a href="{{ path('fe_recipe', {'c':4}) }}"><img src="{{ asset('bundles/fe/images/navatk-easy.png') }}"/>سهل وسريع</a></li>
+<li {% if  cr == 'fe_recipe' and app.request.query.get('c') is defined and app.request.query.get('c')  == '5' %} {% endif %}><a href="{{ path('fe_recipe', {'c':5}) }}"><img src="{{ asset('bundles/fe/images/navatk-healthy.png') }}"/>صحي</a></li>
+<li {% if  cr == 'fe_recipe' and app.request.query.get('c') is defined and app.request.query.get('c')  == '1' or app.request.query.get('sc') is defined %} {% endif %}>
+    <a href="{{ path('fe_recipe', {'c':1}) }}"><img src="{{ asset('bundles/fe/images/navatk-cats.png') }}"/> تصنيف</a>
+    <ul class="sub-menu">
+        <li><a href="{{ path('fe_recipe', {'sc':1}) }}">سلطة</a></li>
+        <li><a href="{{ path('fe_recipe', {'sc':2}) }}">شوربة</a></li>
+        <li><a href="{{ path('fe_recipe', {'sc':4}) }}">طبق رئيسي</a></li>
+        <li><a href="{{ path('fe_recipe', {'sc':3}) }}">طبق جانبي</a></li>
+        <li><a href="{{ path('fe_recipe', {'sc':5}) }}">حلويات</a></li>
+    </ul>
+</li>
+</ul>
+</li>
+<li {% if  cr == 'fe_article' and app.request.query.get('sc') is defined and app.request.query.get('sc') == '2' %} {% endif %} class="blog-menu-item"><a href="{{ path('fe_article',{'sc':2}) }}"><i class="fa fa-home"></i> بيت العدل</a></li>
+<li {% if  cr == 'fe_article' and app.request.query.get('sc') is defined and app.request.query.get('sc') == '3' %} {% endif %} class="recipe-menu-item"><a href="{{ path('fe_article',{'sc':3}) }}"><i class="icon-premother"></i> أنا حامل</a></li>
+<li {% if  cr == 'fe_article' and app.request.query.get('sc') is defined and app.request.query.get('sc') == '4' %} {% endif %} class="mother-menu-item"><a href="{{ path('fe_article',{'sc':4}) }}"><i class="icon-mother"></i> أم العيال</a></li>
+<li {% if  cr == 'fe_article' and app.request.query.get('sc') is defined and app.request.query.get('sc') == '5' %} {% endif %} class="life-menu-item"><a href="{{ path('fe_article',{'sc':5}) }}"><i class="icon-life"></i> حياتنا</a></li>
+<li {% if  cr == 'fe_article' and app.request.query.get('sc') is defined and app.request.query.get('sc') == '6' %} {% endif %} class="safety-menu-item"><a href="{{ path('fe_article',{'sc':6}) }}"><i class="fa fa-heartbeat"></i> ألف سلامة</a></li>#}

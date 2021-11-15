@@ -1,0 +1,128 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}{% trans %}معايير الطعام{% endtrans %}{% endblock %}
+
+{% block breadcrumb %}
+    <div class="home-carousel-one carousel-second-style owl-carousel hidden-xs">
+        {{ render(controller('CMSBundle:FrontEnd/Banner:Banner' , {'placment' : 1 })) }}
+    </div>
+    <div class="page-banner" style="background: #e82327;">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2 class="page-title pull-right"><img src="{{ asset('bundles/fe/images/fooMeasurement2.png') }}" alt="تحويل معايير الطعام" /> معايير الطعام</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li><a href="{{ path('fe_home') }}">الرئيسية</a></li>
+                        <li class="active">معايير الطعام</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    <div id="page-layer-styled" class="page-wrapper blog">
+        <div style="width: 516.5px;" id="left-layer"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <h3 class="heading-bottom-line" style="padding-bottom: 16px;"> تحويل معايير الطعام</h3>
+                    <div class="row">
+                        <form id="fo">
+                            <div class="col-sm-6">
+                                <p class="col-md-6">
+                                    <label>تحويل</label>
+                                    <input id="ingredients" name="v" type="text" placeholder="أكتب رقم" {% if value != null %}value="{{ value }}"{% endif %}>
+                                    <span class="alert alert-danger hid" style="padding: 2px 5px;margin-top: 5px;">برجاء كتابة رقم</span>
+                                </p>
+                                <p class="col-md-6 fro">
+                                    <label class="from">من</label>
+                                    <select id="cooking-method" name="f" class="form-control chosen-select">
+                                        {% for foodMeasurement in foodMeasurements %}
+                                            <option {% if fromMeasurement != null and fromMeasurement.id is defined and fromMeasurement.id == foodMeasurement.id %}selected=""{% endif %} value="{{ foodMeasurement.id }}">{{ foodMeasurement.title }}</option>
+                                        {% endfor %}
+                                    </select> 
+                                </p>
+                            </div>
+
+                            <div class="col-sm-1">
+                                <p style="margin: 40px auto 0px;"><a href="javascript:;" class="changes"><i class="fa fa-exchange"></i></a></p>
+                            </div>
+                            <div class="col-sm-3">
+                                <p class="t">
+                                    <label class="to">إلى</label>
+                                    <select id="cuisine" name="t" class="form-control chosen-select">
+                                        {% for foodMeasurement in foodMeasurements %}
+                                            <option {% if toMeasurement != null and toMeasurement.id is defined and toMeasurement.id == foodMeasurement.id %}selected=""{% endif %} value="{{ foodMeasurement.id }}">{{ foodMeasurement.title }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </p>
+                            </div>
+                            <div class="col-sm-2">
+                                <p>
+                                    <label></label>
+                                    <button type="submit" style="margin: 8px auto 0;" class="btn btn-success btn-block">تحويل</button>
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- .col-main -->
+                <div class="col-md-4 col-sidebar">
+                    <aside id="sidebar" class="sidebar">
+                        <section class="widget category-widget">
+                            {% if rate != null %}
+                                <article class="hentry col-md-12">
+                                    <h3 class="entry-title heading-bottom-line">نتيجة المعادلة</h3>
+                                    <div class="entry-content">
+                                        <h4 class="btn btn-danger btn-block text-center" style="font-size: 22px;background: #c9302c;cursor: auto;">
+                                            <img src="{{ asset('bundles/fe/images/food-mea2.png') }}" alt="تحويل معايير الطعام" style="display: block;margin: 5px auto 0;" />
+                                             {{ value }} {{ fromMeasurement.title }} =  {{ rate }} {{ toMeasurement.title }}
+                                        </h4>
+                                    </div>
+                                </article>
+                            {% endif %}
+                        </section>
+                    </aside> 
+                    <!-- .sidebar -->
+                </div>
+                <!-- .col-sidebar -->
+            </div>
+            <!-- .row -->
+        </div>
+        <!-- .container -->
+    </div>
+{% endblock %}
+{% block javascript %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function () {
+            $('.changes').click(function () {
+                var from = $('#cooking-method').val();
+                var to = $('#cuisine').val();
+                $('#cooking-method').val(to);
+                $('#cuisine').val(from);
+            });
+            $('#fo').submit(function(){
+                var quan = $('#ingredients').val(); 
+                if ( quan == ('') ){
+                    $('.hid').show();
+                    return false;
+                }
+            });
+            $('#ingredients').change(function(){
+                var quan = $('#ingredients').val(); 
+                if ( quan != ('') ){
+                    $('.hid').hide();
+                }
+            });
+        });
+    </script>
+{% endblock %}

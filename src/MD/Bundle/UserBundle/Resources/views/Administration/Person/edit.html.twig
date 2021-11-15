@@ -1,0 +1,76 @@
+{% extends 'AdminTemplateBundle::base.html.twig' %}
+{% set page_title %}Person Edit{% endset %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/admintemplate/assets/plugins/validator/bootstrapValidator.min.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block body -%}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h6 class="panel-title"><i class="icon-bubble4"></i> {{ page_title }}</h6>
+        </div>
+        <div class="panel-body">
+            <form class="form bootstrap-validator-form" id="validation" action="{{ path('person_update', { 'id': entity.id}) }}" role="form" method="POST">
+                <input type="hidden" name="_method" value="PUT" /> 
+                <div class="form-group">
+                    <label for="firstName" class="required">First Name</label>
+                    <input name="firstName" id="firstName" required="required" maxlength="225" class="form-control" type="text" value="{{ entity.firstName }}">
+                </div>
+                <div class="form-group">
+                    <label for="familyName" class="required">Family Name</label>
+                    <input name="familyName" id="familyName" required="required" maxlength="225" class="form-control" type="text" value="{{ entity.familyname }}">
+                </div>
+                <div class="form-group">
+                    <label for="email" class="required">UserName(Email)</label>
+                    <input name="email" id="email" required="required" maxlength="225" disabled="" readonly="" class="form-control" type="email" value="{{ entity.email }}">
+                </div>
+                <div class="form-group">
+                    <label for="password" class="required">Password</label>
+                    <input name="password" id="password" placeholder="Password" class="form-control" type="password">
+                </div>
+                <div class="form-group">
+                    <label for="phone" class="required">Phone</label>
+                    <input name="phone" id="phone" class="form-control" type="text" value="{{ entity.phone }}">
+                </div>
+                <div class="form-group">
+                    <label>Gender</label>
+                    <select class="form-control" name="gender">
+                        <option {% if entity.gender == 1 %}selected=""{% endif %} value="1">Male</option>
+                        <option {% if entity.gender == 2 %}selected=""{% endif %} value="2">Female</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>State</label>
+                    <select class="form-control" name="active">
+                        <option {% if entity.firstAccount.state == 1 %}selected=""{% endif %} value="1">Active</option>
+                        <option {% if entity.firstAccount.state == 0 %}selected=""{% endif %} value="0">Block</option>
+                    </select>
+                </div>
+                <div class="form-group text-right">
+                    <button class="btn btn-success" type="submit"><i class="fa fa-check"></i> Update</button>
+                    <button class="btn btn-danger" type="reset"><i class="fa fa-refresh"></i> Reset</button>
+                </div>
+            </form>
+            <div >
+                {#                <a href="{{ path('person') }}" class="btn btn-warning">Back to the list</a>#}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('bundles/admintemplate/assets/plugins/slug/jquery.slug.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/admintemplate/assets/plugins/validator/bootstrapValidator.min.js') }}"></script>
+    <script type="text/javascript">
+        $(function() {
+            $('#validation').bootstrapValidator().disableSubmitButtons();
+
+            $("#md_bundle_cmsbundle_person_name").slug({
+                slug: 'slug', // class of input / span that contains the generated slug 
+                hide: false        // hide the text input, true by default 
+            });
+        });
+    </script>   
+{% endblock %}

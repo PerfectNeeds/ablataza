@@ -1,0 +1,12 @@
+{% extends 'FEBundle::base.html.twig' %}
+
+{% block title %}{{ page.htmlTitle }}{% endblock %}
+
+{% block metaTag %}{{ page.htmlMeta }}{% endblock %}
+{% block content %}
+    {{ page.title }}
+    <br>
+    {{ page.content.description|raw }}
+        {{ tabId|twigMenu()|raw }}
+{% endblock %}
+

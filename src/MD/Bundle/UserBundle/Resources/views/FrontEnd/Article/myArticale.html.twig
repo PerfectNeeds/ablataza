@@ -1,0 +1,211 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}{% trans %}مقالاتي{% endtrans %}{% endblock %}
+
+{% block breadcrumb %}
+    <div class="home-carousel-one carousel-second-style owl-carousel hidden-xs">
+        {{ render(controller('CMSBundle:FrontEnd/Banner:Banner' , {'placment' : 1 })) }}
+    </div>
+    <div class="page-banner" style="background: #79b22b;">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2 class="page-title"><i class="fa fa-user"></i> صفحتي</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li><a href="{{ path('fe_home') }}">الرئيسية</a></li>
+                        <li><a href="{{ path('fe_my_profile') }}">الملف الشخصي</a></li>
+                        <li class="active">مقالاتي</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    <div class="page-wrapper user-accounts">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-main">
+                    <main id="main" class="main">
+                        <div class="tabs-wrapper">
+                            <ul class="tab-list clearfix">
+                                {{ render(controller('UserBundle:FrontEnd/Account:tabs')) }}
+                            </ul>
+                            <div class="tabs-contents">
+                                <div class="tab-block" style="display: block">
+                                    <section class="our-blog">
+                                        <div class="row">
+                                            {% for entity in entities %}
+                                                <!-- Start Loop -->
+                                                <article class="col-md-6 col-sm-6 col-xs-12">
+                                                    <div class="hentry home-blog-post clearfix">
+                                                        <figure class="col-xs-4 post-thumbnail thumbnail-hover">
+                                                            {% if entity.youtubeUrl != null %}
+                                                            <img src="{{ asset('bundles/fe/images/play-btn.png') }}" class="plays">
+                                                            {% endif %}
+                                                            {% if entity.post.mainImage %}
+                                                                {% set mainImage = asset("uploads/article/image/" ~ entity.post.id ~ "/"  ~ entity.post.mainImage.id)  %}
+                                                            {% else %}
+                                                                {% set mainImage = asset('bundles/fe/images/placeholders/homeArticle-placeholder.jpg') %}
+                                                            {% endif %}
+                                                            <img class="img-responsive" src="{{ mainImage }}" alt="{{ entity.title }}" style="height: 190px;"> 
+                                                            {% if entity.youtubeUrl != null %}
+                                                                <a class="swipebox-video view-thumbnail" data-gallery="youtubevideos" data-toggle="lightbox" href="{{ entity.youtubeUrl }}"><i class="fa fa-youtube-play thumbnail-view-icon"></i></a>
+                                                                {% else %}
+                                                                <a class="view-thumbnail" href="{{ path('fe_show_article', {'slug':entity.seo.slug}) }}">
+                                                                    <i class="fa fa-eye thumbnail-view-icon"></i>
+                                                                </a>
+                                                            {% endif %}
+                                                        </figure>
+                                                        <div class="col-xs-8 post-content">
+                                                            <h2 class="entry-title post-title"><a href="{{ path('fe_show_article', {'slug':entity.seo.slug}) }}">
+                                                            {% if entity.title|length > 34 %}
+                                                                {{ entity.title|slice(0, 34) }} ...
+                                                            {% else %}
+                                                                {{ entity.title }}
+                                                            {% endif %}
+                                                            </a></h2>
+                                                            <div class="art-home">
+                                                                {% if entity.post.content.description|length > 73 %}
+                                                                    <p>{% if entity.post.content.description is defined %}{{ entity.post.content.description|striptags|replace({'&hellip;':' ','&nbsp;':' '})|slice(0, 73) }}...{% endif %}</p>
+                                                                {% else %}
+                                                                    <p>{% if entity.post.content.description is defined %}{{ entity.post.content.description|striptags|replace({'&hellip;':' ','&nbsp;':' '}) }}{% endif %}</p>
+                                                                {% endif %}
+                                                            </div>
+                                                            <div class="entry-meta arts">
+                                                                <span class="published-date"><i class="fa fa-clock-o"></i> <time class="entry-date published">{{ entity.created|date('d/m/Y') }}</time></span>
+                                                                <div data-rating="{{ entity.generalRationg }}" class="rating" style="display: inline-block;margin:0px 11px">
+                                                                    <i class="fa fa-star-o one"></i> <i class="fa fa-star-o two"></i> <i class="fa fa-star-o three"></i> <i class="fa fa-star-o four"></i> <i class="fa fa-star-o five"></i>
+                                                                </div>
+                                                                <div class="share-icons">
+                                                                    <div class="social-media-icons">
+                                                                        <a class="facebook" target="_blank" href="#"><i class="fa fa-facebook fa-lg"></i></a>
+                                                                        <a class="twitter" target="_blank" href="#"><i class="fa fa-twitter fa-lg"></i></a>
+                                                                        <a class="linkedin" target="_blank" href="#"><i class="fa fa-pinterest fa-lg"></i></a>
+                                                                        <a class="gplus" target="_blank" href="#"><i class="fa fa-google-plus fa-lg"></i></a>
+                                                                        <a class="mail" target="_blank" href="#"><i class="fa fa-envelope fa-lg"></i></a>
+                                                                        <span class="close-share-icons close"><i class="fa fa-close fa-lg"></i></span>
+                                                                    </div>
+                                                                </div>
+                                                                <a href="{{ path('fe_article_edit', {'slug':entity.seo.slug}) }}" class="read-more" style="font-size: 12px;"><i class="fa fa-edit"></i> تعديل</a>
+                                                                <a href="javascript:;" class="share-this" style="font-size: 12px;"><i class="fa fa-share-alt"></i> مشاركة</a>
+                                                                <a href="javascript:;" class="read-more fav {% if entity.isArticleFavByUserId(app.user.person.id) == true %}active{% endif %}" style="font-size: 12px;"><i class="fa fa-heart"></i> تفضيل</a>
+                                                                {% if entity.draft != null %}
+                                                                    <label class="label label-default" style="padding: 0.2em 0.6em 0;">في المسودة</label>
+                                                                {% endif %}
+                                                                {% if entity.publish != null %}
+                                                                    <label class="label label-success" style="padding: 0.2em 0.6em 0;">تم نشر المقالة</label>
+                                                                {% else %}
+                                                                    <label class="label label-danger" style="padding: 0.2em 0.6em 0;">لم يتم نشر المقالة بعد</label>
+                                                                {% endif %}
+                                                                <a href="#" onclick="javascript:del('{{ entity.id }}');" class="btn-danger remove" style="padding:2px 15px"><i class="fa fa-remove"></i> حذف المقالة </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </article>
+                                                <!-- End Loop -->
+                                            {% endfor %}
+                                            {{ include('CMSBundle:FrontEnd/HomePage:Pagination.html.twig', {'paginator':paginator}) }}
+                                        </div>
+                                        <form hidden name="delete_form" id="delete_form" action="{{ path('fe_article_delete') }}" method="POST"  >
+                                            <input type="hidden" name="id" id="entityId" />
+                                        </form>
+                                    </section>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                    <!-- .main -->
+                </div>
+                <!-- .col-main -->
+            </div>
+            <!-- .row -->
+        </div>
+        <!-- .container -->
+    </div>
+
+{% endblock %}
+{% block javascript %}
+    {{ parent() }}
+    <script>
+        function del(id) {
+            if (confirm("هل أنت متأكد أنك تريد  الحذف؟")) {
+                $('#entityId').val(id);
+                $('#delete_form').submit();
+            }
+        }
+        $('.fav').click(function () {
+            var article_id = $(this).parent().parent().parent().parent().attr("id");
+            $this = $(this);
+            $.ajax({
+                type: "POST",
+                url: "{{ path('fe_article_favorite_ajax') }}",
+                data: {'id': article_id},
+                success: function (result) {
+                    if (result == 1) {
+                        $this.addClass('active');
+                    }
+                    if (result == 0) {
+                        $this.removeClass('active');
+                    }
+                }
+            });
+        });
+        $(document).ready(function ($) {
+
+            $(document).delegate('*[data-toggle="lightbox"]:not([data-gallery="navigateTo"])', 'click', function(event) {
+                event.preventDefault();
+                return $(this).ekkoLightbox({
+                    onShown: function() {
+                            if (window.console) {
+                                    return console.log('onShown event fired');
+                            }
+                    },
+                    onContentLoaded: function() {
+                            if (window.console) {
+                                    return console.log('onContentLoaded event fired');
+                            }
+                    },
+                    onNavigate: function(direction, itemIndex) {
+                            if (window.console) {
+                                    return console.log('Navigating '+direction+'. Current item: '+itemIndex);
+                            }
+                    }
+                });
+            });
+
+            $('#open-image').click(function (e) {
+                    e.preventDefault();
+                    $(this).ekkoLightbox();
+            });
+            $('#open-youtube').click(function (e) {
+                    e.preventDefault();
+                    $(this).ekkoLightbox();
+            });
+
+            $(document).delegate('*[data-gallery="navigateTo"]', 'click', function(event) {
+                    event.preventDefault();
+                    return $(this).ekkoLightbox({
+                            onShown: function() {
+                                    var lb = this;
+                                    $(lb.modal_content).on('click', '.modal-footer a#jumpit', function(e) {
+                                            e.preventDefault();
+                                            lb.navigateTo(2);
+                                    });
+                                    $(lb.modal_content).on('click', '.modal-footer a#closeit', function(e) {
+                                            e.preventDefault();
+                                            lb.close();
+                                    });
+                            }
+                    });
+            });
+        });
+    </script>
+{% endblock %}

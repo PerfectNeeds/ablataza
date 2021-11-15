@@ -1,0 +1,95 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}نصائحي{% endblock %}
+{% block breadcrumb %}
+    <div class="home-carousel-one carousel-second-style owl-carousel hidden-xs">
+        {{ render(controller('CMSBundle:FrontEnd/Banner:Banner' , {'placment' : 1 })) }}
+    </div>
+    <div class="page-banner" style="background: #ffc81b;">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2 class="page-title pull-right"><i class="fa fa-comments"></i> نصائحي</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li><a href="{{ path('fe_home') }}">الرئيسية</a></li>
+                        <li><a href="{{ path('fe_my_profile') }}">الملف الشخصي</a></li>
+                        <li>نصائحي</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    <div class="page-wrapper user-accounts">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-main">
+                    <main id="main" class="main">
+                        <div class="tabs-wrapper">
+                            <ul class="tab-list clearfix">
+                                {{ render(controller('UserBundle:FrontEnd/Account:tabs')) }}
+                            </ul>
+                            <div class="tabs-contents">
+                                <div class="tab-block" style="display: block">
+                                    <section class="our-blog">
+                                        <div class="row">
+                                            {% for entity in entities %}
+                                                <div class="col-md-6 col-sm-12 col-xs-12">
+                                                    <div class="talkbubble col-md-8 col-sm-8 col-xs-8">
+                                                        <h3 class="widget-title heading-bottom-line">حبايبنا بيقولوا</h3>
+                                                        <p style="margin: 0px; height: 93px;">{{ entity.tip|slice(0, 193) }}</p> 
+                                                        <a href="{{ path('fe_tip_edit', {'id':entity.id}) }}" class="read-more">تعديل</a>
+                                                        <a href="#" onclick="javascript:del('{{ entity.id }}');" class="btn-danger remove" style="padding:2px 0 2px 15px"><i class="fa fa-remove"></i> حذف النصيحة </a>
+                                                    </div>
+                                                    <div class="col-md-3 col-sm-3 col-xs-4">
+                                                        <figure class="img-circle" style="width: 120px;height:120px;overflow:hidden;margin-right:20px;">
+                                                            <a href="{{ path('fe_show_profile', {'slug':entity.person.seo.slug}) }}">
+                                                            {% if entity.person.image != null %}
+                                                                <img src="{{ asset('uploads/person/'~entity.person.id~'/'~entity.person.image.id) }}" style="width: 100%;" alt="{{entity.person.firstName}}"/>
+                                                            {% elseif entity.person.firstAccount.userFacebook != null %}
+                                                                <img src="https://graph.facebook.com/{{ entity.person.firstAccount.userFacebook.facebookId }}/picture?type=large&width=201&height=201" style="width: 100%;" alt="{{entity.person.firstName}}"/>
+                                                            {% else %}
+                                                                <img src="{{ asset('bundles/fe/images/user-2.jpg') }}" style="width: 100%;" alt="{{entity.person.firstName}}"/>
+                                                            {% endif %}
+                                                            </a>
+                                                        </figure>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </section>
+                                    <form hidden name="delete_form" id="delete_form" action="{{ path('fe_tip_delete') }}" method="POST"  >
+                                        <input type="hidden" name="id" id="entityId" />
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                    <!-- .main -->
+                </div>
+                <!-- .col-main -->
+            </div>
+            <!-- .row -->
+        </div>
+        <!-- .container -->
+    </div>
+{% endblock %}
+{% block javascript %}
+    {{ parent() }}
+    <script>
+        function del(id) {
+            if (confirm("هل أنت متأكد أنك تريد  الحذف؟")) {
+                $('#entityId').val(id);
+                $('#delete_form').submit();
+            }
+        }
+    </script>
+{% endblock %}

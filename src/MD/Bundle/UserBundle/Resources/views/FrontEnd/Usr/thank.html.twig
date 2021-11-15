@@ -1,0 +1,36 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}{% trans %}شكراً للتسجيل{% endtrans %}{% endblock %}
+
+{% block content %}
+<div class="home-carousel-one carousel-second-style owl-carousel">
+    {{ render(controller('CMSBundle:FrontEnd/Banner:Banner' , {'placment' : 1 })) }}
+</div>
+<div class="page-banner">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 text-center">
+                <h2 class="page-title">شكراً للتسجيل</h2>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- .page-banner -->
+<div id="page-layer-styled" class="page-wrapper submit-recipe">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <main id="main" class="main">
+                    <p class="alert alert-success text-center">برجاء مراجعة بريدك الإلكتروني| في حالة عدم وصول رسائل إليكي 
+                        <a href="{{ path('fe_user_resend_email', {'code':verifyCode, 'userId':userId}) }}">إضغطي هنا</a> <br>
+                        وبرجاء إنتظار رد المسؤل عن الموقع.
+                    </p>
+                </main>
+                <!-- .main -->
+            </div>
+            <!-- .col-main -->
+        </div>
+        <!-- .row -->
+    </div>
+    <!-- .container -->
+</div>
+{% endblock %}

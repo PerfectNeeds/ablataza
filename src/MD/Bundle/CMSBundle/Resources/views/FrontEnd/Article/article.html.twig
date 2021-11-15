@@ -1,0 +1,315 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}{% if seo != null %}{{ seo.title }}{% endif %}{% endblock %}
+{% block metaTag %}{% if seo != null %}{{ seo.metaTag|raw }}{% endif %}{% endblock %}
+
+
+    {% if currentTab.id == 2 %}
+        {% set headerColor = 'ffc81b' %}
+        {% set icon = 'fa fa-home' %}
+        {% set bgColor = '255, 200, 27' %}
+    {% elseif currentTab.id == 3 %}
+        {% set headerColor = '658e15' %}
+        {% set icon = 'icon-premother' %}
+        {% set bgColor = '101, 142, 21' %}
+    {% elseif currentTab.id == 4 %}
+        {% set headerColor = '2fa8c7' %}
+        {% set icon = 'icon-mother' %}
+        {% set bgColor = '47, 168, 199' %}
+    {% elseif currentTab.id == 5 %}
+        {% set headerColor = '555555' %}
+        {% set icon = 'icon-life' %}
+        {% set bgColor = '85, 85, 85' %}
+    {% elseif currentTab.id == 6 %}
+        {% set headerColor = '536c9f' %}
+        {% set icon = 'fa fa-heartbeat' %}
+        {% set bgColor = '83, 108, 159' %}
+    {% endif %}
+{% block breadcrumb %}
+    <div class="page-banner" style="background: #{{ headerColor }};">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2 class="page-title pull-right"><i class="{{ icon }}"></i> 
+                        {% if superCategory != null %}
+                            {{ superCategory.name }}
+                        {% elseif category != null %}
+                            {{ category.superCategory.name }}
+                        {% endif %}    
+                    </h2>
+                    <a href="{{ path('fe_add_article') }}" class="btn-success btn pull-left"><i class="fa fa-plus"></i> ضيفي مقالك</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li><a href="{{ path('fe_home') }}">الرئيسية</a></li>
+                            {% if superCategory != null %}
+                            <li class="active">{{ superCategory.name }}</li>
+                            {% elseif category != null %}
+                            <li class="active">{{ category.name }}</li>
+                            {% endif %}
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    <section class="our-blog">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    {% for entity in entities|slice(0, 4) %}
+                        <article class="col-md-6 col-sm-12 col-xs-12" id="{{ entity.id }}">
+                            <div class="hentry home-blog-post clearfix">
+                                <figure class="col-xs-4 post-thumbnail thumbnail-hover">
+                                    {% if entity.youtubeUrl != null %}
+                                    <img src="{{ asset('bundles/fe/images/play-btn.png') }}" class="plays">
+                                    {% endif %}
+                                    {% if entity.post.mainImage %}
+                                        {% set mainImage = asset("uploads/article/image/" ~ entity.post.id ~ "/"  ~ entity.post.mainImage.id)  %}
+                                    {% else %}
+                                        {% set mainImage = asset('bundles/fe/images/placeholders/homeArticle-placeholder.jpg') %}
+                                    {% endif %}
+                                    <img class="img-responsive" src="{{ mainImage }}" alt="{{ entity.title }}" style="height: 175px;"> 
+                                    {% if entity.youtubeUrl != null %}
+                                        <a class="swipebox-video view-thumbnail" data-gallery="youtubevideos" data-toggle="lightbox" href="{{ entity.youtubeUrl }}" style="background-color:rgba({{ bgColor }}, 0.75);"><i class="fa fa-youtube-play thumbnail-view-icon"></i></a>
+                                        {% else %}
+                                        <a class="view-thumbnail" href="{{ path('fe_show_article', {'slug':entity.seo.slug}) }}" style="background-color:rgba({{ bgColor }}, 0.75);">
+                                            <i class="fa fa-eye thumbnail-view-icon"></i>
+                                        </a>
+                                    {% endif %}
+                                    
+                                </figure>
+                                <div class="col-xs-8 post-content" style="border-top: 2px solid #{{ headerColor }};">
+                                    <h2 class="entry-title post-title"><a href="{{ path('fe_show_article', {'slug':entity.seo.slug}) }}">
+                                        {% if entity.title|length > 34 %}
+                                            {{ entity.title|slice(0, 34) }} ...
+                                        {% else %}
+                                            {{ entity.title }}
+                                        {% endif %}
+                                        </a></h2>
+                                    <div class="art-home">
+                                        {% if entity.post.content.description|length > 80 %}
+                                            <p>{% if entity.post.content.description is defined %}{{ entity.post.content.description|striptags|replace({'&hellip;':' ','&nbsp;':' '})|slice(0, 80) }}...{% endif %}</p>
+                                        {% else %}
+                                            <p>{% if entity.post.content.description is defined %}{{ entity.post.content.description|striptags|replace({'&hellip;':' ','&nbsp;':' '}) }}{% endif %}</p>
+                                        {% endif %}
+                                    </div>
+                                    <div class="entry-meta arts">
+                                        <span class="published-date"><i class="fa fa-clock-o"></i> <time class="entry-date published">{{ entity.created|date('d/m/Y') }}</time></span>
+                                        <div data-rating="{{ entity.generalRationg }}" class="rating" style="display: inline-block;margin:0px 5px">
+                                            <i class="fa fa-star-o one"></i> <i class="fa fa-star-o two"></i> <i class="fa fa-star-o three"></i> <i class="fa fa-star-o four"></i> <i class="fa fa-star-o five"></i>
+                                        </div>
+                                        <div class="share-icons">
+                                            <div class="social-media-icons">
+                                                <a class="facebook" target="_blank" href="http://www.facebook.com/sharer/sharer.php?u={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_article', {'slug':entity.seo.slug}) }}" title="Share on Facebook"><i class="fa fa-facebook fa-lg"></i></a>
+                                                <a class="twitter" target="_blank" href="http://twitter.com/share?text={{ entity.title }}&url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_article', {'slug':entity.seo.slug}) }}"><i class="fa fa-twitter fa-lg"></i></a>
+                                                <a class="linkedin" target="_blank" href="https://www.pinterest.com/pin/create/button/?url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_article', {'slug':entity.seo.slug}) }}&description={{ entity.title }}"><i class="fa fa-pinterest fa-lg"></i></a>
+                                                <a class="gplus" target="_blank" href="https://plus.google.com/share?url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_article', {'slug':entity.seo.slug}) }}"><i class="fa fa-google-plus fa-lg"></i></a>
+                                                <a class="mail" target="_blank" href="mailto:?subject={{ entity.title }}&body={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_article', {'slug':entity.seo.slug}) }}"><i class="fa fa-envelope fa-lg"></i></a>
+                                                <span class="close-share-icons close"><i class="fa fa-close fa-lg"></i></span>
+                                            </div>
+                                        </div>
+                                        <a href="javascript:;" class="share-this"><i class="fa fa-share-alt"></i> مشاركة</a>
+                                        {% if app.user is not null %}
+                                            <a href="javascript:;" class="read-more fav {% if entity.isArticleFavByUserId(app.user.person.id) == true %}active{% endif %}"><i class="fa fa-heart"></i> تفضيل</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    {% endfor %}
+
+                    <div style="clear:both"></div>
+                    {% if  ablaTazzaTip != false %}
+                        <div class="col-md-6 col-sm-12 col-xs-12" style="margin-bottom:20px;">
+                            <div class="talkbubble col-md-8 col-sm-8 col-xs-8 tips">
+                                <h3 class="widget-title heading-bottom-line">أبلة طازة بتقولك</h3>
+                                <p style="margin: 0px; height: 93px;">{{ ablaTazzaTip.tip|slice(0, 193) }}</p> 
+                            </div>
+                            <div class="col-md-3 col-sm-3 col-xs-4">
+                                <figure class="img-circle" style="width: 120px;height:120px;overflow:hidden;margin-right:20px;">
+                                    <a href="{{ path('fe_show_profile', {'slug':ablaTazzaTip.person.seo.slug}) }}">
+                                    {% if ablaTazzaTip.person.image != null %}
+                                        <img src="{{ asset('uploads/person/'~ablaTazzaTip.person.id~'/'~ablaTazzaTip.person.image.id) }}" style="width: 100%;" alt="{{ablaTazzaTip.person.firstName}}"/>
+                                    {% else %}
+                                        <img src="{{ asset('bundles/fe/images/footer-logo.png') }}" style="width: 100%;" alt="{{ablaTazzaTip.person.firstName}}"/>
+                                    {% endif %}
+                                    </a>
+                                </figure>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if  userTip != false %}
+                        <div class="col-md-6 col-sm-12 col-xs-12" style="margin-bottom:20px;">
+                            <div class="talkbubble col-md-8 col-sm-8 col-xs-8 tips">
+                                <h3 class="widget-title heading-bottom-line">حبايبنا بيقولوا</h3>
+                                <p style="margin: 0px; height: 93px;">{{ userTip.tip|slice(0, 193) }}</p> 
+                            </div>
+                            <div class="col-md-3 col-sm-3 col-xs-4">
+                                <figure class="img-circle" style="width: 120px;height:120px;overflow:hidden;margin-right:20px;">
+                                    <a href="{{ path('fe_show_profile', {'slug':userTip.person.seo.slug}) }}">
+                                    {% if userTip.person.firstAccount.userFacebook != null %}
+                                        <img src="https://graph.facebook.com/{{ userTip.person.firstAccount.userFacebook.facebookId }}/picture?type=large&width=201&height=201" style="width: 100%;" alt="{{userTip.person.firstName}}"/>
+                                    {% else %}
+                                        {% if userTip.person.image != null %}
+                                            <img src="{{ asset('uploads/person/'~userTip.person.id~'/'~userTip.person.image.id) }}" style="width: 100%;" alt="{{userTip.person.firstName}}"/>
+                                        {% else %}
+                                            <img src="{{ asset('bundles/fe/images/user-2.jpg') }}" style="width: 100%;" alt="{{userTip.person.firstName}}"/>
+                                        {% endif %}
+                                    {% endif %}
+                                    </a>
+                                </figure>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div style="clear:both"></div>
+                    <img height="auto" src="//lh6.ggpht.com/41LFWBytPnxKsfZf6mivs6ba7qdOBtfk9-7MzWSMqwC3IFOvaXd8rejFiyeXKfBOK16mMEopeA=w728" style="margin:0 auto 25px;display:block" alt="">
+                    <div style="clear:both"></div>
+
+                    {% for entity in entities|slice(4) %}
+                        <article class="col-md-6 col-sm-12 col-xs-12" id="{{ entity.id }}">
+                            <div class="hentry home-blog-post clearfix">
+                                <figure class="col-xs-4 post-thumbnail thumbnail-hover">
+                                    {% if entity.youtubeUrl != null %}
+                                    <img src="{{ asset('bundles/fe/images/play-btn.png') }}" class="plays">
+                                    {% endif %}
+                                    {% if entity.post.mainImage %}
+                                        {% set mainImage = asset("uploads/article/image/" ~ entity.post.id ~ "/"  ~ entity.post.mainImage.id)  %}
+                                    {% else %}
+                                        {% set mainImage = asset('bundles/fe/images/placeholders/homeArticle-placeholder.jpg') %}
+                                    {% endif %}
+                                    <img class="img-responsive" src="{{ mainImage }}" alt="{{ entity.title }}" style="height: 175px;"> 
+                                    {% if entity.youtubeUrl != null %}
+                                        <a class="swipebox-video view-thumbnail" data-gallery="youtubevideos" data-toggle="lightbox" href="{{ entity.youtubeUrl }}" style="background-color:rgba({{ bgColor }}, 0.75);"><i class="fa fa-youtube-play thumbnail-view-icon"></i></a>
+                                        {% else %}
+                                        <a class="view-thumbnail" href="{{ path('fe_show_article', {'slug':entity.seo.slug}) }}" style="background-color:rgba({{ bgColor }}, 0.75);">
+                                            <i class="fa fa-eye thumbnail-view-icon"></i>
+                                        </a>
+                                    {% endif %}
+                                </figure>
+                                <div class="col-xs-8 post-content" style="border-top: 2px solid #{{ headerColor }};">
+                                    <h2 class="entry-title post-title"><a href="{{ path('fe_show_article', {'slug':entity.seo.slug}) }}">
+                                        {% if entity.title|length > 34 %}
+                                            {{ entity.title|slice(0, 34) }} ...
+                                        {% else %}
+                                            {{ entity.title }}
+                                        {% endif %}
+                                        </a></h2>
+                                    <div class="art-home">
+                                        {% if entity.post.content.description|length > 80 %}
+                                            <p>{% if entity.post.content.description is defined %}{{ entity.post.content.description|striptags|replace({'&hellip;':' ','&nbsp;':' '})|slice(0, 80) }}...{% endif %}</p>
+                                        {% else %}
+                                            <p>{% if entity.post.content.description is defined %}{{ entity.post.content.description|striptags|replace({'&hellip;':' ','&nbsp;':' '}) }}{% endif %}</p>
+                                        {% endif %}
+                                    </div>
+                                    <div class="entry-meta arts">
+                                        <span class="published-date"><i class="fa fa-clock-o"></i> <time class="entry-date published">{{ entity.created|date('d/m/Y') }}</time></span>
+                                        <div data-rating="{{ entity.generalRationg }}" class="rating" style="display: inline-block;margin:0px 5px">
+                                            <i class="fa fa-star-o one"></i> <i class="fa fa-star-o two"></i> <i class="fa fa-star-o three"></i> <i class="fa fa-star-o four"></i> <i class="fa fa-star-o five"></i>
+                                        </div>
+                                        <div class="share-icons">
+                                            <div class="social-media-icons">
+                                                <a class="facebook" target="_blank" href="http://www.facebook.com/sharer/sharer.php?u={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_article', {'slug':entity.seo.slug}) }}" title="Share on Facebook"><i class="fa fa-facebook fa-lg"></i></a>
+                                                <a class="twitter" target="_blank" href="http://twitter.com/share?text={{ entity.title }}&url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_article', {'slug':entity.seo.slug}) }}"><i class="fa fa-twitter fa-lg"></i></a>
+                                                <a class="linkedin" target="_blank" href="https://www.pinterest.com/pin/create/button/?url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_article', {'slug':entity.seo.slug}) }}&description={{ entity.title }}"><i class="fa fa-pinterest fa-lg"></i></a>
+                                                <a class="gplus" target="_blank" href="https://plus.google.com/share?url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_article', {'slug':entity.seo.slug}) }}"><i class="fa fa-google-plus fa-lg"></i></a>
+                                                <a class="mail" target="_blank" href="mailto:?subject={{ entity.title }}&body={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_article', {'slug':entity.seo.slug}) }}"><i class="fa fa-envelope fa-lg"></i></a>
+                                                <span class="close-share-icons close"><i class="fa fa-close fa-lg"></i></span>
+                                            </div>
+                                        </div>
+                                        <a href="javascript:;" class="share-this"><i class="fa fa-share-alt"></i> مشاركة</a>
+                                        {% if app.user is not null %}
+                                            <a href="javascript:;" class="read-more fav {% if entity.isArticleFavByUserId(app.user.person.id) == true %}active{% endif %}"><i class="fa fa-heart"></i> تفضيل</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    {% endfor %}
+
+                    {{ include('CMSBundle:FrontEnd/HomePage:Pagination.html.twig', {'paginator':paginator}) }}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+    <script>
+
+        $('.fav').click(function () {
+            var article_id = $(this).parent().parent().parent().parent().attr("id");
+            $this = $(this);
+            $.ajax({
+                type: "POST",
+                url: "{{ path('fe_article_favorite_ajax') }}",
+                data: {'id': article_id},
+                success: function (result) {
+                    if (result == 1) {
+                        $this.addClass('active');
+                    }
+                    if (result == 0) {
+                        $this.removeClass('active');
+                    }
+                }
+            });
+        });
+        $(document).ready(function ($) {
+
+            $(document).delegate('*[data-toggle="lightbox"]:not([data-gallery="navigateTo"])', 'click', function(event) {
+                event.preventDefault();
+                return $(this).ekkoLightbox({
+                    onShown: function() {
+                            if (window.console) {
+                                    return console.log('onShown event fired');
+                            }
+                    },
+                    onContentLoaded: function() {
+                            if (window.console) {
+                                    return console.log('onContentLoaded event fired');
+                            }
+                    },
+                    onNavigate: function(direction, itemIndex) {
+                            if (window.console) {
+                                    return console.log('Navigating '+direction+'. Current item: '+itemIndex);
+                            }
+                    }
+                });
+            });
+
+            $('#open-image').click(function (e) {
+                    e.preventDefault();
+                    $(this).ekkoLightbox();
+            });
+            $('#open-youtube').click(function (e) {
+                    e.preventDefault();
+                    $(this).ekkoLightbox();
+            });
+
+            $(document).delegate('*[data-gallery="navigateTo"]', 'click', function(event) {
+                    event.preventDefault();
+                    return $(this).ekkoLightbox({
+                            onShown: function() {
+                                    var lb = this;
+                                    $(lb.modal_content).on('click', '.modal-footer a#jumpit', function(e) {
+                                            e.preventDefault();
+                                            lb.navigateTo(2);
+                                    });
+                                    $(lb.modal_content).on('click', '.modal-footer a#closeit', function(e) {
+                                            e.preventDefault();
+                                            lb.close();
+                                    });
+                            }
+                    });
+            });
+        });
+</script>
+{% endblock %}

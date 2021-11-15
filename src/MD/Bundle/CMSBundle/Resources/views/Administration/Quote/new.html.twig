@@ -1,0 +1,36 @@
+{% extends 'AdminTemplateBundle::base.html.twig' %}
+{% set page_title %}Quote creation{% endset %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/admintemplate/assets/plugins/validator/bootstrapValidator.min.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block body -%}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h6 class="panel-title"><i class="icon-bubble4"></i> {{ page_title }}</h6>
+        </div>
+        <div class="panel-body">
+            <form class="form bootstrap-validator-form" id="yadaweyaform" action="{{ path('quote_create') }}" role="form" method="POST">
+                {{ form_widget(form) }}
+                <div class="form-group text-right">
+                    <button class="btn btn-success" type="submit"><i class="fa fa-check"></i> Create</button>
+                    <button class="btn btn-danger" type="reset"><i class="fa fa-refresh"></i> Reset</button>
+                </div>
+            </form>
+            <div >
+                <a href="{{ path('quote') }}" class="btn btn-warning">Back to the list</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('bundles/admintemplate/assets/plugins/validator/bootstrapValidator.min.js') }}"></script>
+    <script type="text/javascript">
+        $(function() {
+            $('#yadaweyaform').validate();
+            
+    </script>   
+{% endblock %}

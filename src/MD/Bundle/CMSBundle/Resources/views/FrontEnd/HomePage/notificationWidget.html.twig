@@ -1,0 +1,34 @@
+<a href="javascript:;" class="noti"><i class="fa fa-globe"></i> <span class=notiAlert>{{ notifications|length }}</span></a>
+<div id="about" class="nano notifications">
+    <div class="nano-content"> 
+        <ul>
+            {% if notifications|length > 0 %}
+            {% for notification in notifications %}
+                {% set objName = notification|class %}
+                <li>
+                    {% if objName == 'Recipe' %}
+                        <i class="fa fa-cutlery"></i>
+                    {% elseif objName == 'Article' %}
+                        <i class="fa fa-heartbeat"></i> 
+                    {% endif  %}
+                    <a href="{{ path('fe_show_profile', {'slug':notification.person.seo.slug}) }}">
+                        <span class="name">{{ notification.person.firstName ~ ' ' ~ notification.person.familyname }}</span>
+                    </a> أضاف 
+                    {% if objName == 'Recipe' %}
+                        <a href="{{ path('fe_show_recipe', {'slug':notification.seo.slug}) }}">
+                            {{ notification.title }}
+                        </a>
+                    {% elseif objName == 'Article' %}
+                        <a href="{{ path('fe_show_article', {'slug':notification.seo.slug}) }}">
+                            {{ notification.title }}
+                        </a>
+                    {% endif  %}
+                    <span class="date">({{ notification.created|date('d/m/Y h:i A') }})</span>
+                </li>
+            {% endfor %}
+            {% else %}
+                <li class="alert alert-warning" style="margin:10px auto;padding:2px 7px;">لا توجد أى إضافات الأن</li>
+            {% endif %}
+        </ul>
+    </div>
+</div>

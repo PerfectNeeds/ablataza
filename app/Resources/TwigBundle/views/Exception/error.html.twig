@@ -1,0 +1,60 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}عفواً الصفحة التى تبحث عنها غير موجودة {% endblock %}
+
+{% block content %}
+    <div class="home-carousel-one carousel-second-style owl-carousel pages">
+        {{ render(controller('CMSBundle:FrontEnd/Banner:Banner' , {'placment' : 1 })) }}
+    </div>
+    <div class="page-banner" style="background: rgba(228, 0, 52, 1) none repeat scroll 0 0;">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2 class="page-title"><i class="fa fa-exclamation-triangle"></i> خطأ</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li><a href="{{ path('fe_home') }}">الرئيسية</a></li>
+                        {% if status_code == 500 %}
+                            <li class="active">خطأ في الخادم الداخلي</li>
+                        {% elseif status_code == 405 %}
+                            <li class="active">الطريقة غير مسموح بها</li>
+                        {% else %}
+                            <li class="active">عفواً الصفحة التى تبحث عنها غير موجودة</li>
+                        {% endif %}
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section class="recipe-search">
+        <div class="container">
+            <div class="recipe-search-inner col-md-12">
+                <h2 class="title" style="background-color: #fdfdfd;">خطأ</h2>
+                <div class="col-md-12">
+                    <div style="padding-bottom:30px" class="wrapper text-center">
+                        <img alt="logo" src="{{ asset('bundles/fe/images/footer-logo.png') }}">
+                        <h1 style="font-size:120px;color: brown;">
+                            <i class="fa fa-exclamation-triangle"></i><span>{{ status_code }}</span>
+                        </h1>
+                        {% if status_code == 500 %}
+                            <h4 style="margin: 13px;">خطأ في الخادم الداخلي </h4>
+                        {% elseif status_code == 405 %}
+                            <h4 style="margin: 13px;">الطريقة غير مسموح بها</h4>
+                        {% else %}
+                            <h4 style="margin: 13px;">عفواً الصفحة التى تبحث عنها غير موجودة</h4>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bottom-shadows">
+            <div class="container"></div>
+        </div>
+    </section>
+{% endblock %}

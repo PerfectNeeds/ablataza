@@ -1,0 +1,59 @@
+{% extends 'AdminTemplateBundle::base.html.twig' %}
+{% set page_title %}Sub Category Edit{% endset %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/admintemplate/assets/plugins/validator/bootstrapValidator.min.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block body -%}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h6 class="panel-title"><i class="icon-bubble4"></i> {{ page_title }}</h6>
+        </div>
+        <div class="panel-body">
+            <div class="form-group text-right">
+                <a class="btn btn-shadow btn-warning" href="{{ path('post_set_images', { 'id': entity.post.id,'pageType' : 4 ,'parentId' : entity.id }) }}"><i class="icon-picture"></i> Manage Images Gallery</a>
+            </div>
+            <form class="form bootstrap-validator-form" id="yadaweyaform" action="{{ path('application_update', { 'id': entity.id}) }}" role="form" method="POST">
+                <input type="hidden" name="_method" value="PUT" />  
+                {{ form_widget(edit_form) }}
+                <br />
+                <fieldset>
+                    <legend>Data</legend>
+                    {{tinymce_init()}} 
+                    <div class="form-group">
+                        <label for="dynamicpagetype_content" class="required">Description</label>
+                        <textarea id="dynamicpagetype_content" name="post[description]" class="tinymce" data-theme="bbcode">{% if entity.post.content.description is defined %}{{ entity.post.content.description }}{% endif %}</textarea>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>SEO</legend>
+                    {{ form_widget(formSeo) }}
+                </fieldset>
+                <div class="form-group text-right">
+                    <button class="btn btn-success" type="submit"><i class="fa fa-check"></i> Update</button>
+                    <button class="btn btn-danger" type="reset"><i class="fa fa-refresh"></i> Reset</button>
+                </div>
+            </form>
+            <div >
+                <a href="{{ path('application') }}" class="btn btn-warning">Back to the list</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('bundles/admintemplate/assets/plugins/slug/jquery.slug.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/admintemplate/assets/plugins/validator/bootstrapValidator.min.js') }}"></script>
+    <script type="text/javascript">
+        $(function() {
+            $('#yadaweyaform').validate();
+
+            $("#md_bundle_cmsbundle_application_name").slug({
+                slug: 'slug', // class of input / span that contains the generated slug 
+                hide: false        // hide the text input, true by default 
+            });
+        });
+    </script>   
+{% endblock %}

@@ -1,0 +1,910 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}{% if homepage.seo is defined %}{{ homepage.seo.title }}{% endif %}{% endblock %}
+
+{% block content %}
+    <div class="home-carousel-one carousel-second-style owl-carousel hidden-xs">
+        {{ render(controller('CMSBundle:FrontEnd/Banner:Banner' , {'placment' : 1 })) }}
+    </div>
+    <section class="recipe-search">
+        <div class="container">
+            <div class="recipe-search-inner wow slideInUp">
+                <h2 class="title">أخر  وصفات<span> أبلة طازة</span></h2>
+                <div class="row">
+                    {% for ablatazzaRecipe in ablatazzaRecipes %}
+                        <div class="col-md-6 col-xs-12 recipe-column abr" id="{{ ablatazzaRecipe.id }}">
+                            <article class="hentry clearfix" style="border: 1px solid #ccc;padding: 10px">
+                                <figure class="col-xs-12 col-md-5 recipe-thumbnail thumbnail-hover" style="padding: 0;">
+                                    {% if ablatazzaRecipe.youtubeUrl != null %}
+                                        <img src="{{ asset('bundles/fe/images/play-btn.png') }}" class="plays">
+                                    {% endif %}
+                                    {% if ablatazzaRecipe.post.mainImage %}
+                                        {% set mainImage = asset("uploads/recipe/image/" ~ ablatazzaRecipe.post.id ~ "/"  ~ ablatazzaRecipe.post.mainImage.id)  %}
+                                    {% elseif ablatazzaRecipe.youtubeUrl != null %}
+                                        {% set mainImage = asset('bundles/fe/images/placeholders/topRecipe-placeholderVideo.jpg') %}
+                                    {% else %}
+                                        {% set mainImage = asset('bundles/fe/images/placeholders/topRecipe-placeholder.jpg') %}
+                                    {% endif %}
+                                    <img class="img-responsive" src="{{ mainImage }}" alt="{{ ablatazzaRecipe.title }}" style="height: 242px;"> 
+                                    {% if ablatazzaRecipe.youtubeUrl != null %}
+                                        <a class="swipebox-video view-thumbnail" data-gallery="youtubevideos" data-toggle="lightbox" href="{{ ablatazzaRecipe.youtubeUrl }}"><i class="fa fa-youtube-play thumbnail-view-icon"></i></a>
+                                        {% else %}
+                                        <a class="view-thumbnail" data-rel="top-recipes" href="{{ path('fe_show_recipe', {'slug':ablatazzaRecipe.seo.slug}) }}">
+                                            <i class="fa fa-eye thumbnail-view-icon"></i>
+                                        </a>
+                                    {% endif %}
+                                </figure>
+                                <div class="col-xs-12 col-md-7 recipe-detail">
+                                    <div class="recipe-meta sp clearfix">
+                                        <span class="entry-author author vcard"><span class="screen-reader-text">بواسطة: </span><a href="{{ path('fe_show_profile', {'slug':ablatazzaRecipe.person.seo.slug}) }}"> {{ablatazzaRecipe.person.firstName ~ ' ' ~ ablatazzaRecipe.person.familyname}}</a></span>
+                                        <a href="{{ path('fe_show_profile', {'slug':ablatazzaRecipe.person.seo.slug}) }}">
+                                            {% if ablatazzaRecipe.person.image != null %}
+                                                <img src="{{ asset('uploads/person/'~ablatazzaRecipe.person.id~'/'~ablatazzaRecipe.person.image.id) }}" class="img-circle userR" alt="{{ablatazzaRecipe.person.firstName ~ ' ' ~ ablatazzaRecipe.person.familyname}}"/>
+                                            {% else %}
+                                                <img src="{{ asset('bundles/fe/images/user-2.jpg') }}" class="img-circle userR" alt="{{ablatazzaRecipe.person.firstName ~ ' ' ~ ablatazzaRecipe.person.familyname}}"/>
+                                            {% endif %}
+                                        </a>
+                                        <div class="rating" data-rating="{{ ablatazzaRecipe.generalRationg }}">
+                                            <i class="fa fa-star-o one"></i> <i class="fa fa-star-o two"></i> <i class="fa fa-star-o three"></i> <i class="fa fa-star-o four"></i> <i class="fa fa-star-o five"></i>
+                                        </div>
+                                    </div>
+                                    <h2 class="entry-title recipe-title"><a href="{{ path('fe_show_recipe', {'slug':ablatazzaRecipe.seo.slug}) }}">{{ ablatazzaRecipe.title }}</a></h2>
+                                    <div class="ablaTazza-home">
+                                        {% if ablatazzaRecipe.post.content.recipe|length > 75 %}
+                                            <p>{{ ablatazzaRecipe.post.content.recipe|striptags|replace({'&nbsp;':' '})|slice(0, 75) }} ...</p>
+                                        {% else %}
+                                            <p>{{ ablatazzaRecipe.post.content.recipe|striptags|replace({'&nbsp;':' '}) }}</p>
+                                        {% endif %}
+                                    </div>
+                                    <footer class="entry-meta recipe-entry-meta recipe-bottom-meta clearfix">
+                                        <span class="published-date">
+                                            <i class="fa fa-clock-o"></i> <time class="entry-date published">{{ ablatazzaRecipe.preparationTime }} دقيقة</time>
+                                        </span> 
+                                        <div class="share-icons">
+                                            <div class="social-media-icons">
+                                                <a class="facebook" target="_blank" href="http://www.facebook.com/sharer/sharer.php?u={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_recipe', {'slug':ablatazzaRecipe.seo.slug}) }}" title="Share on Facebook"><i class="fa fa-facebook fa-lg"></i></a>
+                                                <a class="twitter" target="_blank" href="http://twitter.com/share?text={{ ablatazzaRecipe.title }}&url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_recipe', {'slug':ablatazzaRecipe.seo.slug}) }}"><i class="fa fa-twitter fa-lg"></i></a>
+                                                <a class="linkedin" target="_blank" href="https://www.pinterest.com/pin/create/button/?url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_recipe', {'slug':ablatazzaRecipe.seo.slug}) }}&description={{ ablatazzaRecipe.title }}"><i class="fa fa-pinterest fa-lg"></i></a>
+                                                <a class="gplus" target="_blank" href="https://plus.google.com/share?url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_recipe', {'slug':ablatazzaRecipe.seo.slug}) }}"><i class="fa fa-google-plus fa-lg"></i></a>
+                                                <a class="mail" target="_blank" href="mailto:?subject={{ ablatazzaRecipe.title }}&body={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_recipe', {'slug':ablatazzaRecipe.seo.slug}) }}"><i class="fa fa-envelope fa-lg"></i></a>
+                                                <span class="close-share-icons close"><i class="fa fa-close fa-lg"></i></span>
+                                            </div>
+                                        </div>
+                                        <a href="javascript:;" class="share-this read-more"><i class="fa fa-share-alt"></i> مشاركة</a>
+                                        {% if app.user is not null %}
+                                            <a href="javascript:;" class="read-more fav {% if ablatazzaRecipe.isResipeFavByUserId(app.user.person.id) == true %}active{% endif %}"><i class="fa fa-heart"></i> تفضيل</a>
+                                        {% endif %}
+                                    </footer>
+                                </div>
+                            </article>
+                        </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+        <!-- .container -->
+        <div class="bottom-shadows"><div class="container"></div></div>
+    </section>
+    <section class="recent-recipes">
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <!-- Abla Tazza Adsense text and display -->
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-4026762125058832"
+             data-ad-slot="3509509103"
+             data-ad-format="auto"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </section>
+
+    <!-- .recipe-search -->
+    <section class="recent-recipes">
+        <img height="auto" alt="" style="display: block; margin: 0px auto;" src="//lh5.ggpht.com/mTRR6NXg718Xtg1pn_OlR3CgiJ0Z8-JcfQ5ewIltFkoUc5CKI002NEZ7YSUm_Ty0Dzd_X083=w895">
+        <div class="container wow fadeInDown">
+            <h3 class="title heading-bottom-line">أخر  وصفات<span> حبايبنا</span></h3>
+        </div>
+        <div class="container">
+            <div class="row recipe-wrapper">
+
+                {% for userRecipe in userRecipes %}
+                    <div class="col-xs-12 col-md-4 recipe-column us" id="{{ userRecipe.id }}">
+                        <article class="recipe recipe-grid hentry clearfix">
+                            <figure class="recipe-thumbnail thumbnail-hover">
+                                {% if userRecipe.youtubeUrl != null %}
+                                    <img src="{{ asset('bundles/fe/images/play-btn.png') }}" class="plays">
+                                {% endif %}
+                                {% if userRecipe.post.mainImage %}
+                                    {% set mainImage = asset("uploads/recipe/image/" ~ userRecipe.post.id ~ "/"  ~ userRecipe.post.mainImage.id)  %}
+                                {% elseif userRecipe.youtubeUrl != null %}
+                                    {% set mainImage = asset('bundles/fe/images/placeholders/recipe-placeholderVideo.jpg') %}
+                                {% else %}
+                                    {% set mainImage = asset('bundles/fe/images/placeholders/recipe-placeholder.jpg') %}
+                                {% endif %}
+                                <img class="img-responsive" src="{{ mainImage }}" alt="{{ userRecipe.title }}" style="height: 202px;"> 
+                                {% if userRecipe.youtubeUrl != null %}
+                                    <a class="swipebox-video view-thumbnail" data-gallery="youtubevideos" data-toggle="lightbox" href="{{ userRecipe.youtubeUrl }}"><i class="fa fa-youtube-play thumbnail-view-icon"></i></a>
+                                    {% else %}
+                                    <a class="view-thumbnail" href="{{ path('fe_show_recipe', {'slug':userRecipe.seo.slug}) }}">
+                                        <i class="fa fa-eye thumbnail-view-icon"></i>
+                                    </a>
+                                {% endif %}
+                            </figure>
+                            <div class="recipe-top-meta clearfix">
+                                <span class="entry-author author vcard pull-right"><span class="screen-reader-text">بواسطة:</span> <a href="{{ path('fe_show_profile', {'slug':userRecipe.person.seo.slug}) }}">{{userRecipe.person.firstName}}</a></span>
+                                <a href="{{ path('fe_show_profile', {'slug':userRecipe.person.seo.slug}) }}">
+                                    {% if userRecipe.person.image != null %}
+                                        <img src="{{ asset('uploads/person/'~userRecipe.person.id~'/'~userRecipe.person.image.id) }}" class="img-circle user" alt="{{userRecipe.person.firstName}}"/>
+                                    {% elseif userRecipe.person.firstAccount.userFacebook != null %}
+                                        <img src="https://graph.facebook.com/{{ userRecipe.person.firstAccount.userFacebook.facebookId }}/picture?type=large&width=201&height=201" class="img-circle user" alt="{{userRecipe.person.firstName}}"/>
+                                    {% else %}    
+                                        <img src="{{ asset('bundles/fe/images/user-2.jpg') }}" class="img-circle user" alt="{{userRecipe.person.firstName}}"/>
+                                    {% endif %}
+                                </a>
+                                <div class="rating pull-left" data-rating="{{ userRecipe.generalRationg }}">
+                                    <i class="fa fa-star-o one"></i> <i class="fa fa-star-o two"></i> <i class="fa fa-star-o three"></i> <i class="fa fa-star-o four"></i> <i class="fa fa-star-o five"></i>
+                                </div>
+                            </div>
+                            <div class="recipe-details">
+                                <h2 class="entry-title recipe-title"><a href="{{ path('fe_show_recipe', {'slug':userRecipe.seo.slug}) }}">{{userRecipe.title}}</a></h2>
+                                <div class="recipe-desc">
+                                    {% if userRecipe.post.content.recipe|length > 75 %}
+                                        <p>{{userRecipe.post.content.recipe|striptags|replace({'&nbsp;':' '})|slice(0, 75)}} ...</p>
+                                    {% else %}
+                                        <p>{{ userRecipe.post.content.recipe|striptags|replace({'&nbsp;':' '}) }}</p>
+                                    {% endif %}
+                                </div>
+                                <footer class="entry-meta recipe-entry-meta recipe-bottom-meta clearfix">
+                                    <span class="published-date">
+                                        <i class="fa fa-clock-o"></i> <time class="entry-date published">{{ userRecipe.preparationTime }} دقيقة</time>
+                                    </span> 
+                                    <div class="share-icons">
+                                        <div class="social-media-icons">
+                                            <a class="facebook" target="_blank" href="http://www.facebook.com/sharer/sharer.php?u={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_recipe', {'slug':userRecipe.seo.slug}) }}" title="Share on Facebook"><i class="fa fa-facebook fa-lg"></i></a>
+                                            <a class="twitter" target="_blank" href="http://twitter.com/share?text={{ userRecipe.title }}&url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_recipe', {'slug':userRecipe.seo.slug}) }}"><i class="fa fa-twitter fa-lg"></i></a>
+                                            <a class="linkedin" target="_blank" href="https://www.pinterest.com/pin/create/button/?url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_recipe', {'slug':userRecipe.seo.slug}) }}&description={{ userRecipe.title }}"><i class="fa fa-pinterest fa-lg"></i></a>
+                                            <a class="gplus" target="_blank" href="https://plus.google.com/share?url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_recipe', {'slug':userRecipe.seo.slug}) }}"><i class="fa fa-google-plus fa-lg"></i></a>
+                                            <a class="mail" target="_blank" href="mailto:?subject={{ userRecipe.title }}&body={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_recipe', {'slug':userRecipe.seo.slug}) }}"><i class="fa fa-envelope fa-lg"></i></a>
+                                            <span class="close-share-icons close"><i class="fa fa-close fa-lg"></i></span>
+                                        </div>
+                                    </div>
+                                    <a href="javascript:;" class="share-this read-more"><i class="fa fa-share-alt"></i> مشاركة</a>
+                                    {% if app.user is not null %}
+                                        <a href="javascript:;" class="read-more fav {% if userRecipe.isResipeFavByUserId(app.user.person.id) == true %}active{% endif %}"><i class="fa fa-heart"></i> تفضيل</a>
+                                    {% endif %}
+                                </footer>
+                            </div>
+                        </article>
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </section>
+    <!-- .recent-recipes -->
+    <section class="top-recipes">
+        <div class="container wow fadeInDown">
+            <h3 class="title heading-bottom-line">الأكثر <span> مشاهدة</span></h3>
+        </div>
+        <div class="container">
+            <div class="row">
+
+                {% if mostViewRecipe != false %}
+                    <div class="col-xs-12 col-md-6 recipe-column mostViewRecipe" id="{{ mostViewRecipe.id }}">
+                        <article class="hentry clearfix">
+                            <figure class="col-xs-12 col-md-5 recipe-thumbnail thumbnail-hover">
+                                {% if mostViewRecipe.youtubeUrl != null %}
+                                    <img src="{{ asset('bundles/fe/images/play-btn.png') }}" class="plays">
+                                {% endif %}
+                                {% if mostViewRecipe.post.mainImage %}
+                                    {% set mainImage = asset("uploads/recipe/image/" ~ mostViewRecipe.post.id ~ "/"  ~ mostViewRecipe.post.mainImage.id)  %}
+                                {% elseif mostViewRecipe.youtubeUrl != null %}
+                                    {% set mainImage = asset('bundles/fe/images/placeholders/topRecipe-placeholderVideo.jpg') %}
+                                {% else %}
+                                    {% set mainImage = asset('bundles/fe/images/placeholders/topRecipe-placeholder.jpg') %}
+                                {% endif %}
+                                <img class="img-responsive" src="{{ mainImage }}" alt="{{ mostViewRecipe.title }}" style="height: 306px;"> 
+                                {% if mostViewRecipe.youtubeUrl != null %}
+                                    <a class="swipebox-video view-thumbnail" data-gallery="youtubevideos" data-toggle="lightbox" href="{{ mostViewRecipe.youtubeUrl }}"><i class="fa fa-youtube-play thumbnail-view-icon"></i></a>
+                                    {% else %}
+                                    <a class="view-thumbnail" data-rel="top-recipes-2" href="{{ path('fe_show_recipe', {'slug':mostViewRecipe.seo.slug}) }}">
+                                        <i class="fa fa-eye thumbnail-view-icon"></i>
+                                    </a>
+                                {% endif %}
+                            </figure>
+                            <div class="col-xs-12 col-md-7 recipe-detail">
+                                <div class="recipe-meta sp clearfix">
+                                    <span class="entry-author author vcard"><span class="screen-reader-text">بواسطة: </span> <a href="{{ path('fe_show_profile', {'slug':mostViewRecipe.person.seo.slug}) }}">{{ mostViewRecipe.person.firstName }}</a></span>
+                                    <a href="{{ path('fe_show_profile', {'slug':mostViewRecipe.person.seo.slug}) }}">
+                                        {% if mostViewRecipe.person.image != null %}
+                                            <img src="{{ asset('uploads/person/'~mostViewRecipe.person.id~'/'~mostViewRecipe.person.image.id) }}" class="img-circle userR" alt="{{mostViewRecipe.person.firstName}}"/>
+                                        {% elseif mostViewRecipe.person.firstAccount.userFacebook != null %}
+                                            <img src="https://graph.facebook.com/{{ mostViewRecipe.person.firstAccount.userFacebook.facebookId }}/picture?type=large&width=201&height=201" class="img-circle user" alt="{{mostViewRecipe.person.firstName}}"/>
+                                        {% else %}
+                                            <img src="{{ asset('bundles/fe/images/user-2.jpg') }}" class="img-circle userR" alt="{{mostViewRecipe.person.firstName}}"/>
+                                        {% endif %}
+                                    </a>
+                                    <div class="rating" data-rating="{{ mostViewRecipe.generalRationg }}">
+                                        <i class="fa fa-star-o one"></i> <i class="fa fa-star-o two"></i> <i class="fa fa-star-o three"></i> <i class="fa fa-star-o four"></i> <i class="fa fa-star-o five"></i>
+                                    </div>
+                                </div>
+                                <h2 class="entry-title recipe-title"><a href="{{ path('fe_show_recipe', {'slug':mostViewRecipe.seo.slug}) }}">{{ mostViewRecipe.title }}</a></h2>
+                                <div class="most-home">
+                                    {% if mostViewRecipe.post.content.recipe|length > 60 %}
+                                        <p>{{ mostViewRecipe.post.content.recipe|striptags|replace({'&nbsp;':' '})|slice(0, 60) }}...</p>
+                                    {% else %}
+                                        <p>{{ mostViewRecipe.post.content.recipe|striptags|replace({'&nbsp;':' '}) }}</p>
+                                    {% endif %}
+                                </div>
+                                <footer class="entry-meta recipe-entry-meta recipe-bottom-meta clearfix">
+                                    <span class="published-date">
+                                        <i class="fa fa-clock-o"></i> <time class="entry-date published">{{ mostViewRecipe.preparationTime }} دقيقة</time>
+                                    </span> 
+                                    <div class="share-icons">
+                                        <div class="social-media-icons">
+                                            <a class="facebook" target="_blank" href="http://www.facebook.com/sharer/sharer.php?u={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_recipe', {'slug':mostViewRecipe.seo.slug}) }}" title="Share on Facebook"><i class="fa fa-facebook fa-lg"></i></a>
+                                            <a class="twitter" target="_blank" href="http://twitter.com/share?text={{ mostViewRecipe.title }}&url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_recipe', {'slug':mostViewRecipe.seo.slug}) }}"><i class="fa fa-twitter fa-lg"></i></a>
+                                            <a class="linkedin" target="_blank" href="https://www.pinterest.com/pin/create/button/?url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_recipe', {'slug':mostViewRecipe.seo.slug}) }}&description={{ mostViewRecipe.title }}"><i class="fa fa-pinterest fa-lg"></i></a>
+                                            <a class="gplus" target="_blank" href="https://plus.google.com/share?url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_recipe', {'slug':mostViewRecipe.seo.slug}) }}"><i class="fa fa-google-plus fa-lg"></i></a>
+                                            <a class="mail" target="_blank" href="mailto:?subject={{ mostViewRecipe.title }}&body={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_recipe', {'slug':mostViewRecipe.seo.slug}) }}"><i class="fa fa-envelope fa-lg"></i></a>
+                                            <span class="close-share-icons close"><i class="fa fa-close fa-lg"></i></span>
+                                        </div>
+                                    </div>
+                                    <a href="javascript:;" class="share-this read-more"><i class="fa fa-share-alt"></i> مشاركة</a>
+                                    {% if app.user is not null %}
+                                        <a href="javascript:;" class="read-more fav {% if mostViewRecipe.isResipeFavByUserId(app.user.person.id) == true %}active{% endif %}"><i class="fa fa-heart"></i> تفضيل</a>
+                                    {% endif %}
+                                </footer>
+                            </div>
+                        </article>
+                    </div>
+                {% endif %}
+
+                {% if mostViewArticle != false %}
+                    <div class="col-xs-12 col-md-6 recipe-column mostViewRecipe" id="{{ mostViewArticle.id }}">
+                        <article class="hentry clearfix">
+                            <figure class="col-xs-12 col-md-5 recipe-thumbnail thumbnail-hover">
+                                {% if mostViewArticle.youtubeUrl != null %}
+                                    <img src="{{ asset('bundles/fe/images/play-btn.png') }}" class="plays">
+                                {% endif %}
+                                {% if mostViewArticle.post.mainImage %}
+                                    {% set mainImage = asset("uploads/article/image/" ~ mostViewArticle.post.id ~ "/"  ~ mostViewArticle.post.mainImage.id)  %}
+                                {% else %}
+                                    {% set mainImage = asset('bundles/fe/images/placeholders/topRecipe-placeholder.jpg') %}
+                                {% endif %}
+                                <img class="img-responsive" src="{{ mainImage }}" alt="{{ mostViewArticle.title }}" style="height: 306px;"> 
+                                <a class="view-thumbnail" data-rel="top-recipes-2" href="{{ path('fe_show_article', {'slug':mostViewArticle.seo.slug}) }}">
+                                    <i class="fa fa-eye thumbnail-view-icon"></i>
+                                </a>
+                            </figure>
+                            <div class="col-xs-12 col-md-7 recipe-detail">
+                                <div class="recipe-meta sp clearfix">
+                                    <span class="entry-author author vcard"><span class="screen-reader-text">بواسطة: </span> <a href="{{ path('fe_show_profile', {'slug':mostViewArticle.person.seo.slug}) }}">{{ mostViewRecipe.person.firstName }}</a></span>
+                                    <a href="{{ path('fe_show_profile', {'slug':mostViewArticle.person.seo.slug}) }}">
+                                        {% if mostViewArticle.person.image != null %}
+                                            <img src="{{ asset('uploads/person/'~mostViewArticle.person.id~'/'~mostViewArticle.person.image.id) }}" class="img-circle userR" alt="{{mostViewArticle.person.firstName}}"/>
+                                        {% elseif mostViewArticle.person.firstAccount.userFacebook != null %}
+                                            <img src="https://graph.facebook.com/{{ mostViewArticle.person.firstAccount.userFacebook.facebookId }}/picture?type=large&width=201&height=201" class="img-circle user" alt="{{mostViewArticle.person.firstName}}"/>
+                                        {% else %}
+                                            <img src="{{ asset('bundles/fe/images/user-2.jpg') }}" class="img-circle userR" alt="{{mostViewArticle.person.firstName}}"/>
+                                        {% endif %}
+                                    </a>
+                                    <div class="rating" data-rating="{{ mostViewArticle.generalRationg }}">
+                                        <i class="fa fa-star-o one"></i> <i class="fa fa-star-o two"></i> <i class="fa fa-star-o three"></i> <i class="fa fa-star-o four"></i> <i class="fa fa-star-o five"></i>
+                                    </div>
+                                </div>
+                                <h2 class="entry-title recipe-title"><a href="{{ path('fe_show_article', {'slug':mostViewArticle.seo.slug}) }}">{{ mostViewArticle.title }}</a></h2>
+                                <div class="most-home">
+                                    {% if mostViewArticle.post.content.description|length > 68 %}
+                                        <p>{{ mostViewArticle.post.content.description|striptags|replace({'&nbsp;':' '})|slice(0, 68) }}...</p>
+                                    {% else %}
+                                        <p>{{ mostViewArticle.post.content.description|striptags|replace({'&nbsp;':' '}) }}</p>
+                                    {% endif %}
+                                </div>
+                                <footer class="entry-meta recipe-entry-meta recipe-bottom-meta clearfix">
+                                    <span class="published-date">
+                                        <i class="fa fa-clock-o"></i> <time class="entry-date published">{{ mostViewArticle.created|date('d/m/Y') }}</time>
+                                    </span> 
+                                    <div class="share-icons">
+                                        <div class="social-media-icons">
+                                            <a class="facebook" target="_blank" href="http://www.facebook.com/sharer/sharer.php?u={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_article', {'slug':mostViewArticle.seo.slug}) }}" title="Share on Facebook"><i class="fa fa-facebook fa-lg"></i></a>
+                                            <a class="twitter" target="_blank" href="http://twitter.com/share?text={{ mostViewRecipe.title }}&url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_article', {'slug':mostViewArticle.seo.slug}) }}"><i class="fa fa-twitter fa-lg"></i></a>
+                                            <a class="linkedin" target="_blank" href="https://www.pinterest.com/pin/create/button/?url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_article', {'slug':mostViewArticle.seo.slug}) }}&description={{ mostViewArticle.title }}"><i class="fa fa-pinterest fa-lg"></i></a>
+                                            <a class="gplus" target="_blank" href="https://plus.google.com/share?url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_article', {'slug':mostViewArticle.seo.slug}) }}"><i class="fa fa-google-plus fa-lg"></i></a>
+                                            <a class="mail" target="_blank" href="mailto:?subject={{ mostViewArticle.title }}&body={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_article', {'slug':mostViewArticle.seo.slug}) }}"><i class="fa fa-envelope fa-lg"></i></a>
+                                            <span class="close-share-icons close"><i class="fa fa-close fa-lg"></i></span>
+                                        </div>
+                                    </div>
+                                    <a href="javascript:;" class="share-this read-more"><i class="fa fa-share-alt"></i> مشاركة</a>
+                                    {% if app.user is not null %}
+                                        <a href="javascript:;" class="read-more fav {% if mostViewArticle.isArticleFavByUserId(app.user.person.id) == true %}active{% endif %}"><i class="fa fa-heart"></i> تفضيل</a>
+                                    {% endif %}
+                                </footer>
+                            </div>
+                        </article>
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </section>
+    <section class="user-profile">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7">
+                    <h3 class="widget-title heading-bottom-line" style="margin-bottom: 20px;">فضفضة</h3>
+                    {% for fadfada in fadfadas %}
+                        <div class="current-user" id="{{ fadfada.id }}">
+                            <div class="user-details" style="width: 100%">
+                                {% if fadfada.maritalStatus == 1 %}
+                                    {% set status = 'متجوزه' %}
+                                {% elseif fadfada.maritalStatus == 2 %}
+                                    {% set status = 'مخطوبه' %}
+                                {% elseif fadfada.maritalStatus == 3 %}
+                                    {% set status = 'مصاحبه' %}
+                                {% elseif fadfada.maritalStatus == 4 %}
+                                    {% set status = 'سينجل' %}
+                                {% else %}
+                                    {% set status = 'أخرى' %}
+                                {% endif %}
+                                <a href="{{ path('fe_fadfada_show', {'id':fadfada.id}) }}"><h2 class="user-name">{{ fadfada.id }}# | {{ status }}</h2></a>
+                                {% if fadfada.text|length > 245 %}
+                                    <p>{{ fadfada.text|slice(0, 245) }}...</p>
+                                {% else %}
+                                    <p>{{ fadfada.text }}</p>
+                                {% endif %}
+                                <div class="sharing-wrapper">
+                                    <div class="share-icons">
+                                        <div class="social-media-icons">
+                                            <a class="facebook" target="_blank" href="http://www.facebook.com/sharer/sharer.php?u={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_fadfada_show', {'id':fadfada.id}) }}" title="Share on Facebook"><i class="fa fa-facebook fa-lg"></i></a>
+                                            <a class="twitter" target="_blank" href="http://twitter.com/share?text={{ status }}&url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_fadfada_show', {'id':fadfada.id}) }}"><i class="fa fa-twitter fa-lg"></i></a>
+                                            <a class="linkedin" target="_blank" href="https://www.pinterest.com/pin/create/button/?url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_fadfada_show', {'id':fadfada.id}) }}&description={{ fadfada.id }}# | {{ status }}"><i class="fa fa-pinterest fa-lg"></i></a>
+                                            <a class="gplus" target="_blank" href="https://plus.google.com/share?url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_fadfada_show', {'id':fadfada.id}) }}"><i class="fa fa-google-plus fa-lg"></i></a>
+                                            <a class="mail" target="_blank" href="mailto:?subject={{ status }}&body={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_fadfada_show', {'id':fadfada.id}) }}"><i class="fa fa-envelope fa-lg"></i></a>
+                                            <span class="close-share-icons close"><i class="fa fa-close fa-lg"></i></span>
+                                        </div>
+                                    </div>
+                                    <a href="javascript:;" class="share-this pull-left"><i class="fa fa-share-alt"></i> مشاركة</a>
+                                    <a href="{{ path('fe_fadfada_show', {'id':fadfada.id}) }}" class="read-more pull-left like"><i class="fa fa-comments"></i> تعليقات</a>
+                                    {% if app.user is not null %}
+                                        <a href="javascript:;" class="read-more pull-left like fav {% if fadfada.isFadfadaFavByUserId(app.user.person.id) == true %}active{% endif %}"><i class="fa fa-heart"></i> تفضيل</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    <a class="btn btn-danger" style="margin: 10px auto; width: 150px; display: block;" href="{{ path('fe_fadfada') }}">للمزيد</a>
+                </div>
+                <div class="col-md-5 recipe-request-form-column">
+                    <h3 class="form-heading heading-bottom-line">فضفضي يا حبيبتي</h3>
+                    <h4 style="margin-bottom: 5px;color:#000;">الحالة الإجتماعية؟ : </h4>
+                    <form id="recipe-request-form" class="que" method="POST" action="{{ path('fe_fadfada_create') }}">
+                        <div class="form-group col-md-12">
+                            <label><input type="radio" name="data[maritalStatus]" value="1"> متجوزه</label>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label><input type="radio" name="data[maritalStatus]" value="2"> مخطوبه</label>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label><input type="radio" name="data[maritalStatus]" value="3"> مصاحبه</label>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label><input type="radio" name="data[maritalStatus]" value="4"> سينجل</label>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label><input type="radio" name="data[maritalStatus]" value="5"> اخري</label>
+                        </div>
+                        <div style="margin: 0px auto 5px; padding:0 10px ! important;display: none;" class="alert alert-danger quesAlert col-md-12">برجاء تحديد إختيار</div>
+                        <div class="form-group col-md-12">
+                            <textarea id="comments" class="required" name="data[text]" placeholder="فضفضي مع ابله طازة" data-msg-required="برجاء كتابة الفضفضة"></textarea>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <input type="submit" class="submit-recipe-search-button" style="margin: 0 auto;display: block" value="فضفضي مع ابله طازه">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- .container -->
+    </section>
+
+    <section class="specials">
+        <div class="container">
+            <div class="row recipe-wrapper sidebar">
+                <div class="col-xs-12 col-sm-6 col-md-4 widget category-widget" style="height: 430px;"> 
+                    <article class="recipe recipe-grid hentry clearfix">
+                        <div class="ques" style="height: 430px;">
+                            <h3 class="widget-title heading-bottom-line">إسألى  أبلة طازة</h3>
+                            <ul class="asks-height">
+                                {% for ask in asks %}
+                                    <li>
+                                        <a href="{{ path('fe_ask_show', {'id':ask.id}) }}"><i class="fa fa-angle-left"></i> 
+                                            {{ ask.question }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            <a href="{{ path('fe_ask-ablatazza') }}" class="btn btn-success btn-block">إسألى أبلة طازة</a>
+                        </div>
+                    </article>
+                </div>
+                {% if chefOfTheMonth != null %}
+                    <div class="col-xs-12 col-sm-6 col-md-4 recipe-column widget">
+                        <article class="recipe recipe-grid hentry clearfix" style="height: 430px;">
+                            <figure class="recipe-thumbnail thumbnail-hover winner" style="height: 430px;">
+                                {% if chefOfTheMonth.image != null %}
+                                    {% set chefImage = asset('uploads/person/'~chefOfTheMonth.id~'/'~chefOfTheMonth.image.id) %}
+                                {% else %}
+                                    {% set chefImage = asset('bundles/fe/images/user-2.jpg') %}
+                                {% endif %}
+                                {% if chefOfTheMonth.firstAccount.userFacebook != null %}
+                                    <img src="https://graph.facebook.com/{{ chefOfTheMonth.firstAccount.userFacebook.facebookId }}/picture?type=large" class="img-responsive chef-container" alt="{{chefOfTheMonth.firstName}}" style="height: 430px"/>
+                                {% else %}
+                                    <img class="img-responsive chef-container" src="{{ chefImage }}" alt="{{chefOfTheMonth.firstName}}" style="height: 430px"> 
+                                {% endif %}
+                                <a href="{{ path('fe_chef_month') }}"><h2 class="titles">أفضل طباخ لهذا الشهر</h2></a>
+                                <a href="{{ path('fe_show_profile', {'slug':chefOfTheMonth.seo.slug}) }}">
+                                    <div class="chef col-md-12">
+                                        <div class="col-md-12"> 
+                                            {% if chefOfTheMonth.firstAccount.userFacebook != null %}
+                                                <img src="https://graph.facebook.com/{{ chefOfTheMonth.firstAccount.userFacebook.facebookId }}/picture?type=large&width=201&height=201" class="img-circle" alt="{{chefOfTheMonth.firstName}}"/>
+                                            {% else %}
+                                                <img src="{{ chefImage  }}" class="img-circle" alt="{{chefOfTheMonth.firstName}}"/>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-md-12" style="padding: 0px;margin-top: 10px;"><h2>{{ chefOfTheMonth.firstName~ ' '~ chefOfTheMonth.familyname }}</h2></div>
+                                    </div>
+                                </a>
+                            </figure>
+                        </article>
+                        <div class="text-center">
+                            <a class="btn btn-danger" href="{{ path('fe_chef_month') }}">للمزيد</a>
+                        </div>
+                    </div>
+                {% endif %}
+                {% if survey != false %}
+                    <div class="col-xs-12 col-sm-6 col-md-4 widget category-widget" style="height: 515px;overflow: hidden;">
+                        <article class="recipe recipe-grid hentry clearfix">
+                            <div class="ques fadfada">
+                                <h3 style="font-size: 20px;" class="widget-title heading-bottom-line">{{ survey.question }}</h3>
+                                {% if app.user is not null and survey.isePersonAnswer(app.user.person.id) == false or app.user is null %}
+                                    <figure class="post-thumbnail thumbnail-hover surveyImage">
+                                        {% if survey.image != null %}
+                                            <img alt="Survey" src="{{ asset('uploads/survey/'~survey.id~'/'~survey.image.id) }}" width="200" height="300">
+                                        {% else %}
+                                            <img alt="Survey" src="{{ asset('bundles/fe/images/family.jpg') }}">
+                                        {% endif %}
+                                    </figure>
+                                {% endif %}
+                                <div class="alert alert-success sur-msg" style="padding:1px 7px;margin-bottom: 5px;display:none;">لقد تم تسجيل تصويتك بنجاح</div>
+                                <ol class="asking">
+                                    {% if app.user is not null and survey.isePersonAnswer(app.user.person.id) == true %}
+                                        {% for result in surveyResult %}
+                                            <li>
+                                                {{ result.answer }} - %{{ result.rate }}
+                                                <div class="progress"> 
+                                                    <div style="width:{{ result.rate }}%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="{{ result.rate }}" role="progressbar" class="progress-bar progress-bar-warning"> 
+                                                        <span class="sr-only">{{ result.rate }}% Complete</span> 
+                                                    </div> 
+                                                </div>
+                                            </li>
+                                        {% endfor %}
+                                    {% else %}
+                                        {% if survey.answer1 != '' %}
+                                            <li>
+                                                <label>
+                                                    <input type="radio" name="answer" value="1"> {{ survey.answer1 }}
+                                                </label>
+                                            </li>
+                                        {% endif %}
+                                        {% if survey.answer2 != '' %}
+                                            <li>
+                                                <label>
+                                                    <input type="radio" name="answer" value="2"> {{ survey.answer2 }}
+                                                </label>
+                                            </li>
+                                        {% endif %}
+                                        {% if survey.answer3 != '' %}
+                                            <li>
+                                                <label>
+                                                    <input type="radio" name="answer" value="3"> {{ survey.answer3 }}
+                                                </label>
+                                            </li>
+                                        {% endif %}
+                                        {% if survey.answer4 != '' %}
+                                            <li>
+                                                <label>
+                                                    <input type="radio" name="answer" value="4"> {{ survey.answer4 }}
+                                                </label>
+                                            </li>
+                                        {% endif %}
+                                        <li style="margin: 0px auto 5px; padding-right:10px ! important;display: none;" class="alert alert-danger survAlert">برجاء تحديد إختيار</li>
+                                            {% if app.user is null %}
+                                                {#<li style="margin: 0px auto 5px; padding-right:10px ! important;" class="alert alert-danger survAlertLogin">برجاء تسجيل الدخول أولاً</li>#}
+                                            <li><a href="{{ path('fe_login') }}" class="btn btn-success btn-block vote">برجاء تسجيل الدخول أولاً</a></li>
+                                            {% else %}
+                                            <li><button class="btn btn-success btn-block vote">صوّتي</button></li>
+                                            {% endif %}
+                                        {% endif %}
+                                </ol> 
+                            </div>
+                        </article>
+                        <div class="text-center">
+                            <a class="btn btn-danger" href="{{ path('fe_survey') }}">للمزيد</a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <section class="most-rated-recipes" style="border-bottom: 1px solid #ccc;">
+        <div class="container wow fadeInDown">
+            <h3 class="title heading-bottom-line">نصائح </h3>
+        </div>
+        <div class="container">
+            <div class="row recipe-wrapper">
+                {% if  ablatazzaTip != false %}
+                    <div class="col-md-6 col-sm-12 col-xs-12">
+                        <div class="talkbubble col-md-8 col-sm-8 col-xs-8 tips">
+                            <h3 class="widget-title heading-bottom-line">أبلة طازة بتقولك</h3>
+                            <p style="margin: 0px; height: 93px;">{{ ablatazzaTip.tip|replace({'&nbsp;':' '})|slice(0, 193) }}</p> 
+                            {% if ablatazzaTip.superCategory.id == 1 %}
+                                {% set tipLink = path('fe_recipe') %}
+                            {% else %}
+                                {% set tipLink = path('fe_article', {'sc':ablatazzaTip.superCategory.id}) %}
+                            {% endif %}
+                            <a class="read-more" href="{{ tipLink }}">للمزيد من المعلومات</a>
+                        </div>
+                        <div class="col-md-3 col-sm-3 col-xs-4">
+                            <figure class="img-circle" style="width: 120px;height:120px;overflow:hidden;margin-right:20px;">
+                                <a href="{{ path('fe_show_profile', {'slug':ablatazzaTip.person.seo.slug}) }}">
+                                    {% if ablatazzaTip.person.image != null %}
+                                        <img src="{{ asset('uploads/person/'~ablatazzaTip.person.id~'/'~ablatazzaTip.person.image.id) }}" style="width: 100%;" alt="{{ablatazzaTip.person.firstName}}" title="{{ablatazzaTip.person.firstName}}" />
+                                    {% else %}
+                                        <img src="{{ asset('bundles/fe/images/footer-logo.png') }}" style="width: 100%;" alt="{{ablatazzaTip.person.firstName}}" title="{{ablatazzaTip.person.firstName}}" />
+                                    {% endif %}
+                                </a>
+                            </figure>
+                        </div>
+                    </div>
+                {% endif %}
+                {% if  usersTip != false %}
+                    <div class="col-md-6 col-sm-12 col-xs-12">
+                        <div class="talkbubble col-md-8 col-sm-8 col-xs-8 tips">
+                            <h3 class="widget-title heading-bottom-line">حبايبنا بيقولوا</h3>
+                            <p style="margin: 0px; height: 93px;">{{ usersTip.tip|replace({'&nbsp;':' '})|slice(0, 193) }}</p> 
+                            {% if usersTip.superCategory.id == 1 %}
+                                {% set tipLink = path('fe_recipe') %}
+                            {% else %}
+                                {% set tipLink = path('fe_article', {'sc':usersTip.superCategory.id}) %}
+                            {% endif %}
+                            <a class="read-more" href="{{ tipLink }}">للمزيد من المعلومات</a>
+                        </div>
+                        <div class="col-md-3 col-sm-3 col-xs-4">
+                            <figure class="img-circle" style="width: 120px;height:120px;overflow:hidden;margin-right:20px;">
+                                <a href="{{ path('fe_show_profile', {'slug':usersTip.person.seo.slug}) }}">
+                                    {% if usersTip.person.image != null %}
+                                        <img src="{{ asset('uploads/person/'~usersTip.person.id~'/'~usersTip.person.image.id) }}" style="width: 100%;" alt="{{usersTip.person.firstName}}"/>
+                                    {% elseif usersTip.person.firstAccount.userFacebook != null %}
+                                        <img src="https://graph.facebook.com/{{ usersTip.person.firstAccount.userFacebook.facebookId }}/picture?type=large&width=201&height=201" style="width: 100%;" alt="{{usersTip.person.firstName}}"/>
+                                    {% else %}
+                                        <img src="{{ asset('bundles/fe/images/user-2.jpg') }}" style="width: 100%;" alt="{{usersTip.person.firstName}}"/>
+                                    {% endif %}
+                                </a>
+                            </figure>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <img height="auto" alt="" style="margin:15px auto 0;display:block" src="//lh5.ggpht.com/mTRR6NXg718Xtg1pn_OlR3CgiJ0Z8-JcfQ5ewIltFkoUc5CKI002NEZ7YSUm_Ty0Dzd_X083=w895">
+    </section>
+
+    <section class="our-blog">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3 class="title heading-bottom-line wow fadeInDown">أخر مقالات <span>أبلة طازة</span></h3>
+                    {% for ablatazzaArticle in ablatazzaArticles %}
+                        <article class="hentry home-blog-post clearfix"  id="{{ ablatazzaArticle.id }}">
+                            <figure class="col-xs-4 post-thumbnail thumbnail-hover">
+                                {% if ablatazzaArticle.youtubeUrl != null %}
+                                    <img src="{{ asset('bundles/fe/images/play-btn.png') }}" class="plays">
+                                {% endif %}
+                                {% if ablatazzaArticle.post.mainImage %}
+                                    {% set mainImage = asset("uploads/article/image/" ~ ablatazzaArticle.post.id ~ "/"  ~ ablatazzaArticle.post.mainImage.id)  %}
+                                {% else %}
+                                    {% set mainImage = asset('bundles/fe/images/placeholders/homeArticle-placeholder.jpg') %}
+                                {% endif %}
+                                <img class="img-responsive" src="{{ mainImage }}" alt="{{ ablatazzaArticle.title }}" style="height: 175px;"> 
+                                {% if ablatazzaArticle.youtubeUrl != null %}
+                                    <a class="swipebox-video view-thumbnail" data-gallery="youtubevideos" data-toggle="lightbox" href="{{ ablatazzaArticle.youtubeUrl }}"><i class="fa fa-youtube-play thumbnail-view-icon"></i></a>
+                                    {% else %}
+                                    <a class="view-thumbnail" href="{{ path('fe_show_article', {'slug':ablatazzaArticle.seo.slug}) }}">
+                                        <i class="fa fa-eye thumbnail-view-icon"></i>
+                                    </a>
+                                {% endif %}
+                            </figure>
+                            <div class="col-xs-8 post-content">
+                                <h2 class="entry-title post-title"><a href="{{ path('fe_show_article', {'slug':ablatazzaArticle.seo.slug}) }}">
+                                        {% if ablatazzaArticle.title|length > 34 %}
+                                            {{ ablatazzaArticle.title|slice(0, 34) }} ...
+                                        {% else %}
+                                            {{ ablatazzaArticle.title }}
+                                        {% endif %}
+                                    </a></h2>
+                                <div class="art-home">
+                                    {% if ablatazzaArticle.post.content.description|length > 74 %}
+                                        <p>{{ ablatazzaArticle.post.content.description|striptags|replace({'&hellip;':' ','&nbsp;':' '})|slice(0, 74) }}...</p>
+                                    {% else %}
+                                        <p>{{ ablatazzaArticle.post.content.description|striptags|replace({'&hellip;':' ','&nbsp;':' '}) }}</p>
+                                    {% endif %}
+                                </div>
+                                <div class="entry-meta">
+                                    <span class="published-date"><i class="fa fa-clock-o"></i> <time class="entry-date published">{{ ablatazzaArticle.created|date('d/m/Y') }}</time></span>
+                                    <div data-rating="{{ ablatazzaArticle.generalRationg }}" class="rating" style="display: inline-block;margin:0px 11px">
+                                        <i class="fa fa-star-o one"></i> <i class="fa fa-star-o two"></i> <i class="fa fa-star-o three"></i> <i class="fa fa-star-o four"></i> <i class="fa fa-star-o five"></i>
+                                    </div>
+                                    <div class="share-icons">
+                                        <div class="social-media-icons">
+                                            <a class="facebook" target="_blank" href="http://www.facebook.com/sharer/sharer.php?u={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_article', {'slug':ablatazzaArticle.seo.slug}) }}" title="Share on Facebook"><i class="fa fa-facebook fa-lg"></i></a>
+                                            <a class="twitter" target="_blank" href="http://twitter.com/share?text={{ mostViewRecipe.title }}&url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_article', {'slug':ablatazzaArticle.seo.slug}) }}"><i class="fa fa-twitter fa-lg"></i></a>
+                                            <a class="linkedin" target="_blank" href="https://www.pinterest.com/pin/create/button/?url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_article', {'slug':ablatazzaArticle.seo.slug}) }}&description={{ ablatazzaArticle.title }}"><i class="fa fa-pinterest fa-lg"></i></a>
+                                            <a class="gplus" target="_blank" href="https://plus.google.com/share?url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_article', {'slug':ablatazzaArticle.seo.slug}) }}"><i class="fa fa-google-plus fa-lg"></i></a>
+                                            <a class="mail" target="_blank" href="mailto:?subject={{ ablatazzaArticle.title }}&body={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_article', {'slug':ablatazzaArticle.seo.slug}) }}"><i class="fa fa-envelope fa-lg"></i></a>
+                                            <span class="close-share-icons close"><i class="fa fa-close fa-lg"></i></span>
+                                        </div>
+                                    </div>
+                                    <a href="javascript:;" class="share-this read-more"><i class="fa fa-share-alt"></i> مشاركة</a>
+                                    {% if app.user is not null %}
+                                        <a href="javascript:;" class="read-more fav {% if ablatazzaArticle.isArticleFavByUserId(app.user.person.id) == true %}active{% endif %}"><i class="fa fa-heart"></i> تفضيل</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </article>
+                    {% endfor %}
+
+                </div>
+                <div class="col-md-6">
+                    <h3 class="title heading-bottom-line wow fadeInDown">أخر مقالات <span>حبايبنا</span></h3>
+
+                    {% for userArticle in userArticles %}
+                        <article class="hentry home-blog-post clearfix" id="{{ userArticle.id }}">
+                            <figure class="col-xs-4 post-thumbnail thumbnail-hover">
+                                {% if userArticle.youtubeUrl != null %}
+                                    <img src="{{ asset('bundles/fe/images/play-btn.png') }}" class="plays">
+                                {% endif %}
+                                {% if userArticle.post.mainImage %}
+                                    {% set mainImage = asset("uploads/article/image/" ~ userArticle.post.id ~ "/"  ~ userArticle.post.mainImage.id)  %}
+                                {% else %}
+                                    {% set mainImage = asset('bundles/fe/images/placeholders/homeArticle-placeholder.jpg') %}
+                                {% endif %}
+                                <img class="img-responsive" src="{{ mainImage }}" alt="{{ userArticle.title }}" style="height: 175px;"> 
+                                {% if userArticle.youtubeUrl != null %}
+                                    <a class="swipebox-video view-thumbnail" data-gallery="youtubevideos" data-toggle="lightbox" href="{{ userArticle.youtubeUrl }}"><i class="fa fa-youtube-play thumbnail-view-icon"></i></a>
+                                    {% else %}
+                                    <a class="view-thumbnail" href="{{ path('fe_show_article', {'slug':userArticle.seo.slug}) }}">
+                                        <i class="fa fa-eye thumbnail-view-icon"></i>
+                                    </a>
+                                {% endif %}
+                            </figure>
+                            <div class="col-xs-8 post-content">
+                                <h2 class="entry-title post-title"><a href="{{ path('fe_show_article', {'slug':userArticle.seo.slug}) }}">
+                                        {% if userArticle.title|length > 34 %}
+                                            {{ userArticle.title|slice(0, 34) }} ...
+                                        {% else %}
+                                            {{ userArticle.title }}
+                                        {% endif %}
+                                    </a></h2>
+                                <div class="art-home">
+                                    {% if userArticle.post.content.description|length > 74 %}
+                                        <p>{{ userArticle.post.content.description|striptags|replace({'&hellip;':' ','&nbsp;':' '})|slice(0, 74) }}...</p>
+                                    {% else %}
+                                        <p>{{ userArticle.post.content.description|striptags|replace({'&hellip;':' ','&nbsp;':' '}) }}</p>
+                                    {% endif %}
+                                </div>
+                                <div class="entry-meta">
+                                    <span class="published-date"><i class="fa fa-clock-o"></i> <time class="entry-date published">{{ userArticle.created|date('d/m/Y') }}</time></span>
+                                    <div data-rating="{{ userArticle.generalRationg }}" class="rating" style="display: inline-block;margin:0px 11px">
+                                        <i class="fa fa-star-o one"></i> <i class="fa fa-star-o two"></i> <i class="fa fa-star-o three"></i> <i class="fa fa-star-o four"></i> <i class="fa fa-star-o five"></i>
+                                    </div>
+                                    <div class="share-icons">
+                                        <div class="social-media-icons">
+                                            <a class="facebook" target="_blank" href="http://www.facebook.com/sharer/sharer.php?u={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_article', {'slug':userArticle.seo.slug}) }}" title="Share on Facebook"><i class="fa fa-facebook fa-lg"></i></a>
+                                            <a class="twitter" target="_blank" href="http://twitter.com/share?text={{ mostViewRecipe.title }}&url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_article', {'slug':userArticle.seo.slug}) }}"><i class="fa fa-twitter fa-lg"></i></a>
+                                            <a class="linkedin" target="_blank" href="https://www.pinterest.com/pin/create/button/?url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_article', {'slug':userArticle.seo.slug}) }}&description={{ userArticle.title }}"><i class="fa fa-pinterest fa-lg"></i></a>
+                                            <a class="gplus" target="_blank" href="https://plus.google.com/share?url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_article', {'slug':userArticle.seo.slug}) }}"><i class="fa fa-google-plus fa-lg"></i></a>
+                                            <a class="mail" target="_blank" href="mailto:?subject={{ userArticle.title }}&body={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_article', {'slug':userArticle.seo.slug}) }}"><i class="fa fa-envelope fa-lg"></i></a>
+                                            <span class="close-share-icons close"><i class="fa fa-close fa-lg"></i></span>
+                                        </div>
+                                    </div>
+                                    <a href="javascript:;" class="share-this read-more"><i class="fa fa-share-alt"></i> مشاركة</a>
+                                    {% if app.user is not null %}
+                                        <a href="javascript:;" class="read-more fav {% if userArticle.isArticleFavByUserId(app.user.person.id) == true %}active{% endif %}"><i class="fa fa-heart"></i> تفضيل</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </article>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/fe/js/contact.js') }}"></script>
+    <script>
+            $('.que').submit(function () {
+                var choose = $('.que input:checked').val();
+                if (choose == null) {
+                    $('.quesAlert').show();
+                    return false;
+                } else {
+                    $('.quesAlert').hide();
+                }
+            });
+        {% if survey!= false %}
+            $('.vote').click(function () {
+                var answer = $('.asking input:checked').val();
+                if (answer == null) {
+                    $('.survAlert').show();
+                } else {
+                    $('.survAlert').hide();
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ path('fe_survey_create_ajax', {'id': survey.id}) }}",
+                        data: {'answer': answer},
+                        success: function (result) {
+                            rates = JSON.parse(result);
+                            $(".asking").empty();
+                            $('.surveyImage').remove();
+                            $('.sur-msg').show();
+                            if (rates.error == 0) {
+                                $('.asking').append(rates.html);
+                            }
+                        }
+                    });
+                }
+            });
+        {% endif %}
+            $('.home-blog-post .fav').click(function () {
+                var article_id = $(this).parent().parent().parent().attr("id");
+                $this = $(this);
+                $.ajax({
+                    type: "POST",
+                    url: "{{ path('fe_article_favorite_ajax') }}",
+                    data: {'id': article_id},
+                    success: function (result) {
+                        if (result == 1) {
+                            $this.addClass('active');
+                        }
+                        if (result == 0) {
+                            $this.removeClass('active');
+                        }
+                    }
+                });
+            });
+            $('.current-user .fav').click(function () {
+                var fadfada_id = $(this).parent().parent().parent().attr("id");
+                $this = $(this);
+                $.ajax({
+                    type: "POST",
+                    url: "{{ path('fe_fadfada_favorite_ajax') }}",
+                    data: {'id': fadfada_id},
+                    success: function (result) {
+                        if (result == 1) {
+                            $this.addClass('active');
+                        }
+                        if (result == 0) {
+                            $this.removeClass('active');
+                        }
+                    }
+                });
+            });
+            $('.mostViewRecipe .fav').click(function () {
+                var mostView_id = $(this).parent().parent().parent().parent().attr("id");
+                $this = $(this);
+                $.ajax({
+                    type: "POST",
+                    url: "{{ path('fe_recipe_favorite_ajax') }}",
+                    data: {'id': mostView_id},
+                    success: function (result) {
+                        if (result == 1) {
+                            $this.addClass('active');
+                        }
+                        if (result == 0) {
+                            $this.removeClass('active');
+                        }
+                    }
+                });
+            });
+            $('.us .fav').click(function () {
+                var user_id = $(this).parent().parent().parent().parent().attr("id");
+                $this = $(this);
+                $.ajax({
+                    type: "POST",
+                    url: "{{ path('fe_recipe_favorite_ajax') }}",
+                    data: {'id': user_id},
+                    success: function (result) {
+                        if (result == 1) {
+                            $this.addClass('active');
+                        }
+                        if (result == 0) {
+                            $this.removeClass('active');
+                        }
+                    }
+                });
+            });
+            $('.abr .fav').click(function () {
+                var taza_id = $(this).parent().parent().parent().parent().attr("id");
+                $this = $(this);
+                $.ajax({
+                    type: "POST",
+                    url: "{{ path('fe_recipe_favorite_ajax') }}",
+                    data: {'id': taza_id},
+                    success: function (result) {
+                        if (result == 1) {
+                            $this.addClass('active');
+                        }
+                        if (result == 0) {
+                            $this.removeClass('active');
+                        }
+                    }
+                });
+            });
+            $(document).ready(function ($) {
+
+                $(document).delegate('*[data-toggle="lightbox"]:not([data-gallery="navigateTo"])', 'click', function (event) {
+                    event.preventDefault();
+                    return $(this).ekkoLightbox({
+                        onShown: function () {
+                            if (window.console) {
+                                return console.log('onShown event fired');
+                            }
+                        },
+                        onContentLoaded: function () {
+                            if (window.console) {
+                                return console.log('onContentLoaded event fired');
+                            }
+                        },
+                        onNavigate: function (direction, itemIndex) {
+                            if (window.console) {
+                                return console.log('Navigating ' + direction + '. Current item: ' + itemIndex);
+                            }
+                        }
+                    });
+                });
+
+                $('#open-image').click(function (e) {
+                    e.preventDefault();
+                    $(this).ekkoLightbox();
+                });
+                $('#open-youtube').click(function (e) {
+                    e.preventDefault();
+                    $(this).ekkoLightbox();
+                });
+
+                $(document).delegate('*[data-gallery="navigateTo"]', 'click', function (event) {
+                    event.preventDefault();
+                    return $(this).ekkoLightbox({
+                        onShown: function () {
+                            var lb = this;
+                            $(lb.modal_content).on('click', '.modal-footer a#jumpit', function (e) {
+                                e.preventDefault();
+                                lb.navigateTo(2);
+                            });
+                            $(lb.modal_content).on('click', '.modal-footer a#closeit', function (e) {
+                                e.preventDefault();
+                                lb.close();
+                            });
+                        }
+                    });
+                });
+            });
+    </script>
+{% endblock %}

@@ -1,0 +1,143 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}إستطلاع رأى{% endblock %}
+
+{% block breadcrumb %}
+    <div class="home-carousel-one carousel-second-style owl-carousel hidden-xs">
+        {{ render(controller('CMSBundle:FrontEnd/Banner:Banner' , {'placment' : 1 })) }}
+    </div>
+    <div class="page-banner" style="background: #ffc81b;">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2 class="page-title pull-right"><i class="fa fa-comments"></i> إستطلاع رأى</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li><a href="{{ path('fe_home') }}">الرئيسية</a></li>
+                        <li>إستطلاع رأى</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    <div class="page-wrapper recent-recipes">
+        <div class="container">
+            <div class="row">
+                
+                
+                {% for entity in entities %}
+                    <div class="col-xs-12 col-sm-6 col-md-4 widget category-widget" style="height: 515px;overflow: hidden;" data-id="{{ entity.id }}">
+                        <article class="recipe recipe-grid hentry clearfix">
+                            <div class="ques fadfada" style="height: auto!important;">
+                                <h3 style="font-size: 20px;height:70px;" class="widget-title heading-bottom-line">{{ entity.question }}</h3>
+                                {% if app.user is not null and entity.isePersonAnswer(app.user.person.id) == false or app.user is null %}
+                                    <figure class="post-thumbnail thumbnail-hover surveyImage" data-id="test">
+                                        {% if entity.image != null %}
+                                            <img alt="Survey" src="{{ asset('uploads/survey/'~entity.id~'/'~entity.image.id) }}" width="200" height="300">
+                                        {% else %}
+                                            <img alt="Survey" src="{{ asset('bundles/fe/images/family.jpg') }}">
+                                        {% endif %}
+                                    </figure>
+                                {% endif %}
+                                <div class="alert alert-success sur-msg" data-id="tests" style="padding:1px 7px;margin-bottom: 5px;display:none;">لقد تم تسجيل تصويتك بنجاح</div>
+                                <ol class="asking">
+                                {% if app.user is not null and entity.isePersonAnswer(app.user.person.id) == true %}
+                                    {% for result in entity.result %}
+                                        <li>
+                                            {{ result.answer }} - %{{ result.rate }}
+                                            <div class="progress"> 
+                                                <div style="width:{{ result.rate }}%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="{{ result.rate }}" role="progressbar" class="progress-bar progress-bar-warning"> 
+                                                    <span class="sr-only">{{ result.rate }}% Complete</span> 
+                                                </div> 
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+                                {% else %}
+                                    {% if entity.answer1 != '' %}
+                                        <li>
+                                            <label>
+                                                <input type="radio" name="answer" value="1"> {{ entity.answer1 }}
+                                            </label>
+                                        </li>
+                                    {% endif %}
+                                    {% if entity.answer2 != '' %}
+                                        <li>
+                                            <label>
+                                                <input type="radio" name="answer" value="2"> {{ entity.answer2 }}
+                                            </label>
+                                        </li>
+                                    {% endif %}
+                                    {% if entity.answer3 != '' %}
+                                        <li>
+                                            <label>
+                                                <input type="radio" name="answer" value="3"> {{ entity.answer3 }}
+                                            </label>
+                                        </li>
+                                    {% endif %}
+                                    {% if entity.answer4 != '' %}
+                                        <li>
+                                            <label>
+                                                <input type="radio" name="answer" value="4"> {{ entity.answer4 }}
+                                            </label>
+                                        </li>
+                                    {% endif %}
+                                    <li style="margin: 0px auto 5px; padding-right:10px ! important;display: none;" class="alert alert-danger survAlert">برجاء تحديد إختيار</li>
+                                        {% if app.user is null %}
+                                            {#<li style="margin: 0px auto 5px; padding-right:10px ! important;" class="alert alert-danger survAlertLogin">برجاء تسجيل الدخول أولاً</li>#}
+                                        <li><a href="{{ path('fe_login') }}" class="btn btn-success btn-block vote">برجاء تسجيل الدخول أولاً</a></li>
+                                        {% else %}
+                                        <li><button class="btn btn-success btn-block vote">صوّتي</button></li>
+                                        {% endif %}
+                                    {% endif %}
+                                </ol> 
+                            </div>
+                        </article>
+                    </div>
+                {% endfor %}
+                
+                {{ include('CMSBundle:FrontEnd/HomePage:Pagination.html.twig', {'paginator':paginator}) }}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block javascript %}
+    {{ parent() }}
+    <script>
+        $('.vote').click(function () {
+            var dataId = $(this).parent().parent().parent().parent().parent().data('id');
+            var answer = $(this).parent().parent('.asking').find('input:checked').val();
+            $imag = $(this).parent().parent('.asking').parent('.ques').children('.surveyImage');
+            $msa = $(this).parent().parent('.asking').parent('.ques').children('.sur-msg');
+            $lis = $(this).parent().parent('.asking');
+            if (answer == null) {
+                $(this).parent().prev('.survAlert').show();
+            } else {
+                $(this).parent().prev('.survAlert').hide();
+                $this = $(this);
+                $.ajax({
+                    type: "POST",
+                    url: "{{ path('fe_survey_create_ajax') }}",
+                    data: {'answer': answer, 'id': dataId},
+                    success: function (result) {
+                        rates = JSON.parse(result);
+                        $lis.empty();
+                        $imag.remove();
+                        $msa.show();
+                        if ( rates.error == 0 ) {
+                            $lis.append(rates.html);
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock %}

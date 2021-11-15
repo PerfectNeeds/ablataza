@@ -1,0 +1,79 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}{{ faq.seo.title }}{% endblock %}
+{% block page_title %}{{ faq.seo.title }}{% endblock %}
+
+{% block content %}
+
+    <!-- Page Content -->
+    <section class="page-content products">
+        <div class="container">
+
+            <div class="row">
+                <div class="col-md-8 col-sm-8 col-xs-12 pull-left">
+                    {% if entities|length > 0 %}
+                        {% for entity in entities %}
+                            <article class="entry entry__standard entry__with-icon" style="border-bottom: 1px solid #dcdcdc;margin-bottom: 20px;padding-bottom: 15px">
+                                <div class="entry-icon visible-md visible-lg">
+                                    <i class="fa fa-question"></i>
+                                </div>
+                                <header class="entry-header">
+                                    <h2>{{ entity.question }}</h2>
+                                </header>
+                                <div class="excerpt">
+                                    {{ entity.answer|nl2br }}
+                                </div>
+                            </article>
+                        {% endfor %}
+                    {% else %}
+                        <div class="alert alert-warning">{% trans %}There is no Records for now{% endtrans %}</div>
+                    {% endif %}
+                </div>
+
+                <aside class="sidebar col-md-3 col-sm-4 col-xs-12 col-md-offset-1 col-bordered pull-right">
+
+                    <hr class="visible-sm visible-xs lg">
+
+                    <div class="latest-posts-widget widget widget__sidebar">
+                        <h3 class="widget-title">{% trans %}Latest News{% endtrans %}</h3>
+                        <div class="widget-content">
+                            <ul class="latest-posts-list">
+                                {% for latestBlog in latestBlogs %}
+                                    <li>
+                                        <figure class="thumbnail">
+                                            <a href="{{ path('fe_show_blog', {'slug':latestBlog.seo.slug}) }}">
+                                                {% if latestBlog.post.mainImage %}
+                                                    <img src="{{ asset('uploads/blog/image/' ~ latestBlog.post.id ~ "/"  ~ latestBlog.post.mainImage.id) }}" alt="{{ latestBlog.name }}">
+                                                {% else %}
+                                                    <img src="{{ asset('bundles/fe/images/placeholder.png') }}" alt="{{ latestBlog.name }}">
+                                                {% endif %}
+                                            </a>
+                                        </figure>
+                                        <h5 class="title"><a href="{{ path('fe_show_blog', {'slug':latestBlog.seo.slug}) }}">{{ latestBlog.name }}</a></h5>
+                                        <p class="title">{{ latestBlog.post.content.brief|slice(0, 50) }} ...</p>
+                                        <span class="date">{{ latestBlog.created|date('d/m/Y') }}</span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+
+                </aside>
+            </div>
+
+
+
+
+        </div>
+    </section>
+
+{% endblock %}
+{% block javascript %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/fe/vendor/fhmm.js') }}"></script>
+    <script src="{{ asset('bundles/fe/vendor/jquery.flickrfeed.js') }}"></script>
+    <script src="{{ asset('bundles/fe/vendor/owl-carousel/owl.carousel.min.js') }}"></script>
+    <script src="{{ asset('bundles/fe/vendor/isotope/isotope.pkgd.min.js') }}"></script>
+    <script src="{{ asset('bundles/fe/vendor/isotope/jquery.imagesloaded.min.js') }}"></script>
+    <script src="{{ asset('bundles/fe/vendor/magnific-popup/jquery.magnific-popup.js') }}"></script>
+    <script src="{{ asset('bundles/fe/js/custom.js') }}"></script>
+{% endblock %} 

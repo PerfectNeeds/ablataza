@@ -1,0 +1,121 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}المتابعين{% endblock %}
+
+{% block breadcrumb %}
+    <div class="home-carousel-one carousel-second-style owl-carousel">
+        {{ render(controller('CMSBundle:FrontEnd/Banner:Banner' , {'placment' : 1 })) }}
+    </div>
+    <div class="page-banner" style="background: #e82327;;">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2 class="page-title pull-right"><i class="fa fa-user"></i> متابعين {{ person.firstName ~ ' ' ~ person.familyName }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li><a href="{{ path('fe_home') }}">الرئيسية</a></li>
+                        <li><a href="{{ path('fe_show_profile', {'slug':person.seo.slug}) }}">{{ person.firstName ~ ' ' ~ person.familyName }}</a></li>
+                        <li>المتابعين</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    <section class="user-profile">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <figure class="user-photo thumbnail-hover" style="display: block;margin:-44px auto 0;float: none;">
+                        <a href="{{ path('fe_show_profile', {'slug':person.seo.slug}) }}">
+                            {% if person.image != null %}
+                                <img src="{{ asset('uploads/person/'~person.id~'/'~person.image.id) }}" alt="{{ person.firstName }}"/>
+                            {% elseif person.firstAccount.userFacebook != null %}
+                                <img src="https://graph.facebook.com/{{ person.firstAccount.userFacebook.facebookId }}/picture?type=large&width=201&height=201"  alt="{{ person.firstName }}"/>
+                            {% else %}    
+                                <img src="{{ asset('bundles/fe/images/user-2.jpg') }}" alt="{{ person.firstName }}"/>
+                            {% endif %}
+                        </a>
+                    </figure>
+                    <div style="overflow: hidden" class="text-center">
+                        <div class="col-md-12">
+                            <h2 class="user-name" style="padding: 7px 20px;right: 0px;">{{ person.firstName ~ ' ' ~ person.familyName }}</h2>
+                            <p>البريد الإلكترونى : {{ person.email }}</p>
+                            {% if app.user != null and app.user.person.id != person.id %}
+                                {% if app.user.person.isFollower(person.id) == false %}
+                                    <a class="btn btn-info btn-block follow" href="javascript:;" style="margin: 0 auto!important;width: 100px">تابعنى</a> 
+                                {% else %}
+                                    <a href="javascript:;" class="btn btn-warning btn-block follow" style="margin: 0 auto!important;width: 100px">إلغاء المتابعة</a>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="page-wrapper user-accounts myAccount">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 recipe-request-form-column">
+                    <h3 class="heading-bottom-line" style="color: #73bc11;">المتابعين</h3>
+                    {% if followers|length > 0 %}
+                        {% for follower in followers %}
+                            <div class="col-xs-2 text-center">
+                                <a href="{{ path('fe_show_profile', {'slug':follower.seo.slug}) }}">
+                                    {% if follower.image != null %}
+                                        <img src="{{ asset('uploads/person/'~follower.id~'/'~follower.image.id) }}" class="img-circle" style="height: 120px" alt="{{ follower.firstName }}"/>
+                                    {% elseif follower.firstAccount.userFacebook != null %}
+                                        <img src="https://graph.facebook.com/{{ follower.firstAccount.userFacebook.facebookId }}/picture?type=large&width=201&height=201" class="img-circle" style="height: 120px" alt="{{ follower.firstName }}"/>
+                                    {% else %}    
+                                        <img src="{{ asset('bundles/fe/images/user.jpg') }}" class="img-circle" style="height: 120px" alt="{{ follower.firstName }}"/>
+                                    {% endif %}
+                                    <h3 style="margin:5px auto;">{{ follower.firstName }}</h3>
+                                    {#<h4 style="margin:5px auto;">{{ follower.recipeCount }} وصفة</h4>#}
+                                </a>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="alert alert-warning">لا يوجد متابعين حتى الأن</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block javascript %}
+    {{ parent() }}
+    <script>
+        $('.follow').click(function () {
+            $this = $(this);
+            var data_url = $(this).parent().attr('data-url');
+            $this.attr("disabled", 'disabled');
+            $.ajax({
+                type: "POST",
+                url: data_url,
+                success: function (result) {
+                    if (result == 1) {
+                        $this.empty().text('إلغاء المتابعة');
+                        $('.follow').removeAttr("disabled");
+                        $this.removeClass('btn-info');
+                        $this.addClass('btn-warning');
+                    }
+                    if (result == 0) {
+                        $this.empty().text('تابعني');
+                        $('.follow').removeAttr("disabled");
+                        $this.addClass('btn-info');
+                        $this.removeClass('btn-warning');
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

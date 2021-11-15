@@ -1,0 +1,71 @@
+{% extends 'AdminTemplateBundle::base.html.twig' %}
+{% set page_title %}Articles List{% endset %}
+{% block stylesheets %}
+    {{ parent() }}
+<link href="{{ asset('bundles/admintemplate/assets/plugins/datatable/css/bootstrap.datatable.min.css') }}" rel="stylesheet">
+{% endblock %}
+{% block body -%}
+<div class="the-box">
+    <div class="table-responsive">
+        <div class="row">
+            <div class="col-md-12">
+                <a class="btn btn-success pull-right" style="margin-bottom: 10px;" href="{{ path('article_new') }}">Create a new entry</a>
+            </div>
+        </div>
+        <table class="table table-striped table-hover" id="datatable-example">
+            <thead class="the-box dark full">
+                <tr>
+                    <th>Id</th>
+                    <th>Title</th>
+                    <th>UserId</th>
+                    <th>User</th>
+                    <th>Created</th>
+                    <th>Publish</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                    {% for entity in entities %}
+                <tr>
+                    <td>{{ entity.id }}</td>
+                    <td>{{ entity.title }}</td>
+                    <td>{% if entity.person != null %}{{ entity.person.id }}{% endif %}</td>
+                    <td>{% if entity.person != null %}{{ entity.person.firstname }} {{ entity.person.familyname }}{% endif %}</td>
+                    <td>{{ entity.created|date('d/m/Y') }}</td>
+                    <td>
+                        {% if entity.publish == true %}
+                            <div class="label label-success">Yes</div> 
+                        {% else %}
+                            <div class="label label-danger">No</div> 
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ path('article_edit', { 'id': entity.id }) }}" class="btn btn-info" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil"></i></a>
+                        <a href="{{ path('articlecomment', { 'id': entity.id }) }}" class="btn btn-warning" data-toggle="tooltip" title="Comments"><i class="fa fa-comment"></i></a>
+                        <a  href="#" onclick="javascript:del({{entity.id}})" class="btn btn-danger" data-toggle="tooltip" title="Delete"><i class="fa fa-minus"></i></a>
+                    </td>
+                </tr>
+                    {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<form hidden name="delete_form" id="delete_form" action="{{ path('article_delete') }}" method="POST"  >
+    <input type="hidden" name="id" id="entityId" />
+</form>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+<script type="text/javascript" src="{{ asset('bundles/admintemplate/assets/plugins/datatable/js/jquery.dataTables.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/admintemplate/assets/plugins/datatable/js/bootstrap.datatable.js') }}"></script>
+<script>
+    function del(id) {
+        if (confirm("Are you sure you want to delete?")) {
+            $('#entityId').val(id);
+            $('#delete_form').submit();
+        }
+    }
+</script>
+{% endblock %}

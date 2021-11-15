@@ -1,0 +1,189 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}{% trans %}تعديل بياناتى الشخصية{% endtrans %}{% endblock %}
+
+{% block stylesheet %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/fe/css/datepicker.min.css') }}"/>
+{% endblock %} 
+{% block breadcrumb %}
+    <div class="home-carousel-one carousel-second-style owl-carousel hidden-xs">
+        {{ render(controller('CMSBundle:FrontEnd/Banner:Banner' , {'placment' : 1 })) }}
+    </div>
+    <div class="page-banner" style="background: #79b22b;">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2 class="page-title"><i class="fa fa-user"></i> صفحتي</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li><a href="{{ path('fe_home') }}">الرئيسية</a></li>
+                        <li class="active">تعديل بياناتى الشخصية</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    <div class="page-wrapper user-accounts">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-main">
+                    <main id="main" class="main"> 
+                        <div class="tabs-wrapper">
+                            <ul class="tab-list clearfix">
+                                {{ render(controller('UserBundle:FrontEnd/Account:tabs')) }}
+                            </ul>
+                            <div class="tab-block" style="display: block">
+                                <div class="row user-account-wrapper">
+
+                                    <form id="register" class="register-form" action="{{ path("fe_usr_update_my_profile") }}" method="post" novalidate="novalidate" enctype="multipart/form-data">
+                                        <div class="col-md-8 forms-wrapper" style="padding-top: 30px;">
+                                            <div class="register-form-wwrapper">
+                                                <h2 class="form-heading heading-bottom-line">تعديل البيانات</h2>
+                                                <div class="clearfix">
+                                                    <p class="col-md-6 col-sm-6 col-xs-12">
+                                                        <label>الإسم<span class="requir">*</span></label>
+                                                        <input id="fName" class="required" name="firstName" value="{{user.person.firstName}}" type="text" placeholder="الإسم" data-msg-required="برجاء كتابة الإسم">
+                                                    </p>
+                                                    <p class="col-md-6 col-sm-6 col-xs-12">
+                                                        <label>اللقب</label>
+                                                        <input id="lName" name="familyname" value="{{user.person.familyname}}" type="text" placeholder="اللقب" >
+                                                    </p>
+                                                </div>
+                                                <div class="clearfix">
+                                                    <p class="col-md-6 col-sm-6 col-xs-12">
+                                                        <label>البريد الإلكتروني<span class="requir">*</span></label>
+                                                        <input id="email" class="email required" name="email" value="{{user.person.email}}" type="text" placeholder="البريد الإلكتروني" data-msg-required="برجاء كتابة بريدك الإلكتروني." data-msg-email="برجاء كتابة بريدك الإلكتروني صحيح.">
+                                                    </p>
+                                                    <p class="col-md-6 col-sm-6 col-xs-12">
+                                                        <label>موبايل</label>
+                                                        <input id="mobile" name="phone" type="number" placeholder="موبايل" value="{{ user.person.phone }}" maxlength="11" min="0">
+                                                    </p>
+                                                </div>
+                                                <div class="clearfix">
+                                                    <p class="col-md-6 col-sm-6 col-xs-12">
+                                                        <label>تاريخ الميلاد</label>
+                                                        <input id="datepicker" name="birthdate" value="{{ user.person.birthdate|date('Y-m-d') }}" type="text" placeholder="تاريخ الميلاد" data-msg-required="برجاء كتابة تاريخ الميلاد.">
+                                                    </p>
+                                                    <p class="col-md-6 col-sm-6  col-xs-12" style="margin-top: 38px;">
+                                                        <a href="{{ path('fe_pre_change_password')}}" class="requir">تغيير كلمة السر</a>
+                                                    </p>
+                                                </div>
+                                                <div class="clearfix col-md-12 col-sm-12 col-xs-12">
+                                                    <input type="submit" class="submit-btn" name="submit" value="تعديل البيانات">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <figure class="img-wrapper">
+                                                <figure id="img-wrapper">
+                                                    {% if user.person.image != null %}
+                                                        <img src="{{ asset('uploads/person/'~user.person.id~'/'~user.person.image.id) }}" alt="{{user.person.firstName}}"/>
+                                                    {% elseif user.userFacebook != null %}
+                                                        <img src="https://graph.facebook.com/{{ user.userFacebook.facebookId }}/picture?type=large&width=201&height=201" alt="{{user.person.firstName}}"/>
+                                                    {% else %}
+                                                        <img src="{{ asset('bundles/fe/images/user-2.jpg') }}" alt="{{user.person.firstName}}"/>
+                                                    {% endif %}
+                                                </figure>
+                                                {#{% if user.userFacebook == null %}#}
+                                                <div class="controllers">
+                                                    {{ form_row(form._token) }}
+                                                    <div class="col-md-6 col-sm-6 col-xs-6 edit">
+                                                        <a href="javascript:;" id="get_image"><i class="fa fa-edit"></i> تغيير</a>
+                                                        <input type="file" id="my_image" accept="image/*" name="file" style="display: none;">
+                                                    </div>
+                                                    <div class="col-md-6 col-sm-6 col-xs-6 remove">
+                                                        <a href="javascript:;" onclick="javascript:del();"><i class="fa fa-remove"></i> مسح</a>
+                                                    </div>
+                                                </div>
+                                                {#{% endif %}#}
+                                            </figure>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                    <!-- .main -->
+                </div>
+                <!-- .col-main -->
+            </div>
+            <!-- .row -->
+        </div>
+        <!-- .container -->
+    </div>
+    <form hidden name="delete_form" id="delete_form" action="{{ path('personimages_my_profile_delete') }}" method="POST"  >
+    </form>
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script src="{{ asset('bundles/fe/js/jquery-ui/jquery-ui.min.js') }}"></script>
+    <script src="{{ asset('bundles/fe/js/plupload.full.min.js') }}"></script>
+    <script src="{{ asset('bundles/fe/js/jquery.ui.plupload/jquery.ui.plupload.min.js') }}"></script>
+    <script src="{{ asset('bundles/fe/js/plupload.js') }}"></script>
+    <script src="{{ asset('bundles/fe/js/contact.js') }}"></script>
+    <script src="{{ asset('bundles/fe/js/bootstrap-datepicker.js') }}"></script>
+    <script>
+        function del(id) {
+            if (confirm("هل أنت متأكد أنك تريد  الحذف؟")) {
+                $('#delete_form').submit();
+            }
+        }
+        $(document).ready(function () {
+            $(function () {
+                $('#datepicker').datepicker();
+            });
+            $('.controllers .remove').click(function () {
+                var placeholder = '<img src="{{ asset('bundles/fe/images/chef.jpg') }}" alt"userName"/>';
+                $('#img-wrapper').empty().append(placeholder);
+                $(this).hide();
+                $('.edit').removeClass('col-md-6 col-sm-6 col-xs-6').addClass('col-md-12 col-sm-12 col-xs-12');
+            });
+            document.getElementById('get_image').onclick = function () {
+                document.getElementById('my_image').click();
+            };
+            $("#my_image").on('change', function () {
+
+                var countFiles = $(this)[0].files.length;
+
+                var imgPath = $(this)[0].value;
+                var extn = imgPath.substring(imgPath.lastIndexOf('.') + 1).toLowerCase();
+                var image_holder = $("#img-wrapper");
+                image_holder.empty();
+
+                if (extn == "gif" || extn == "png" || extn == "jpg" || extn == "jpeg") {
+                    if (typeof (FileReader) != "undefined") {
+
+                        //loop for each file selected for uploaded.
+                        for (var i = 0; i < countFiles; i++) {
+
+                            var reader = new FileReader();
+                            reader.onload = function (e) {
+                                $("<img />", {
+                                    "src": e.target.result
+                                }).appendTo(image_holder);
+                                $('.controllers .remove').show();
+                                $('.edit').removeClass('col-md-12 col-sm-12 col-xs-12').addClass('col-md-6 col-sm-6 col-xs-6');
+                            }
+                            reader.readAsDataURL($(this)[0].files[i]);
+                        }
+
+                    } else {
+                        alert("This browser does not support FileReader.");
+                    }
+                } else {
+                    alert("Pls select only images");
+                }
+            });
+        });
+    </script>
+{% endblock %} 

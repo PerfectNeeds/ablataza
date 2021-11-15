@@ -1,0 +1,104 @@
+user_admin:
+  resource: "@UserBundle/Controller/Administration/"
+  type:    annotation
+  prefix: /admin/user
+
+dashboard:
+    pattern:   admin/
+    defaults:  { _controller: CMSBundle:Administration/Dashboard:Dashboard }
+
+cms_admin:
+  resource: "@CMSBundle/Controller/Administration/"
+  type:    annotation
+  prefix: /admin
+
+cms_local:
+  resource: "@CMSBundle/Controller/FrontEnd/"
+  type:    annotation
+  prefix: /
+
+user:
+  resource: "@UserBundle/Controller/FrontEnd/"
+  prefix:   /user
+  type:     annotation
+
+fe_user_new:
+    pattern:   /sign-up
+    defaults:  { _controller: UserBundle:FrontEnd/Account:new }
+
+login:
+    pattern:   /login
+    defaults:  { _controller: UserBundle:FrontEnd/Account:login }
+    
+download:
+    pattern:   /download
+    defaults:  { _controller: ServiceBundle:Download:Download }
+    
+login_check:
+    pattern:   /login_check
+
+logout:
+    pattern:   /logout
+    
+fe_email_verify:
+    pattern:   /verify-email/{code}
+    defaults:  { _controller: UserBundle:FrontEnd/Account:emailVerify }
+
+fe_menu_planner_show:
+    pattern:   /menu-planner/{slug}/{page}/{sort}
+    defaults:  { _controller: UserBundle:FrontEnd/MenuPlanner:show, page : 1, sort : 1 }
+    methods:  [GET]
+    requirements:
+        page:  \d+
+        sort:  \d+
+
+fe_menu_planner_show_abla_tazza:
+    pattern:   /menu-planner/abla-tazza/{slug}/{page}
+    defaults:  { _controller: UserBundle:FrontEnd/MenuPlanner:showAblaTazza, page : 1 }
+    methods:  [GET]
+    requirements:
+        page:  \d+
+
+fe_menu_planner_send_mail:
+    pattern:   /menu-planner/send-mail/{slug}
+    defaults:  { _controller: UserBundle:FrontEnd/MenuPlanner:sendMail, page : 1, sort : 1 }
+    methods:  [POST]
+
+fe_show_profile:
+    pattern:   /profile/{slug}
+    defaults:  { _controller: UserBundle:FrontEnd/Account:viewProfile }
+    
+fe_show_profile_recipe:
+    pattern:   /profile/{slug}/recipe/{page}
+    defaults:  { _controller: UserBundle:FrontEnd/Recipe:viewProfileRecipe, page : 1 }
+    requirements:
+        page:  \d+
+        sort:  \d+
+    
+fe_show_profile_article:
+    pattern:   /profile/{slug}/article/{page}
+    defaults:  { _controller: UserBundle:FrontEnd/Article:viewProfileArticle, page : 1 }
+    requirements:
+        page:  \d+
+    
+fe_show_follower:
+    pattern:   /follower/{slug}/
+    defaults:  { _controller: UserBundle:FrontEnd/Account:viewFollower }
+    
+fe_show_profile_tip:
+    pattern:   /profile/{slug}/tip/{page}
+    defaults:  { _controller: UserBundle:FrontEnd/Tip:viewProfileTip, page : 1 }
+    
+fe_show_profile_menu_planner:
+    pattern:   /profile/{slug}/menu-planner/{page}
+    defaults:  { _controller: UserBundle:FrontEnd/MenuPlanner:viewProfileMenuPlanner, page : 1 }
+
+fe_pre_forgot_password:
+    pattern:   /forgot-password
+    methods:  [GET]
+    defaults:  { _controller: UserBundle:FrontEnd/Account:preForgotPassword }
+
+fe_forgot_password:
+    pattern:   /forgot-password
+    methods:  [POST]
+    defaults:  { _controller: UserBundle:FrontEnd/Account:forgot }

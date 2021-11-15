@@ -1,0 +1,101 @@
+{% extends 'AdminTemplateBundle::base.html.twig' %}
+{% set page_title %}Users List{% endset %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/admintemplate/assets/plugins/datatable/css/bootstrap.datatable.min.css') }}" rel="stylesheet">
+{% endblock %}
+{% block body -%}
+    {% if errors is defined %}
+        <div class="alert alert-danger alert-block fade in alert-dismissable">
+            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+            <strong>Oh snap!</strong> {{ errors }}
+        </div>
+
+    {% endif %}
+    <div class="the-box">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover" id="datatable-example">
+                <thead class="the-box dark full">
+                    <tr>
+                        <th>Id</th>
+                        <th>Full Name</th>
+                        <th>Email</th>
+                        <th>Email Verify</th>
+                        <th>State</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entity in entities %}
+                        <tr>
+                            <td>{{ entity.id }}</td>
+                            <td>{{ entity.firstName ~ ' ' ~ entity.familyname }}</td>
+                            <td>{{ entity.email }}</td>
+                            <td>
+                                {% if  entity.firstAccount %}
+                                    {% if entity.firstAccount.state == 1 %}
+                                        <span style="color:green">Verified</span>
+                                    {% elseif entity.firstAccount.state == 0 %}
+                                        <span style="color:red"> Not Verified</span>
+                                    {% else %}
+                                        <span style="color:red"> Not Verified</span>
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if  entity.firstAccount %}
+                                    {% if entity.firstAccount.emailVerify == 1 %}
+                                        <span style="color:green">Activited</span>
+                                    {% elseif entity.firstAccount.emailVerify == 0 %}
+                                        <span style="color:red">Not Activied </span>
+                                    {% else %}
+                                        <span style="color:red">Blocked</span>
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ path('person_edit', { 'id': entity.id }) }}" class="btn btn-info" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil"></i></a>
+                                    {% if  entity.firstAccount %}
+                                        {% if  entity.firstAccount.state != 0  %}
+                                        <a href="javascript:block({{entity.firstAccount.id}})" class="btn btn-danger" id="block_link">Block</a>
+                                    {% else %}
+                                        <a href="javascript:active({{entity.firstAccount.id}})" class="btn btn-primary"  id="block_link">Active</a>
+                                    {%endif%}
+                                {%endif%}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <form hidden name="block_form" id="block_form" action="{{ path('user_block') }}" method="POST"  >
+        <input type="hidden" name="id" id="entityId" />
+    </form>
+    <form hidden name="active_form" id="active_form" action="{{ path('user_active') }}" method="POST"  >
+        <input type="hidden" name="id" id="userId" />
+    </form>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('bundles/admintemplate/assets/plugins/datatable/js/jquery.dataTables.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/admintemplate/assets/plugins/datatable/js/bootstrap.datatable.js') }}"></script>
+    <script>
+        function block(id) {
+            if (confirm("Are you sure you want to block this user ?"))
+            {
+                $('#entityId').val(id);
+                $('#block_form').submit();
+            }
+        }
+        function active(id) {
+            if (confirm("Are you sure you want to active ?"))
+            {
+                $('#userId').val(id);
+                $('#active_form').submit();
+            }
+        }
+    </script>
+{% endblock %}

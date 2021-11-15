@@ -1,0 +1,386 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}{{ entity.title }}{% endblock %}
+{% block metaTag %}
+    {% if entity.post.getMainImage %}        
+        <meta property="og:image" content="{{ app.request.scheme ~ "://" ~ app.request.host ~ asset("uploads/article/image/" ~ entity.post.id ~ "/"  ~ entity.post.mainImage.id) }}" />
+    {% endif %}
+    {% if entity.title|length > 1 %}
+        <meta property="og:title" content="{{ entity.title|replace({"\n":' ', "\r":' '})|slice(0, 180) }}" />
+    {% endif %}
+    {% if entity.post.content.description is defined and entity.post.content.description|striptags|replace({"\n":' ', "\r":' '})|length > 1 %}
+        <meta property="og:description" content="{{ entity.post.content.description|striptags|replace({"\n":' ', "\r":' '})|slice(0, 180) }}" />
+    {% endif %}
+    {{ entity.seo.metaTag|raw }}
+{% endblock %}
+
+    {% if currentTab.id == 2 %}
+        {% set headerColor = 'ffc81b' %}
+        {% set icon = 'fa fa-home' %}
+        {% set bgColor = '255, 200, 27' %}
+    {% elseif currentTab.id == 3 %}
+        {% set headerColor = '658e15' %}
+        {% set icon = 'icon-premother' %}
+        {% set bgColor = '101, 142, 21' %}
+    {% elseif currentTab.id == 4 %}
+        {% set headerColor = '2fa8c7' %}
+        {% set icon = 'icon-mother' %}
+        {% set bgColor = '47, 168, 199' %}
+    {% elseif currentTab.id == 5 %}
+        {% set headerColor = '555555' %}
+        {% set icon = 'icon-life' %}
+        {% set bgColor = '85, 85, 85' %}
+    {% elseif currentTab.id == 6 %}
+        {% set headerColor = '536c9f' %}
+        {% set icon = 'fa fa-heartbeat' %}
+        {% set bgColor = '83, 108, 159' %}
+    {% endif %}
+    {% block breadcrumb %}
+    <div class="page-banner" style="background: #{{ headerColor }};">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2 class="page-title"><i class="icon-mother"></i> {{ entity.title }} </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li><a href="{{ path('fe_home') }}">الرئيسية</a></li>
+                        <li><a href="{{ path('fe_article', {'slug':currentTab.seo.slug}) }}">{{ currentTab.name }}</a></li>
+                        <li class="active">{{ entity.title }} </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+{% block content %}
+    <div id="page-layer-styled" class="page-wrapper submit-recipe">
+        <div id="left-layer"></div>
+        <div class="container">
+            <div class="row">
+                {% for flashMessage in app.session.flashbag.get('commentError') %}
+                    <div role="alert" class="alert alert-danger">{{ flashMessage }}</div>
+                {% endfor %}
+                {% for flashMessage in app.session.flashbag.get('commentSuccessArticle') %}
+                    <div role="alert" class="alert alert-success">شكرا تعليقك وصل لأبلة طازة وهتنزله لحبايبها بعد مراجعته</div>
+                {% endfor %}
+                <div class="col-md-8 col-main">
+                    <main id="main" class="main">
+                        <article class="blog-article hentry clearfix" id="{{ entity.id }}">
+                            {% if entity.youtubeUrl != null %}
+                            <iframe width="100%" height="315" src="{{ entity.youtubeUrl|replace({'watch?v=':'embed/'}) }}" frameborder="0" allowfullscreen></iframe>
+                            {% elseif entity.post.images|length > 0 %}
+                            <div class="recipe-slider-wrapper" dir="ltr">
+                                <div class="single-recipe-carousel">
+                                    {% for image in entity.post.getImages %}
+                                        <div class="slide">
+                                            <a href="javascript:;">
+                                                <img class="img-responsive" src="{{ asset("uploads/article/image/" ~ entity.post.id ~ "/"  ~ image.id) }}" alt="{{ entity.title }}">
+                                            </a>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            
+                            
+                            
+                            {#<figure class="post-thumbnail thumbnail-hover">
+                                {% if entity.youtubeUrl != null %}
+                                <iframe width="100%" height="315" src="{{ entity.youtubeUrl|replace({'watch?v=':'embed/'}) }}" frameborder="0" allowfullscreen></iframe>
+                                {% elseif entity.post.mainImage %}
+                                    {% set mainImage = asset("uploads/article/image/" ~ entity.post.id ~ "/"  ~ entity.post.mainImage.id)  %}
+                                {% else %}
+                                    {% set mainImage = asset('bundles/fe/images/2.jpg') %}
+                                {% endif %}
+                                {% if entity.youtubeUrl == null %}
+                                <img class="img-responsive" src="{{ mainImage}}" alt="{{ entity.title }}" style="width:780px;height:334px;"> 
+                                <a class="swipebox view-thumbnail" href="{{ mainImage }}" style="background-color:rgba({{ bgColor }}, 0.75);">
+                                    <i class="fa fa-eye thumbnail-view-icon"></i>
+                                </a>
+                                {% endif %}
+                            </figure>#}
+                            <header class="entry-header clearfix">
+                                <div class="entry-meta post-meta pull-right" style="position: relative;">
+                                    <div class="share-icons">
+                                        <div class="social-media-icons">
+                                            <a class="facebook" target="_blank" href="http://www.facebook.com/sharer/sharer.php?u={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_article', {'slug':entity.seo.slug}) }}" title="Share on Facebook"><i class="fa fa-facebook fa-lg"></i></a>
+                                            <a class="twitter" target="_blank" href="http://twitter.com/share?text={{ entity.title }}&url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_article', {'slug':entity.seo.slug}) }}"><i class="fa fa-twitter fa-lg"></i></a>
+                                            <a class="linkedin" target="_blank" href="https://www.pinterest.com/pin/create/button/?url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_article', {'slug':entity.seo.slug}) }}&description={{ entity.title }}"><i class="fa fa-pinterest fa-lg"></i></a>
+                                            <a class="gplus" target="_blank" href="https://plus.google.com/share?url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_article', {'slug':entity.seo.slug}) }}"><i class="fa fa-google-plus fa-lg"></i></a>
+                                            <a class="mail" target="_blank" href="mailto:?subject={{ entity.title }}&body={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_article', {'slug':entity.seo.slug}) }}"><i class="fa fa-envelope fa-lg"></i></a>
+                                            <span class="close-share-icons close"><i class="fa fa-close fa-lg"></i></span>
+                                        </div>
+                                    </div>
+                                    <span class="share-this"><a href="javascript:;" class="read-more pull-left"><i class="fa fa-share-alt lina"></i> مشاركة</a></span>
+                                    <span><a href="javascript:window.print()" class="read-more pull-left page-print hidden-sm hidden-xs"><i class="fa fa-print lina"></i> طباعة</a></span>
+                                    {% if app.user is not null %}
+                                        <span><a href="javascript:;" class="read-more pull-left fav {% if entity.isArticleFavByUserId(app.user.person.id) == true %}active{% endif %}"><i class="fa fa-heart"></i> تفضيل</a></span>
+                                    {% endif %}
+                                    <span class="published-date"><i class="fa fa-clock-o lina"></i> <time class="entry-date published">{{ entity.created|date('d/m/Y') }}</time></span>
+                                    <span class="author"><i class="fa fa-user lina"></i> بواسطة  <a href="{{ path('fe_show_profile', {'slug':entity.person.seo.slug}) }}">{{ entity.person.firstName ~ ' ' ~ entity.person.familyname }} </a></span> 
+                                    <div data-rating="{{ entity.generalRationg }}" class="rating artic">
+                                        <i class="fa fa-star-o one"></i> 
+                                        <i class="fa fa-star-o two"></i> 
+                                        <i class="fa fa-star-o three"></i> 
+                                        <i class="fa fa-star-o four"></i>
+                                        <i class="fa fa-star-o five"></i>
+                                    </div>
+                                </div>
+                            </header>
+                            <div class="entry-content clearfix">
+                                {{ entity.post.content.description|raw }}                            
+                            </div>
+                            <a href="{{ path('fe_article', {'sc':currentTab.id}) }}" class="btn btn-danger pull-left">رجوع <i class="fa fa-arrow-circle-left"></i></a>
+                        </article>
+                        {% for flashMessage in app.session.flashbag.get('commentError') %}
+                            <div role="alert" class="alert alert-danger">{{ flashMessage }}</div>
+                        {% endfor %}
+                        {% for flashMessage in app.session.flashbag.get('commentSuccess') %}
+                            <div role="alert" class="alert alert-success">شكرا تعليقك وصل لأبلة طازة وهتنزله لحبايبها بعد مراجعته</div>
+                        {% endfor %}
+                        <div class="about-author">
+                            <div class="top-wrapper clearfix">
+                                <div>
+                                    <h3 class="post-author">رأيك أولوية لينا </h3>
+                                    <p class="pull-right">قوللنا رأيك فيها أو التغيير اللى تحبى تعمليه</p>
+                                    <a href="javascript:;" class="btn btn-success pull-left add-comment">ضيفى تعليق على المقال</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="comments" style="display: none;">
+                            <div class="comment-respond" id="respond">
+                                <form id="register" class="register-form" method="post" action="{{ path('fe_articlecomment_create', {'slug': entity.seo.slug}) }}">
+                                    <div class="col-md-12">
+                                        <h3 class="comment-reply-title pull-right" id="reply-title">ضيفى تعليق على الوصفة</h3>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="comment-form-author">
+                                            {% if app.user %}
+                                                <input type="text" aria-required="true" value="{{ app.user.person.firstName~ ' '~ app.user.person.familyname }}" name="name" id="author" placeholder="الإسم" data-msg-required="برجاء كتابة الإسم">
+                                            {% else %}
+                                                <input type="text" aria-required="true" value="" name="name" id="author" placeholder="الإسم" data-msg-required="برجاء كتابة الإسم">
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div data-rating="0" class="rating pull-right" style="margin:6px 0px 0 0;font-size: 18px;cursor: pointer;">
+                                            <i class="fa fa-star-o one"></i>
+                                            <i class="fa fa-star-o two"></i>
+                                            <i class="fa fa-star-o three"></i> 
+                                            <i class="fa fa-star-o four"></i> 
+                                            <i class="fa fa-star-o five"></i>
+                                        </div>
+                                        <input id="rating" name="rating" type="hidden" class="required" >
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p class="comment-form-comment">
+                                            <textarea data-rule-required="true" aria-required="true" name="comment" id="comment" class="required" placeholder=" أكتبى تعليق ..." data-msg-required="برجاء كتابة تعليقك"></textarea>
+                                        </p>
+                                    </div>
+                                    <p class="form-submit col-md-12">
+                                        <input type="submit" value="إرسال" id="submit" name="submit">
+                                    </p>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="about-author">
+                            <div class="top-wrapper clearfix">
+                                <div>
+                                    <h2 id="comments-title">التعليقات ({{ comments|length }})</h2>
+                                    <ol class="commentlist">
+                                        {% for comment in comments %}
+                                            <li class="comment odd depth-1">
+                                                <article class="comment-body">
+                                                    <div class="comment-wrapper">
+                                                        <div class="comment-author vcard">
+                                                            <h5 class="fn">{{ comment.name }}</h5>
+                                                            {% if comment.rating != null %}
+                                                                <div data-rating="{{ comment.rating }}" class="rating">
+                                                                    <i class="fa fa-star-o one"></i> 
+                                                                    <i class="fa fa-star-o two"></i> 
+                                                                    <i class="fa fa-star-o three"></i> 
+                                                                    <i class="fa fa-star-o four"></i> 
+                                                                    <i class="fa fa-star-o five"></i>
+                                                                </div>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="comment-content">
+                                                            <p style="margin-bottom: 0px;">{{ comment.comment|nl2br }}</p>
+                                                        </div>
+                                                        <div class="comment-meta pull-left"  style="display: block">
+                                                            <div class="comment-meta">
+                                                                <time><i class="fa fa-clock-o"></i> {{ comment.created|date('d/m/Y') }}</time>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </article>
+                                            </li>
+                                        {% endfor %}
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                    <!-- .main -->
+                </div>
+                <!-- .col-main -->
+                <div class="col-md-4 col-sidebar">
+                    <aside id="sidebar" class="sidebar">
+                        <section class="widget">
+                            <a href="{{ path('fe_add_article') }}" class="ads" style="margin-top: 0px;"><img src="{{ asset('bundles/fe/images/article.jpg') }}" alt="add"/></a>
+                            <img height="auto" alt="" style="margin:10px auto 0" src="//lh3.ggpht.com/H8LE7fE6SRPpyBIs3CpNLn_4LBxZjmHbCos9CCeyDmUEGGI05vBM1QoQLcvDMp8sp70EI5Pk=w250">    
+                            <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+                            <!-- recipe and articles details page -->
+
+                            <ins class="adsbygoogle"
+
+                                 style="display:inline-block;width:320px;height:100px"
+
+                                 data-ad-client="ca-pub-4026762125058832"
+
+                                 data-ad-slot="6173535505"></ins>
+
+                            <script>
+
+                            (adsbygoogle = window.adsbygoogle || []).push({});
+
+                            </script>
+                        </section>
+                        <section class="widget widget_recent_entries">
+                            <h3 class="widget-title heading-bottom-line">مقالات متعلقة</h3>
+                            <ul>
+                                {% for similar in similars %}
+                                    {% if similar.post.mainImage %}
+                                        {% set mainImage = asset("uploads/article/image/" ~ similar.post.id ~ "/"  ~ similar.post.mainImage.id)  %}
+                                    {% else %}
+                                        {% set mainImage = asset('bundles/fe/images/placeholders/related-placeholder.jpg') %}
+                                    {% endif %}
+                                    <!-- Start loop -->
+                                    <li>
+                                        <a class="post-thumb" href="{{ path('fe_show_article', {'slug':similar.seo.slug}) }}"><img src="{{ mainImage }}" alt="{{ similar.title }}" style="width: 120px;height: 92px;"/></a>
+                                        <h5><a href="{{ path('fe_show_article', {'slug':similar.seo.slug}) }}">{{ similar.title }}</a></h5>
+                                        <p>
+                                            {% if similar.post.content.description|length > 63 %}
+                                                {% if similar.post.content.description is defined %}{{ similar.post.content.description|striptags|slice(0, 63) }}...{% endif %}
+                                            {% else %}
+                                                {% if similar.post.content.description is defined %}{{ similar.post.content.description|striptags }}{% endif %}
+                                            {% endif %}
+                                        </p>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </section>
+                    </aside>
+                    <!-- .sidebar -->
+                </div>
+                <!-- .col-sidebar -->
+            </div>
+            <!-- .row -->
+        </div>
+        <!-- .container -->
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+    {#<script src="{{ asset('bundles/fe/js/contact.js') }}"></script>#}
+    <script type="text/javascript">
+        $(document).delegate('*[data-toggle="lightbox"]:not([data-gallery="navigateTo"])', 'click', function (event) {
+                event.preventDefault();
+                return $(this).ekkoLightbox({
+                    onShown: function () {
+                        if (window.console) {
+                            return console.log('onShown event fired');
+                        }
+                    },
+                    onContentLoaded: function () {
+                        if (window.console) {
+                            return console.log('onContentLoaded event fired');
+                        }
+                    },
+                    onNavigate: function (direction, itemIndex) {
+                        if (window.console) {
+                            return console.log('Navigating ' + direction + '. Current item: ' + itemIndex);
+                        }
+                    }
+                });
+            });
+
+            $('#open-image').click(function (e) {
+                e.preventDefault();
+                $(this).ekkoLightbox();
+            });
+            $('#open-youtube').click(function (e) {
+                e.preventDefault();
+                $(this).ekkoLightbox();
+            });
+
+            $(document).delegate('*[data-gallery="navigateTo"]', 'click', function (event) {
+                event.preventDefault();
+                return $(this).ekkoLightbox({
+                    onShown: function () {
+                        var lb = this;
+                        $(lb.modal_content).on('click', '.modal-footer a#jumpit', function (e) {
+                            e.preventDefault();
+                            lb.navigateTo(2);
+                        });
+                        $(lb.modal_content).on('click', '.modal-footer a#closeit', function (e) {
+                            e.preventDefault();
+                            lb.close();
+                        });
+                    }
+                });
+            });
+            $('.add-comment').click(function () {
+                $('#comments').stop().slideToggle();
+            });
+            $('#register .rating i').click(function () {
+                $(this).addClass('fa-star');
+                $(this).prevAll('i').addClass('fa-star');
+                $(this).nextAll('i').removeClass('fa-star');
+                var stars = $('.fa-star').length;
+                $('#register .rating').attr("data-rating", stars);
+                $('#rating').val(stars);
+                $('#rate-error').hide();
+            });
+        });
+                                $(document).ready(function () {
+                                    $('.add-comment').click(function () {
+                                        $('#comments').stop().slideToggle();
+                                    });
+                                    $('#register .rating i').click(function () {
+                                        $(this).addClass('fa-star');
+                                        $(this).prevAll('i').addClass('fa-star');
+                                        $(this).nextAll('i').removeClass('fa-star');
+                                        var stars = $('.fa-star').length;
+                                        $('#register .rating').attr("data-rating", stars);
+                                        $('#rating').val(stars);
+                                    });
+                                    $('.fav').click(function () {
+                                        var article_id = $(this).parent().parent().parent().parent().attr("id");
+                                        $this = $(this);
+                                        $.ajax({
+                                            type: "POST",
+                                            url: "{{ path('fe_article_favorite_ajax') }}",
+                                            data: {'id': article_id},
+                                            success: function (result) {
+                                                if (result == 1) {
+                                                    $this.addClass('active');
+                                                }
+                                                if (result == 0) {
+                                                    $this.removeClass('active');
+                                                }
+                                            }
+                                        });
+                                    });
+                                });
+    </script>
+{% endblock %}

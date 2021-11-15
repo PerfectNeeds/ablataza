@@ -1,0 +1,179 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}{{ person.seo.title }}{% endblock %}
+{% block breadcrumb %}
+<div class="home-carousel-one carousel-second-style owl-carousel">
+        {{ render(controller('CMSBundle:FrontEnd/Banner:Banner' , {'placment' : 1 })) }}
+</div>
+<div class="page-banner" style="background: #ffc81b;">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <h2 class="page-title pull-right"><i class="fa fa-user"></i> {{ person.seo.title }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <ol class="breadcrumb">
+                    <li><a href="{{ path('fe_home') }}">الرئيسية</a></li>
+                    <li><a href="{{ path('fe_show_profile', {'slug':person.seo.slug}) }}">{{ person.seo.title }}</a></li>
+                    <li>النصائح</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+<section class="user-profile">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5 col-xs-12">
+                <div class="current-user">
+                    <figure class="user-photo thumbnail-hover">
+                        {% if person.image != null %}
+                            <img src="{{ asset('uploads/person/'~person.id~'/'~person.image.id) }}" alt="{{ person.firstName }}"/>
+                        {% elseif person.firstAccount.userFacebook != null %}
+                            <img src="https://graph.facebook.com/{{ person.firstAccount.userFacebook.facebookId }}/picture?type=large&width=201&height=201"  alt="{{ person.firstName }}"/>
+                        {% else %}    
+                            <img src="{{ asset('bundles/fe/images/user-2.jpg') }}" alt="{{ person.firstName }}"/>
+                        {% endif %}
+                    </figure>
+                    <div class="user-details" style="margin-bottom:10px;">
+                        <h2 class="user-name">{{ person.firstName ~ ' ' ~ person.familyName }}</h2>
+                        <p>البريد الإلكترونى :<br/> {{ person.email }}</p>
+                        {% if app.user != null and app.user.person.id != person.id %}
+                            {% if app.user.person.isFollower(person.id) == false %}
+                                <a class="btn btn-info btn-block" href="#" style="margin: 0 auto!important;width: 100px">تابعنى</a>
+                            {% else %}
+                                <a href="#" class="btn btn-warning btn-block" style="margin: 0 auto!important;width: 100px">إلغاء المتابعة</a>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-7 col-xs-12 recipe-request-form-column">
+                <h3 class="form-heading text-center">المتابعين</h3>
+                {% if followers|length > 0 %}
+                    {% for follower in followers %}
+                        <div class="col-xs-3 hidden-xs">
+                            <a href="{{ path('fe_show_profile', {'slug':follower.seo.slug}) }}">
+                                {% if follower.image != null %}
+                                    <img src="{{ asset('uploads/person/'~follower.id~'/'~follower.image.id) }}" class="img-circle" style="height: 120px" alt="{{ follower.firstName }}"/>
+                                {% elseif follower.firstAccount.userFacebook != null %}
+                                    <img src="https://graph.facebook.com/{{ follower.firstAccount.userFacebook.facebookId }}/picture?type=large&width=201&height=201" class="img-circle" style="height: 120px" alt="{{ follower.firstName }}"/>
+                                {% else %}    
+                                    <img src="{{ asset('bundles/fe/images/user.jpg') }}" class="img-circle" style="height: 120px" alt="{{ follower.firstName }}"/>
+                                {% endif %}
+                            </a>
+                        </div>
+                    {% endfor %}
+                    {% if followers|length > 4 %}
+                    <div class="col-md-12 text-center">
+                        <a href="{{ path('fe_show_follower', {'slug':person.seo.slug}) }}">المزيد</a>
+                    </div>
+                    {% endif %}
+                {% else %}
+                <div class="alert alert-warning">لا يوجد متابعين حتى الأن</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <!-- .container -->
+</section>
+<!-- .user-profile -->
+<div class="page-wrapper user-accounts">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-main">
+                <main id="main" class="main">
+
+                    <div class="tabs-wrapper">
+                        <ul class="tab-list clearfix">
+                            <li class="btn-danger"><a href="{{ path('fe_show_profile_recipe',{'slug':person.seo.slug}) }}">الوصفات</a> </li>
+                            <li class="btn-warning"><a href="{{ path('fe_show_profile_article',{'slug':person.seo.slug}) }}">المقالات</a> </li>
+                            <li class="active btn-success"><a href="{{ path('fe_show_profile_tip',{'slug':person.seo.slug}) }}">النصائح</a> </li>
+                            <li class="btn-primary"><a href="{{ path('fe_show_profile_menu_planner',{'slug':person.seo.slug}) }}">صندوق الوصفات</a> </li>
+                        </ul>
+                        <div class="tabs-contents">
+                            <div class="tab-block" style="display: block">
+                                <div class="row user-account-wrapper">
+                                    {% if tips|length > 0 %}
+                                    {% for tip in tips %}
+                                    <div class="col-md-6 col-sm-12 col-xs-12">
+                                        <div class="talkbubble col-md-8 col-sm-8 col-xs-8">
+                                            <h3 class="widget-title heading-bottom-line">حبايبنا بيقولوا</h3>
+                                            <p style="margin: 0px; height: 93px;">{{ tip.tip|slice(0, 193) }}</p> 
+                                            {% if tip.superCategory.id == 1 %}
+                                                {% set tipLink = path('fe_recipe') %}
+                                            {% else %}
+                                                {% set tipLink = path('fe_article', {'sc':tip.superCategory.id}) %}
+                                            {% endif %}
+                                            <a class="read-more" href="{{ tipLink }}">للمزيد من المعلومات</a>
+                                        </div>
+                                        <div class="col-md-3 col-sm-3 col-xs-4">
+                                            <figure class="img-circle" style="width: 120px;height:120px;overflow:hidden;margin-right:20px;">
+                                                <a href="{{ path('fe_show_profile', {'slug':tip.person.seo.slug}) }}">
+                                                {% if tip.person.image != null %}
+                                                    <img src="{{ asset('uploads/person/'~tip.person.id~'/'~tip.person.image.id) }}" style="width: 100%;" alt="{{tip.person.firstName}}"/>
+                                                {% elseif tip.person.firstAccount.userFacebook != null %}
+                                                    <img src="https://graph.facebook.com/{{ tip.person.firstAccount.userFacebook.facebookId }}/picture?type=large&width=201&height=201" style="width: 100%;" alt="{{tip.person.firstName}}"/>
+                                                {% else %}
+                                                    <img src="{{ asset('bundles/fe/images/user-2.jpg') }}" style="width: 100%;" alt="{{tip.person.firstName}}"/>
+                                                {% endif %}
+                                                </a>
+                                            </figure>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                    {% else %}
+                                        <div class="alert alert-warning">لا توجد نصائح الأن</div>
+                                    {% endif %}
+                                </div>
+                                {{ include('CMSBundle:FrontEnd/HomePage:Pagination.html.twig', {'paginator':paginator}) }}
+                            </div>
+                        </div>
+                    </div>
+                </main>
+                <!-- .main -->
+            </div>
+            <!-- .col-main -->
+        </div>
+        <!-- .row -->
+    </div>
+    <!-- .container -->
+</div>
+{% endblock %}
+{% block javascript %}
+    {{ parent() }}
+<script>
+    $('.follow').click(function () {
+        $this = $(this);
+        $this.attr("disabled", 'disabled');
+        $.ajax({
+            type: "POST",
+            url: "{{ path('fe_follow_user', {'slug':person.seo.slug}) }}",
+            success: function (result) {
+                if (result == 1) {
+                    $this.empty().text('إلغاء المتابعة');
+                    $('.follow').removeAttr("disabled");
+                    $this.removeClass('btn-info');
+                    $this.addClass('btn-warning');
+                }
+                if (result == 0) {
+                    $this.empty().text('تابعني');
+                    $('.follow').removeAttr("disabled");
+                    $this.addClass('btn-info');
+                    $this.removeClass('btn-warning');
+                }
+            }
+        });
+    });
+    jQuery(function($) {
+        $(".swipebox-video").swipebox();
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,4 @@
+services:
+    user:
+        class:        MD\Bundle\UserBundle\Service\UserService
+        arguments:    [@doctrine.orm.default_entity_manager,@router, @service_container,@security.context]

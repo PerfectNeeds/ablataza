@@ -1,0 +1,66 @@
+<aside class="col-lg-3 col-md-3 col-sm-12 m_bottom_30">
+    {{ render(controller('CMSBundle:FrontEnd/Banner:showOneBanner' , {'placment' : 4 })) }}
+    <!--Bestsellers-->
+    <figure class="widget animate_ftr shadow r_corners wrapper m_bottom_30 spacing">
+        <figcaption>
+            <h3 class="color_light">{% trans %}Deal of the day{% endtrans %}</h3>
+        </figcaption>
+        <div class="widget_content" style="overflow: hidden;">
+            {% for bestSelling in bestSellings %}
+                <div class="clearfix m_bottom_15 col-md-12 col-sm-6 col-xs-12">
+                    <a href="{{ path('fe_product', {'slug':bestSelling.seo.slug}) }}" >
+                        {% if bestSelling.post.mainImage %}
+                            <img src="{{ asset('uploads/product/' ~ bestSelling.post.id ~ "/"  ~ bestSelling.post.mainImage.id) }}" alt="{{ bestSelling.name }}" class="f_left m_right_15 m_sm_bottom_10 f_sm_none f_xs_left m_xs_bottom_0">
+                        {% endif %}
+                    </a>
+                    <a href="{{ path('fe_product', {'slug':bestSelling.seo.slug}) }}" class="color_dark d_block bt_link">{{ bestSelling.name }}</a>
+                    <!--rating-->
+                    {{ render(controller('CMSBundle:FrontEnd/Rating:rate' , {'productId' : bestSelling.id })) }}
+                    <p class="scheme_color">
+                        {% if bestSelling.discount > 0 %}
+                        <s class="v_align_b old-price">
+                            {{ bestSelling.priceWithoutDiscount|currencyWithFormat }}
+                        </s>
+                    {% endif %}
+                    {{ bestSelling.price|currencyWithFormat }}
+                    </p>
+                </div>
+                <hr class="m_bottom_15 hidden-sm hidden-xs">
+            {% endfor %}
+        </div>
+    </figure>
+
+    {{ render(controller('CMSBundle:FrontEnd/Banner:showOneBanner' , {'placment' : 5 })) }}
+
+    <div class="m_sm_bottom_35 blog_animate animate_ftr spacing" style="text-align: right">
+        <div class="clearfix m_bottom_25 m_sm_bottom_20 blog-home">
+            <h2 class="tt_uppercase color_dark f_left">{% trans %}Our Blog{% endtrans %}</h2>
+            <div class="f_right clearfix nav_buttons_wrap">
+                {% if bloggers|length > 1 %}
+                    <button class="button_type_7 bg_cs_hover box_s_none f_size_ex_large bg_light_color_1 f_left tr_delay_hover r_corners blog_prev"><i class="fa fa-angle-left"></i></button>
+                    <button class="button_type_7 bg_cs_hover box_s_none f_size_ex_large bg_light_color_1 f_left m_left_5 tr_delay_hover r_corners blog_next"><i class="fa fa-angle-right"></i></button>
+                    {% endif %}
+            </div>
+        </div>
+        <!--blog carousel-->
+        <div class="blog_carousel">
+            {% for blogger in bloggers %}
+                <div class="clearfix">
+                    <!--image-->
+                    <a href="{{ path('fe_blogger_details',{'slug':blogger.seo.slug}) }}" class="d_block photoframe relative shadow wrapper r_corners f_left m_right_20 animate_ftt f_mxs_none m_mxs_bottom_10">
+                        {% if blogger.post.getMainImage %}
+                            <img class="tr_all_long_hover" src="{{ asset("uploads/bloggers/" ~ blogger.post.id ~ "/"  ~ blogger.post.getMainImage.id) }}" alt="{{ blogger.title }}">
+                        {% endif %}
+                    </a>
+                    <!--post content-->
+                    <div class="mini_post_content">
+                        <h4 class="m_bottom_5 animate_ftr"><a href="{{ path('fe_blogger_details',{'slug':blogger.seo.slug}) }}" class="color_dark"><b>{{ blogger.title }}</b></a></h4>
+                        <p class="f_size_medium m_bottom_10 animate_ftr">{{ blogger.created|date('d M y') }}, {{ blogger.bloggerComments|length }} {% trans %}comments{% endtrans %}</p>
+                        <p class="m_bottom_10 animate_ftr direcs">{{ blogger.post.content.brief|slice(0, 100) }} ... </p>
+                        <a class="tt_uppercase f_size_large animate_ftr" href="{{ path('fe_blogger_details',{'slug':blogger.seo.slug}) }}">{% trans %}Read More{% endtrans %}</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</aside>

@@ -1,0 +1,142 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}{{ history.seo.title }}{% endblock %}
+
+{% block content %}
+<div class="content ">
+    <div class="content_inner">
+        <div class="title_outer title_without_animation title_text_shadow with_image" data-height="350">
+            <div class="title title_size_large  position_center">
+                <div class="image responsive">
+                    {% if history.post.mainImage %}
+                    <img src="{{ asset("uploads/dynamic-page/image/" ~ history.post.id ~ "/"  ~ history.post.mainImage.id) }}" style="max-height: 570px;" alt="{{ history.title }}" /> 
+                    {% else %}
+                    <img src="{{ asset('bundles/fe/images/placeholder.png') }}" style="max-height: 570px;" alt="{{ history.title }}" /> 
+                    {% endif %}
+                </div>
+                <div class="title_holder" >
+                    <div class="container">
+                        <div class="container_inner clearfix">
+                            <div class="title_subtitle_holder" style="padding-top:43px;">
+                                <div class="title_subtitle_holder_inner">
+                                    <h1><span>{{ history.title }}</span></h1>
+                                    <span class="separator small center"></span>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="container_inner default_template_holder clearfix page_container_inner">
+                <div class="vc_row wpb_row section vc_row-fluid grid_section" style="background-color:#f8f8f8; padding-bottom:56px; text-align:left;">
+                    <div class=" section_inner clearfix">
+                        <div class="section_inner_margin clearfix">
+                            <div class="vc_col-sm-12 wpb_column vc_column_container">
+                                <div class="wpb_wrapper">
+                                    <div class="wpb_text_column wpb_content_element ">
+                                        <div class="wpb_wrapper">
+                                            <h2 style="text-align: center;">{{ history.title }}</h2>
+                                        </div> 
+                                    </div> 
+                                    <div class="separator  small center  " style="margin-top: 14px;margin-bottom: 12px;background-color: #f83501;opacity: 1;"></div>
+
+                                    <div class="wpb_text_column wpb_content_element ">
+                                        <div class="wpb_wrapper">
+                                            {% if history.post.content.description %}
+                                            <p >{{ history.post.content.description|raw }}</p>
+                                            {% endif %}
+                                        </div> 
+                                    </div> 
+                                    <div class="separator normal center"></div>
+                                    <span class="seemore">SEE MORE</span>
+                                    <div class="moredata">
+                                        <div class="wpb_text_column wpb_content_element ">
+                                            <div class="wpb_wrapper">
+                                                <h2 style="text-align: center;">{{ egypt.title }}</h2>
+                                            </div> 
+                                        </div> 
+                                        <div class="separator small center" style="margin-top: 14px;margin-bottom: 12px;background-color: #f83501;opacity: 1;"></div>
+                                        <div class="wpb_text_column wpb_content_element ">
+                                            <div class="wpb_wrapper">
+                                                {% if egypt.post.content.description %}
+                                                <p >{{ egypt.post.content.description|raw }}</p>
+                                                {% endif %}
+                                            </div> 
+                                        </div> 
+                                        <div class="separator  normal center  " style="margin-top: 10px;"></div>
+
+                                        <div class="wpb_text_column wpb_content_element ">
+                                            <div class="wpb_wrapper">
+                                                <h2 style="text-align: center;">{{ world.title }}</h2>
+                                            </div> 
+                                        </div> 
+                                        <div class="separator  small center  " style="margin-top: 14px;margin-bottom: 12px;background-color: #f83501;opacity: 1;"></div>
+
+                                        <div class="wpb_text_column wpb_content_element ">
+                                            <div class="wpb_wrapper">
+                                                {% if world.post.content.description %}
+                                                <p>{{ world.post.content.description|raw }}</p>
+                                                {% endif %}
+                                            </div> 
+                                        </div>
+                                    </div>
+                                    <div class="vc_empty_space"  style="height: 32px" ><span class="vc_empty_space_inner"></span></div>
+                                </div> 
+                            </div> 
+                        </div>
+                    </div>
+                </div>
+                <section data-speed="1" class="parallax_section_holder" style="height:300px; background-image:url('{{ asset('bundles/fe/images/counter-e1439132624949.jpg') }}');">
+                    <div class="parallax_content center">
+                        <div class="parallax_section_inner_margin clearfix">
+                            <div class="vc_col-sm-4 vc_col-xs-4 wpb_column vc_column_container">
+                                <div class="wpb_wrapper">
+                                    <div class="vc_empty_space"  style="height: 32px" ><span class="vc_empty_space_inner"></span></div>
+                                    <div class="q_counter_holder  center"><span class="counter  zero" style="color: #000000;font-size: 100px;">40</span><span class="separator small" style="background-color: #000000;"></span><p class="counter_text" style="font-size: 25px;color: #000000;">Countries</p></div>
+                                </div> 
+                            </div> 
+                            <div class="vc_col-sm-4 vc_col-xs-4 wpb_column vc_column_container">
+                                <div class="wpb_wrapper">
+                                    <div class="vc_empty_space"  style="height: 32px" ><span class="vc_empty_space_inner"></span></div>
+                                    <div class="q_counter_holder  center"><span class="counter  zero" style="color: #000000;font-size: 100px;">6</span><span class="separator small" style="background-color: #000000;"></span><p class="counter_text" style="font-size: 25px;color: #000000;">Factories</p></div>
+                                </div> 
+                            </div> 
+                            <div class="vc_col-sm-4 vc_col-xs-4 wpb_column vc_column_container">
+                                <div class="wpb_wrapper">
+                                    <div class="vc_empty_space"  style="height: 32px" ><span class="vc_empty_space_inner"></span></div>
+                                    <div class="q_counter_holder  center"><span class="counter  zero" style="color: #000000;font-size: 100px;">9855</span><span class="separator small" style="background-color: #000000;"></span><p class="counter_text" style="font-size: 25px;color: #000000;">Days in Egypt</p></div>
+                                </div> 
+                            </div> 
+                        </div>
+                    </div>
+                </section>
+                <div class="vc_row wpb_row section vc_row-fluid" style=" text-align:left;">
+                    <div class=" full_section_inner clearfix">
+                        <div class="vc_col-sm-12 wpb_column vc_column_container">
+                            <div class="wpb_wrapper">
+                                <div class="vc_empty_space"  style="height: 32px" ><span class="vc_empty_space_inner"></span></div>
+                                <div class="vc_empty_space"  style="height: 32px" ><span class="vc_empty_space_inner"></span></div>
+                            </div> 
+                        </div> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function() {
+           $('.seemore').click(function(){
+              $(this).hide();
+              $('.moredata').stop().slideDown();
+           });
+        });
+    </script>
+{% endblock %}

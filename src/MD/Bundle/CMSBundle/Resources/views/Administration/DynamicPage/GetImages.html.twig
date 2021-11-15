@@ -1,0 +1,104 @@
+{% extends 'AdminTemplateBundle::base.html.twig' %}
+{% set page_title %}Page Images{% endset %}
+{% block stylesheets %}
+    {{parent()}}
+    {% include "FileUploaderBundle::baseCss.html.twig" %}
+{% endblock %}
+{% block body -%}
+    <div class="row">
+        <div class="col-lg-12">
+            <section class="panel">
+                <header class="panel-heading">
+                    News Images
+                </header>
+                <div class="panel-body">
+                    {% include "FileUploaderBundle::angularjs.html.twig" %}
+
+                    <div class="row">
+                        <section class="panel" id="imageRow">
+                            {% for image in images %}
+                                <div class="col-lg-2">
+                                    {% if image %} 
+                                        <div class="col-lg-12">
+                                            <input  {% if entity.mainImage != false  %}{% if image.id == entity.mainImage.id %} checked  {% endif %}{% endif %} type="radio" name="main" class="set_main" value="{{ image.id }}" > 
+                                        </div>
+                                        <div class="col-lg-12 center">
+                                            <img src="{{ asset("uploads/dynamicpages/" ~ entity.id ~ "/"  ~ image.id) }}"  height="69">
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <a title="" data-placement="top" data-toggle="tooltip" href="#" onclick="javascript:del('{{image.id}}')" class="btn btn-danger btn-xs btn-block tooltips" data-original-title="Delete">Delete</a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {%endfor%}
+                        </section>
+                    </div>
+
+                    <div class="panel-body">
+                        <a class="btn btn-round btn-info" href="{{ path('dynamicpage_edit', {'id': entity.dynamicPage.id}) }}"><i class="icon-undo"></i> Back to the list</a>
+                    </div>
+
+                    <form class="form-horizontal tasi-form" hidden name="delete_form" id="delete_form" action="{{ path('dynamicpageimages_delete', { 'h_id': id  , 'redirect_id' : 1 }) }}" method="POST"  >
+                        <input type="hidden" name="id" id="imageId" />
+                    </form>
+                </div>
+            </section>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{  parent() }}
+    {% include "FileUploaderBundle::basejs.html.twig" %}
+    <script type="text/javascript">
+        $(function() {
+            $('#fileupload').fileupload({
+                dataType: 'json',
+                url: '{{ path('dynamicpage_create_images' , { 'id': entity.id }) }}',
+                //  maxNumberOfFiles: 3 ,
+                singleFileUploads: true,
+                //  sequentialUploads: true ,
+                done: function(e, data) {
+                    $.each(data.result.files, function(index, file) {
+                        // $('<p/>').text(file.name).appendTo(document.body);
+                        //tr.children().closest("tr").hide();
+                        var deleteLink = '<div class="col-lg-12">'
+                                + '<a href="#" onclick="javascript:del(' + file.id + ')" class="btn btn-danger btn-xs btn-block">Delete</a>'
+                                + '</div>';
+                        var CheckBox = '<div class="col-lg-12">' +
+                                '<input type = "radio" name = "main" class="set_main" value = "' + file.id + '" > ' +
+                                '</div>';
+                        //  var mainImage = "<input type='radio' name='main' class='set_main'  value='"+file.id+"'>"; 
+                        var imageUrl = '<div class="col-lg-12 center">'
+                                + '<img src="' + file.url + '" height="69">'
+                                + '</div>';
+                        $("#imageRow").append('<div class="col-lg-2">' + CheckBox + imageUrl + deleteLink + "</div>");
+                        $("#roww").find("tr:eq(" + index + ")").remove();
+        {#$("#roww").find("tr:eq(" + index + ")").fadeOut(0, function() {
+            alert(index + 'LL');
+            $(this).remove();
+        });#}
+                        });
+                    }
+                });
+            });
+
+
+            $('.set_main').on("click", function() {
+                var image_id = $(this).val();
+                $.ajax({
+                    type: "POST",
+                    url: "{{ path('dynamicpage_ajax') }}",
+                    data: {'id':{{id}}, 'image_id': image_id},
+                    success: function(result) {
+                        alert(result);
+                    }});
+            });
+            function del(id) {
+                if (confirm("Are you sure you want to delete?"))
+                {
+                    $('#imageId').val(id);
+                    $('#delete_form').submit();
+                }
+            }
+    </script>
+{% endblock %}

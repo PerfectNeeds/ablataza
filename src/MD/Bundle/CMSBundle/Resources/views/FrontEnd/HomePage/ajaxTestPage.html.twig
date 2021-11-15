@@ -1,0 +1,22 @@
+<input type="text" class="test">
+<a href="javascript:;" class="btn">Test</a>
+<div class="result"></div>
+
+
+
+<script src="{{ asset('bundles/fe/js/jquery-2.1.0.min.js') }}"></script>
+<script>
+    $(document).ready(function(){
+        $('.btn').click(function(){
+            var test = $('.test').val();
+            $.ajax({
+                type: "POST",
+                url: "{{ path('fe_ajax_test') }}",
+                data: {'id': test},
+                success: function (result) {
+                    $('.result').append(result);
+                }
+            });
+        });
+    });
+</script>

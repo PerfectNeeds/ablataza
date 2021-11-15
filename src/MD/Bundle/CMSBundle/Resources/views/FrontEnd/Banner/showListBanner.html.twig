@@ -1,0 +1,9 @@
+{% if Banners %}
+{% for Banner in Banners %}
+<li data-animation="fadeInDown">
+    <img src="{{ asset('uploads/banner/'~Banner.id~"/"~Banner.image.id) }}" alt="Partner">
+</li>
+{% endfor %}
+{% else %}
+<div class="alert alert-warning">{% trans %}There is no Records for now{% endtrans %}</div>
+{% endif %}

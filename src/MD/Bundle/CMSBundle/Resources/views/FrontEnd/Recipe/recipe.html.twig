@@ -1,0 +1,378 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}{% if seo != null %}{{ seo.title }}{% endif %}{% endblock %}
+{% block metaTag %}{% if seo != null %}{{ seo.metaTag|raw }}{% endif %}{% endblock %}
+
+{% block breadcrumb %}
+    <div class="page-banner" style="background: #e82327;">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2 class="page-title pull-right"><i class="fa fa-cutlery"></i> مطبخ طازة</h2>
+                    <a href="{{ path('fe_add_recipe') }}" class="btn-success btn pull-left"><i class="fa fa-plus"></i> ضيفي وصفتك</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li><a href="{{ path('fe_home') }}">الرئيسية</a></li>
+                        <li><a href="{{ path('fe_recipe') }}">مطبخ طازة</a></li>
+                            {% if subCategory != null %}
+                            <li class="active">{{ subCategory.name }}</li>
+                            {% elseif category != null %}
+                            <li class="active">{{ category.name }}</li>
+                            {% endif %}
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    <div id="page-layer-styled" class="page-wrapper recent-recipes">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-main">
+                    <div class="row" style="margin-bottom: 30px">
+                        {% for category in categories|slice(1) %}
+                            {% if category.id == 2 %}
+                                {% set colorClass = 'btn-info' %}
+                                {% set icon = asset('bundles/fe/images/navatk-featured.png') %}
+                            {% elseif category.id == 3 %}
+                                {% set colorClass = 'btn-warning' %}
+                                {% set icon = asset('bundles/fe/images/navatk-new.png') %}
+                            {% elseif category.id == 4 %}
+                                {% set colorClass = 'btn-primary' %}
+                                {% set icon = asset('bundles/fe/images/navatk-easy.png') %}
+                            {% elseif category.id == 5 %}
+                                {% set colorClass = 'btn-success' %}
+                                {% set icon = asset('bundles/fe/images/navatk-healthy.png') %}
+                            {% endif %}
+                            <div class="col-md-2 col-sm-6 col-xs-12">
+                                <a href="{{ path('fe_recipe', {'slug':category.seo.slug}) }}" class="btn btn-block {{ colorClass }}">
+                                    <img src="{{ icon }}"/> {{ category.name }}</a>
+                            </div>
+                        {% endfor %}
+                        <div class="col-md-4 col-sm-6 col-xs-12">
+                            <a href="{{ path('fe_abla_tazza_menu_planner') }}" class="btn btn-block btn-danger">
+                            <img src="{{ asset('bundles/fe/images/dinner.png') }}"/> عزومات أبلة طازة</a>
+                        </div>
+                    </div>
+                    <div class="row recipe-wrapper">
+                        {% for entity in entities|slice(0, 3) %}
+                            <div class="col-xs-12 col-sm-6 col-md-4 recipe-column" id="{{ entity.id }}">
+                                <article class="recipe recipe-grid hentry clearfix">
+                                    <figure class="recipe-thumbnail thumbnail-hover">
+                                        {% if entity.youtubeUrl != null %}
+                                        <img src="{{ asset('bundles/fe/images/play-btn.png') }}" class="plays">
+                                        {% endif %}
+                                        {% if entity.post.mainImage %}
+                                            {% set mainImage = asset("uploads/recipe/image/" ~ entity.post.id ~ "/"  ~ entity.post.mainImage.id)  %}
+                                        {% elseif entity.youtubeUrl != null %}
+                                            {% set mainImage = asset('bundles/fe/images/placeholders/recipe-placeholderVideo.jpg') %}
+                                        {% else %}
+                                            {% set mainImage = asset('bundles/fe/images/placeholders/recipe-placeholder.jpg') %}
+                                        {% endif %}
+
+                                        <img class="img-responsive" src="{{ mainImage }}" alt="{{ entity.title }}" style="height: 202px;"> 
+                                        {% if entity.youtubeUrl != null %}
+                                            <a class="swipebox-video view-thumbnail" data-gallery="youtubevideos" data-toggle="lightbox" href="{{ entity.youtubeUrl }}" style="background-color:rgba(232,35,39, 0.75);"><i class="fa fa-youtube-play thumbnail-view-icon"></i></a>
+                                            {% else %}
+                                            <a class="view-thumbnail" href="{{ path('fe_show_recipe', {'slug':entity.seo.slug}) }}" style="background-color:rgba(232,35,39, 0.75);">
+                                                <i class="fa fa-eye thumbnail-view-icon"></i>
+                                            </a>
+                                        {% endif %}
+                                    </figure>
+                                    <div class="recipe-top-meta clearfix">
+                                        <span class="entry-author author vcard pull-right"><span class="screen-reader-text">بواسطة:</span> <a href="{{ path('fe_show_profile', {'slug':entity.person.seo.slug}) }}">{{ entity.person.firstName }}</a></span>
+                                        <a href="{{ path('fe_show_profile', {'slug':entity.person.seo.slug}) }}">
+                                        {% if entity.person.image != null %}
+                                            <img src="{{ asset('uploads/person/'~entity.person.id~'/'~entity.person.image.id) }}" class="img-circle user" alt="{{entity.person.firstName}}"/>
+                                        {% elseif entity.person.firstAccount.userFacebook != null %}
+                                            <img src="https://graph.facebook.com/{{ entity.person.firstAccount.userFacebook.facebookId }}/picture?type=large&width=201&height=201" class="img-circle user" alt="{{entity.person.firstName}}"/>
+                                        {% else %}    
+                                            <img src="{{ asset('bundles/fe/images/user-2.jpg') }}" class="img-circle user" alt="{{entity.person.firstName}}"/>
+                                        {% endif %}
+                                        </a>
+                                        <div class="rating pull-left" data-rating="{{ entity.generalRationg }}">
+                                            <i class="fa fa-star-o one"></i> 
+                                            <i class="fa fa-star-o two"></i> 
+                                            <i class="fa fa-star-o three"></i>
+                                            <i class="fa fa-star-o four"></i>
+                                            <i class="fa fa-star-o five"></i>
+                                        </div>
+                                    </div>
+                                    <div class="recipe-details" style="border-top-color:#e82327;">
+                                        <h2 class="entry-title recipe-title"><a href="{{ path('fe_show_recipe', {'slug':entity.seo.slug}) }}">{{ entity.title }}</a></h2>
+                                        <div class="recipe-desc">
+                                            {% if entity.post.content.recipe|length > 75 %}
+                                                <p>{% if entity.post.content.recipe is defined %}{{ entity.post.content.recipe|striptags|replace({'&nbsp;':' '})|slice(0, 75) }}...{% endif %}</p>
+                                            {% else %}
+                                                <p>{% if entity.post.content.recipe is defined %}{{ entity.post.content.recipe|striptags|replace({'&nbsp;':' '}) }}{% endif %}</p>
+                                            {% endif %}
+                                        </div>
+                                        <footer class="entry-meta recipe-entry-meta recipe-bottom-meta clearfix">
+                                            <span class="published-date">
+                                                <i class="fa fa-clock-o"></i> <time class="entry-date published">{{ entity.preparationTime }} دقيقة</time>
+                                            </span> 
+                                            <div class="share-icons">
+                                                <div class="social-media-icons">
+                                                    <a class="facebook" target="_blank" href="http://www.facebook.com/sharer/sharer.php?u={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_recipe', {'slug':entity.seo.slug}) }}" title="Share on Facebook"><i class="fa fa-facebook fa-lg"></i></a>
+                                                    <a class="twitter" target="_blank" href="http://twitter.com/share?text={{ entity.title }}&url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_recipe', {'slug':entity.seo.slug}) }}"><i class="fa fa-twitter fa-lg"></i></a>
+                                                    <a class="linkedin" target="_blank" href="https://www.pinterest.com/pin/create/button/?url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_recipe', {'slug':entity.seo.slug}) }}&description={{ entity.title }}"><i class="fa fa-pinterest fa-lg"></i></a>
+                                                    <a class="gplus" target="_blank" href="https://plus.google.com/share?url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_recipe', {'slug':entity.seo.slug}) }}"><i class="fa fa-google-plus fa-lg"></i></a>
+                                                    <a class="mail" target="_blank" href="mailto:?subject={{ entity.title }}&body={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_recipe', {'slug':entity.seo.slug}) }}"><i class="fa fa-envelope fa-lg"></i></a>
+                                                    <span class="close-share-icons close"><i class="fa fa-close fa-lg"></i></span>
+                                                </div>
+                                            </div>
+                                            <a href="javascript:;" class="share-this read-more"><i class="fa fa-share-alt"></i> مشاركة</a>
+                                            {% if app.user is not null %}
+                                                <a href="javascript:;" class="read-more fav {% if entity.isResipeFavByUserId(app.user.person.id) == true %}active{% endif %}"><i class="fa fa-heart"></i> تفضيل</a>
+                                            {% endif %}
+                                        </footer>
+                                    </div>
+                                </article>
+                            </div>
+                        {% endfor %}
+                        <div style="clear:both"></div>
+                        {% if  ablaTazzaTip != false %}
+                            <div class="col-md-6 col-sm-12 col-xs-12" style="margin-bottom:20px;">
+                                <div class="talkbubble col-md-8 col-sm-8 col-xs-8 tips">
+                                    <h3 class="widget-title heading-bottom-line">أبلة طازة بتقولك</h3>
+                                    <p style="margin: 0px; height: 93px;">{{ ablaTazzaTip.tip|raw|slice(0, 193) }}</p> 
+                                </div>
+                                <div class="col-md-3 col-sm-3 col-xs-4">
+                                    <figure class="img-circle" style="width: 120px;height:120px;overflow:hidden;margin-right:20px;">
+                                        <a href="{{ path('fe_show_profile', {'slug':ablaTazzaTip.person.seo.slug}) }}">
+                                        {% if ablaTazzaTip.person.image != null %}
+                                            <img src="{{ asset('uploads/person/'~ablaTazzaTip.person.id~'/'~ablaTazzaTip.person.image.id) }}" style="width: 100%;" alt="{{ablaTazzaTip.person.firstName}}"/>
+                                        {% else %}
+                                            <img src="{{ asset('bundles/fe/images/footer-logo.png') }}" style="width: 100%;" alt="{{ablaTazzaTip.person.firstName}}"/>
+                                        {% endif %}
+                                        </a>
+                                    </figure>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if  userTip != false %}
+                            <div class="col-md-6 col-sm-12 col-xs-12" style="margin-bottom:20px;">
+                                <div class="talkbubble col-md-8 col-sm-8 col-xs-8 tips">
+                                    <h3 class="widget-title heading-bottom-line">حبايبنا بيقولوا</h3>
+                                    <p style="margin: 0px; height: 93px;">{{ userTip.tip|raw|slice(0, 193) }}</p> 
+                                </div>
+                                <div class="col-md-3 col-sm-3 col-xs-4">
+                                    <figure class="img-circle" style="width: 120px;height:120px;overflow:hidden;margin-right:20px;">
+                                        <a href="{{ path('fe_show_profile', {'slug':userTip.person.seo.slug}) }}">
+                                        {% if userTip.person.image != null %}
+                                            <img src="{{ asset('uploads/person/'~userTip.person.id~'/'~userTip.person.image.id) }}" style="width: 100%;" alt="{{userTip.person.firstName}}"/>
+                                        {% elseif userTip.person.firstAccount.userFacebook != null %}
+                                            <img src="https://graph.facebook.com/{{ userTip.person.firstAccount.userFacebook.facebookId }}/picture?type=large&width=201&height=201" style="width: 100%;" alt="{{userTip.person.firstName}}"/>
+                                        {% else %}
+                                            <img src="{{ asset('bundles/fe/images/user-2.jpg') }}" style="width: 100%;" alt="{{userTip.person.firstName}}"/>
+                                        {% endif %}
+                                        </a>
+                                    </figure>
+                                </div>
+                            </div>
+                        {% endif %}
+                            <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+                                <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+                                <!-- matb5 tazza landing page -->
+
+                                <ins class="adsbygoogle"
+
+                                     style="display:inline-block;width:728px;height:90px"
+
+                                     data-ad-client="ca-pub-4026762125058832"
+
+                                     data-ad-slot="3220069100"></ins>
+
+                                <script>
+
+                                (adsbygoogle = window.adsbygoogle || []).push({});
+
+                                </script>
+                            </div>
+                        <div style="clear:both"></div>
+                        <img height="auto" src="//lh6.ggpht.com/41LFWBytPnxKsfZf6mivs6ba7qdOBtfk9-7MzWSMqwC3IFOvaXd8rejFiyeXKfBOK16mMEopeA=w728" style="margin:0 auto 25px;display:block" alt="">
+                        <div style="clear:both"></div>
+                        {% for entity in entities|slice(3) %}
+                            <div class="col-xs-12 col-sm-6 col-md-4 recipe-column" id="{{ entity.id }}">
+                                <article class="recipe recipe-grid hentry clearfix">
+                                    <figure class="recipe-thumbnail thumbnail-hover">
+                                        {% if entity.youtubeUrl != null %}
+                                        <img src="{{ asset('bundles/fe/images/play-btn.png') }}" class="plays">
+                                        {% endif %}
+                                        {% if entity.post.mainImage %}
+                                            {% set mainImage = asset("uploads/recipe/image/" ~ entity.post.id ~ "/"  ~ entity.post.mainImage.id)  %}
+                                        {% elseif entity.youtubeUrl != null %}
+                                            {% set mainImage = asset('bundles/fe/images/placeholders/recipe-placeholderVideo.jpg') %}
+                                        {% else %}
+                                            {% set mainImage = asset('bundles/fe/images/placeholders/recipe-placeholder.jpg') %}
+                                        {% endif %}
+
+                                        <img class="img-responsive" src="{{ mainImage }}" alt="{{ entity.title }}" style="height: 202px;"> 
+                                        {% if entity.youtubeUrl != null %}
+                                            <a class="swipebox-video view-thumbnail" data-gallery="youtubevideos" data-toggle="lightbox" href="{{ entity.youtubeUrl }}" style="background-color:rgba(232,35,39, 0.75);"><i class="fa fa-youtube-play thumbnail-view-icon"></i></a>
+                                            {% else %}
+                                            <a class="view-thumbnail" href="{{ path('fe_show_recipe', {'slug':entity.seo.slug}) }}" style="background-color:rgba(232,35,39, 0.75);">
+                                                <i class="fa fa-eye thumbnail-view-icon"></i>
+                                            </a>
+                                        {% endif %}
+                                    </figure>
+                                    <div class="recipe-top-meta clearfix">
+                                        <span class="entry-author author vcard pull-right"><span class="screen-reader-text">بواسطة:</span> <a href="{{ path('fe_show_profile', {'slug':entity.person.seo.slug}) }}">{{ entity.person.firstName }}</a></span>
+                                        <a href="{{ path('fe_show_profile', {'slug':entity.person.seo.slug}) }}">
+                                        {% if entity.person.image != null %}
+                                            <img src="{{ asset('uploads/person/'~entity.person.id~'/'~entity.person.image.id) }}" class="img-circle user" alt="{{entity.person.firstName}}"/>
+                                        {% elseif entity.person.firstAccount.userFacebook != null %}
+                                            <img src="https://graph.facebook.com/{{ entity.person.firstAccount.userFacebook.facebookId }}/picture?type=large&width=201&height=201" class="img-circle user" alt="{{entity.person.firstName}}"/>
+                                        {% else %}    
+                                            <img src="{{ asset('bundles/fe/images/user-2.jpg') }}" class="img-circle user" alt="{{entity.person.firstName}}"/>
+                                        {% endif %}
+                                        </a>
+                                        <div class="rating pull-left" data-rating="{{ entity.generalRationg }}">
+                                            <i class="fa fa-star-o one"></i> 
+                                            <i class="fa fa-star-o two"></i> 
+                                            <i class="fa fa-star-o three"></i>
+                                            <i class="fa fa-star-o four"></i>
+                                            <i class="fa fa-star-o five"></i>
+                                        </div>
+                                    </div>
+                                    <div class="recipe-details" style="border-top-color:#e82327;">
+                                        <h2 class="entry-title recipe-title"><a href="{{ path('fe_show_recipe', {'slug':entity.seo.slug}) }}">{{ entity.title }}</a></h2>
+                                        <div class="recipe-desc">
+                                            {% if entity.post.content.recipe|length > 75 %}
+                                                <p>{% if entity.post.content.recipe is defined %}{{ entity.post.content.recipe|striptags|replace({'&nbsp;':' '})|slice(0, 75) }}...{% endif %}</p>
+                                            {% else %}
+                                                <p>{% if entity.post.content.recipe is defined %}{{ entity.post.content.recipe|striptags|replace({'&nbsp;':' '}) }}{% endif %}</p>
+                                            {% endif %}
+                                        </div>
+                                        <footer class="entry-meta recipe-entry-meta recipe-bottom-meta clearfix">
+                                            <span class="published-date">
+                                                <i class="fa fa-clock-o"></i> <time class="entry-date published">{{ entity.preparationTime }} دقيقة</time>
+                                            </span> 
+                                            <div class="share-icons">
+                                                <div class="social-media-icons">
+                                                    <a class="facebook" target="_blank" href="http://www.facebook.com/sharer/sharer.php?u={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_recipe', {'slug':entity.seo.slug}) }}" title="Share on Facebook"><i class="fa fa-facebook fa-lg"></i></a>
+                                                    <a class="twitter" target="_blank" href="http://twitter.com/share?text={{ entity.title }}&url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_recipe', {'slug':entity.seo.slug}) }}"><i class="fa fa-twitter fa-lg"></i></a>
+                                                    <a class="linkedin" target="_blank" href="https://www.pinterest.com/pin/create/button/?url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_recipe', {'slug':entity.seo.slug}) }}&description={{ entity.title }}"><i class="fa fa-pinterest fa-lg"></i></a>
+                                                    <a class="gplus" target="_blank" href="https://plus.google.com/share?url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_recipe', {'slug':entity.seo.slug}) }}"><i class="fa fa-google-plus fa-lg"></i></a>
+                                                    <a class="mail" target="_blank" href="mailto:?subject={{ entity.title }}&body={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_show_recipe', {'slug':entity.seo.slug}) }}"><i class="fa fa-envelope fa-lg"></i></a>
+                                                    <span class="close-share-icons close"><i class="fa fa-close fa-lg"></i></span>
+                                                </div>
+                                            </div>
+                                            <a href="javascript:;" class="share-this read-more"><i class="fa fa-share-alt"></i> مشاركة</a>
+                                            {% if app.user is not null %}
+                                                <a href="javascript:;" class="read-more fav {% if entity.isResipeFavByUserId(app.user.person.id) == true %}active{% endif %}"><i class="fa fa-heart"></i> تفضيل</a>
+                                            {% endif %}
+                                        </footer>
+                                    </div>
+                                </article>
+                            </div>
+                        {% endfor %}
+
+                        {{ include('CMSBundle:FrontEnd/HomePage:Pagination.html.twig', {'paginator':paginator}) }}
+                    </div>
+                </div>
+                <!-- .col-main -->
+            </div>
+            <!-- .row -->
+        </div>
+        <!-- .container -->
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+    <!-- Matb5 Tazza -->
+
+    <ins class="adsbygoogle"
+
+         style="display:inline-block;width:300px;height:600px"
+
+         data-ad-client="ca-pub-4026762125058832"
+
+         data-ad-slot="1321741104"></ins>
+
+    <script>
+
+    (adsbygoogle = window.adsbygoogle || []).push({});
+
+    </script>
+    <script>
+
+        $('.fav').click(function () {
+            var recipe_id = $(this).parent().parent().parent().parent().attr("id");
+            $this = $(this);
+            $.ajax({
+                type: "POST",
+                url: "{{ path('fe_recipe_favorite_ajax') }}",
+                data: {'id': recipe_id},
+                success: function (result) {
+                    if (result == 1) {
+                        $this.addClass('active');
+                    }
+                    if (result == 0) {
+                        $this.removeClass('active');
+                    }
+                }
+            });
+        });
+        $(document).ready(function ($) {
+
+            $(document).delegate('*[data-toggle="lightbox"]:not([data-gallery="navigateTo"])', 'click', function(event) {
+                event.preventDefault();
+                return $(this).ekkoLightbox({
+                    onShown: function() {
+                            if (window.console) {
+                                    return console.log('onShown event fired');
+                            }
+                    },
+                    onContentLoaded: function() {
+                            if (window.console) {
+                                    return console.log('onContentLoaded event fired');
+                            }
+                    },
+                    onNavigate: function(direction, itemIndex) {
+                            if (window.console) {
+                                    return console.log('Navigating '+direction+'. Current item: '+itemIndex);
+                            }
+                    }
+                });
+            });
+
+            $('#open-image').click(function (e) {
+                    e.preventDefault();
+                    $(this).ekkoLightbox();
+            });
+            $('#open-youtube').click(function (e) {
+                    e.preventDefault();
+                    $(this).ekkoLightbox();
+            });
+
+            $(document).delegate('*[data-gallery="navigateTo"]', 'click', function(event) {
+                    event.preventDefault();
+                    return $(this).ekkoLightbox({
+                            onShown: function() {
+                                    var lb = this;
+                                    $(lb.modal_content).on('click', '.modal-footer a#jumpit', function(e) {
+                                            e.preventDefault();
+                                            lb.navigateTo(2);
+                                    });
+                                    $(lb.modal_content).on('click', '.modal-footer a#closeit', function(e) {
+                                            e.preventDefault();
+                                            lb.close();
+                                    });
+                            }
+                    });
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,7 @@
+{% if Banners %}
+    {% for Banner in Banners %}
+        <a {% if Banner.url != '#' and Banner !='' %}href="{{Banner.url}}"{% endif %} {% if Banner.openType== 1 %}target="_blank"{% endif %} class="ads">
+            <img src="{{ asset('uploads/banner/'~Banner.id~"/"~Banner.image.id) }}" {% if Banner.text %}alt="{{Banner.text}}"{% endif %} style="width: auto;margin: 0 auto;display: block">
+        </a>
+    {% endfor %}
+{% endif %}

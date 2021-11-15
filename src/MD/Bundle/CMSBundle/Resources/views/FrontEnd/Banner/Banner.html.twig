@@ -1,0 +1,17 @@
+{% if Banners|length > 0 %}
+    {% for Banner in Banners %}
+        <div class="slide">
+            <a href="#"><img src="{{ asset('uploads/banner/'~Banner.id~"/"~Banner.image.id) }}" alt="{{Banner.title}}"></a>
+            <div class="container hidden-xs">
+                <div class="col-md-5 col-lg-4 recipe-details-wrapper col-lg-offset-5 col-md-offset-5 text-right">
+                    <h2 class="recipe-title">
+                        <a href="javascript:;">{{Banner.title}}</a>
+                    </h2>
+                    {% if Banner.text %}
+                    <p class="hidden-sm">{{Banner.text}}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}

@@ -1,0 +1,36 @@
+{% set queryParams = app.request.query.all %}
+<div class="page-nav clearfix text-center col-md-12" style="overflow: hidden;">
+    {% if paginator.fisrt is defined %}
+        <a role="button" href="{{ path(app.request.attributes.get('_route'),app.request.attributes.get('_route_params')|merge({'page':paginator.fisrt})|merge(queryParams)) }}"  class="prev">
+            <i class="fa fa-angle-double-right"></i>
+        </a>
+    {% endif %}
+    {% if paginator.prev is defined %}
+        <a role="button" href="{{ path(app.request.attributes.get('_route'),app.request.attributes.get('_route_params')|merge({'page':paginator.prev})|merge(queryParams)) }}"  class="prev">
+            <i class="fa fa-angle-right"></i>
+        </a>
+    {% endif %}
+
+    {% if paginator.items is defined %}
+        {% if paginator.items|length > 1 %}
+        {% for item in paginator.items %}
+            {% if paginator.currentPage == item %}
+                <span class="current">{{ item }}</span>
+            {% else %}
+                <a {% if paginator.currentPage != item %}href="{{ path(app.request.attributes.get('_route'),app.request.attributes.get('_route_params')|merge({'page':item})|merge(queryParams)) }}"{% endif %}>{{ item }}</a>
+            {% endif %}
+        {% endfor %}
+        {% endif %}
+    {% endif %}
+    {% if paginator.next is defined %}
+        <a role="button" href="{{ path(app.request.attributes.get('_route'),app.request.attributes.get('_route_params')|merge({'page':paginator.next})|merge(queryParams)) }}" class="next">
+            <i class="fa fa-angle-left"></i>
+        </a>
+    {% endif %}
+
+    {% if paginator.last is defined %}
+        <a role="button" href="{{ path(app.request.attributes.get('_route'),app.request.attributes.get('_route_params')|merge({'page':paginator.last})|merge(queryParams)   ) }}" class="next">
+            <i class="fa fa-angle-double-left"></i>
+        </a>
+    {% endif %}
+</div>

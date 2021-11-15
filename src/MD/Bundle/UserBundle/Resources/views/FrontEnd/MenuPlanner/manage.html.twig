@@ -1,0 +1,261 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}{% trans %}إدارة المجلدات{% endtrans %}{% endblock %}
+
+{% block breadcrumb %}
+    <div class="home-carousel-one carousel-second-style owl-carousel hidden-xs">
+        {{ render(controller('CMSBundle:FrontEnd/Banner:Banner' , {'placment' : 1 })) }}
+    </div>
+    <div class="page-banner" style="background: #79b22b;">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2 class="page-title pull-right"><i class="fa fa-folder"></i> إدارة المجلدات</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li><a href="{{ path('fe_home') }}">الرئيسية</a></li>
+                        <li class="active">إدارة المجلدات</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    <div id="page-layer-styled" class="page-wrapper blog">
+        <div class="container">
+            <div>
+                <div style="background:none;padding: 0" class="col-md-8 col-main top-recipes">
+                    <h3 class="heading-bottom-line" style="padding-bottom: 16px;">إدارة المجلدات</h3>
+                    {% for menuPlanner in menuPlanners %}
+
+                        <div class="col-xs-12 col-md-6 recipe-column entity" style="margin-bottom: 20px;overflow: hidden;" id="{{ menuPlanner.id }}" data-url="{{ path('fe_menu_planner_send_mail', {'slug':menuPlanner.seo.slug}) }}">
+                            <article class="hentry clearfix borders {% if app.session.has('highlight') and app.session.get('highlight') == menuPlanner.id %} highlighteds {% do app.session.remove('highlight') %}{% endif %}" style="padding:0px;">
+                                <figure class="col-xs-12 col-md-5 recipe-thumbnail thumbnail-hover">
+                                    {% if menuPlanner.menuPlannerHasRecipes|length > 0 %}
+                                        {% set recipe = menuPlanner.recipe %}
+                                        {% if recipe.post.mainImage %}
+                                            {% set mainImage = asset("uploads/recipe/image/" ~ recipe.post.id ~ "/"  ~ recipe.post.mainImage.id)  %}
+                                        {% elseif recipe.youtubeUrl != null %}
+                                            {% set mainImage = asset('bundles/fe/images/placeholders/topRecipe-placeholderVideo.jpg') %}
+                                        {% else %}
+                                            {% set mainImage = asset('bundles/fe/images/placeholders/topRecipe-placeholder.jpg') %}
+                                        {% endif %}
+                                    {% else %}
+                                        {% set mainImage = asset('bundles/fe/images/placeholders/topRecipe-placeholder.jpg') %}
+                                    {% endif %}
+                                    <img class="img-responsive" src="{{ mainImage }}" alt="{{ menuPlanner.title }}" style="height: 180px;"> 
+                                    <a class="view-thumbnail" data-rel="top-recipes-2" href="{{ path('fe_menu_planner_show', {'slug':menuPlanner.seo.slug}) }}">
+                                        <i class="fa fa-eye thumbnail-view-icon"></i>
+                                    </a>
+                                </figure>
+                                <div class="col-xs-12 col-md-7 recipe-detail" style='padding:28px 15px 0 20px;'>
+                                    <h2 class="entry-title recipe-title"><a href="{{ path('fe_menu_planner_show', {'slug':menuPlanner.seo.slug}) }}">{{ menuPlanner.title }}</a></h2>
+                                    <div class="most-home" style='height: 30px'>
+                                        <p>عدد الوصفات : {{ menuPlanner.menuPlannerHasRecipes|length }}</p>
+                                    </div>
+                                    <footer class="entry-meta recipe-entry-meta recipe-bottom-meta clearfix">
+                                        <a href="javascript:;" class="read-more share-mail"><i class="fa fa-share-alt"></i> مشاركة</a>
+                                        <a href="javascript:;" onclick="javascript:del('{{ menuPlanner.id }}');" class="read-more"><i class="fa fa-remove"></i> حذف</a>
+                                    </footer>
+                                </div>
+                            </article>
+                        </div>
+                    {% endfor %}
+                    {#{{ include('CMSBundle:FrontEnd/HomePage:Pagination.html.twig', {'paginator':paginator}) }}#}
+                </div>
+                <!-- .col-main -->
+                <div class="col-md-4 col-xs-12 col-sidebar">
+                    <aside id="sidebar" class="sidebar">
+                        <div class="col-md-9 col-xs-12 btn-danger addss" style="margin-bottom:10px;">
+                            <select class="form-control chosen-select" style='width:auto!important;'>
+                                <option><i class="fa fa-plus"></i> ضيفي وصفة</option>
+                                <option data-url="{{ path('fe_add_recipe') }}">ضيفي وصفة جديدة</option>
+                                <option data-url="{{ path('fe_recipe', {'slug':category.seo.slug}) }}">ضيفي وصفة من أبلة طازة</option>
+                            </select>
+                        </div>
+                        <section class="widget category-widget myBox" style="overflow: hidden;">
+                            <h3 class="widget-title heading-bottom-line">صندوق الوصفات</h3>
+                            <ul>
+                                {% if menuPlanners|length > 0 %}
+                                    {% for menuPlanner in menuPlanners %}
+                                        <li class="fold">
+                                            <a href="{{ path('fe_menu_planner_show', {'slug':menuPlanner.seo.slug}) }}">
+                                                <i class="fa fa-angle-left"></i> {{ menuPlanner.title }} <span class="pull-left">({{ menuPlanner.menuPlannerHasRecipes|length }})</span>
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                {% else %}
+                                    <li><div class="alert alert-warning" style="padding:2px 5px;">برجاء إضافة مجلد جديد</div></li>
+                                    {% endif %}
+                                <li class="text-center">
+                                    <a href="javascript:;" class="btn btn-danger add-new-folder">أضف مجلد جديد</a>
+                                </li>
+                            </ul>
+                        </section>
+                    </aside>
+                    <!-- .sidebar -->
+                </div>
+                <!-- .col-sidebar -->
+            </div>
+            <!-- .row -->
+        </div>
+        <!-- .container -->
+    </div>
+    <div class="lightbox"></div>
+    <div class="lighbox_content">
+        <div class="close-lightbox fa fa-remove" style="display: block"></div>
+        <div class="send_to_mail">
+            <div class="text-center">
+                <h2 class="widget-title heading-bottom-line" style="margin-bottom: 5px;padding-bottom: 5px">مشاركة بواسطة البريد الإلكتروني</h2>
+            </div>
+            <div class="product-descriptions col-md-12 popUp-msg">
+                <form action="javascript:;" method="post" id="register" class="addingNewFolderForm">
+                    <div style="margin-bottom:15px;">
+                        <input id="email" class="email required" name="email" type="text" placeholder="البريد الإلكتروني" data-msg-required="برجاء كتابة بريدك الإلكتروني." data-msg-email="برجاء كتابة بريدك الإلكتروني صحيح.">
+                    </div>
+                    <div style="margin-bottom:15px;">
+                        <textarea style="height: 92px;" placeholder="أكتب رسالتك" class="required" data-msg-required="برجاء كتابة رسالتك" name="message"></textarea>
+                    </div>
+                    <div class="-group text-center">
+                        <button type="submit" class="btn btn-danger" value="">إرسال</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="add_folder">
+            <div class="text-center">
+                <h2 class="widget-title heading-bottom-line" style="margin-bottom: 5px;padding-bottom: 5px">أضف مجلد جديد</h2>
+            </div>
+            <div class="product-descriptions col-md-12 popUp-msg">
+                <form action="{{ path('fe_menu_planner_create') }}" id="recipe-request-form" method="post" class="addingNewFolderForm">
+                    <div class="form-group">
+                        <input id="fName" name="title" data-msg-required='برجاء كتابة إسم المجلد' type="text" placeholder="إسم المجلد">
+                    </div>
+                    <div class="form-group">
+                        <textarea style="height: 122px;" placeholder="ماذا تريد أن تقول عن المجلد"></textarea>
+                    </div>
+                    <div class="form-group text-center">
+                        <button type="submit" class="btn btn-danger" value="">أضف المجلد</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <form hidden name="delete_form" id="delete_form" action="{{ path('fe_menu_planner_delete') }}" method="POST"  >
+        <input type="hidden" name="id" id="entityId" />
+    </form>
+{% endblock %}
+{% block javascript %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/fe/js/contact.js') }}"></script>
+    <script type="text/javascript">
+                                            function del(id) {
+                                                if (confirm("هل أنت متأكد أنك تريد الحذف صندوق الوصفات؟")) {
+                                                    $('#entityId').val(id);
+                                                    $('#delete_form').submit();
+                                                }
+                                            }
+                                            $(".addss select").change(function (e) {
+                                                var link = $(this).find('option:selected').data('url');
+                                                if (link !== '') {
+                                                    window.location = link;
+                                                }
+                                                e.preventDefault();
+                                                return false;
+                                            });
+                                            $('.fav').click(function () {
+                                                var recipe_id = $(this).parent().parent().parent().parent().attr("id");
+                                                $this = $(this);
+                                                $.ajax({
+                                                    type: "POST",
+                                                    url: "{{ path('fe_recipe_favorite_ajax') }}",
+                                                    data: {'id': recipe_id},
+                                                    success: function (result) {
+                                                        if (result == 1) {
+                                                            $this.addClass('active');
+                                                        }
+                                                        if (result == 0) {
+                                                            $this.removeClass('active');
+                                                        }
+                                                    }
+                                                });
+                                            });
+                                            $(document).ready(function ($) {
+
+            $(document).delegate('*[data-toggle="lightbox"]:not([data-gallery="navigateTo"])', 'click', function(event) {
+                event.preventDefault();
+                return $(this).ekkoLightbox({
+                    onShown: function() {
+                            if (window.console) {
+                                    return console.log('onShown event fired');
+                            }
+                    },
+                    onContentLoaded: function() {
+                            if (window.console) {
+                                    return console.log('onContentLoaded event fired');
+                            }
+                    },
+                    onNavigate: function(direction, itemIndex) {
+                            if (window.console) {
+                                    return console.log('Navigating '+direction+'. Current item: '+itemIndex);
+                            }
+                    }
+                });
+            });
+
+            $('#open-image').click(function (e) {
+                    e.preventDefault();
+                    $(this).ekkoLightbox();
+            });
+            $('#open-youtube').click(function (e) {
+                    e.preventDefault();
+                    $(this).ekkoLightbox();
+            });
+
+            $(document).delegate('*[data-gallery="navigateTo"]', 'click', function(event) {
+                    event.preventDefault();
+                    return $(this).ekkoLightbox({
+                            onShown: function() {
+                                    var lb = this;
+                                    $(lb.modal_content).on('click', '.modal-footer a#jumpit', function(e) {
+                                            e.preventDefault();
+                                            lb.navigateTo(2);
+                                    });
+                                    $(lb.modal_content).on('click', '.modal-footer a#closeit', function(e) {
+                                            e.preventDefault();
+                                            lb.close();
+                                    });
+                            }
+                    });
+            });
+        });
+                                            $(document).ready(function () {
+                                                $('.add-new-folder').click(function () {
+                                                    $('.lighbox_content, .lightbox, .add_folder').fadeIn();
+                                                });
+                                                $('.share-mail').click(function () {
+                                                    $('.lighbox_content, .lightbox, .send_to_mail').fadeIn();
+                                                    var url = $(this).parent().parent().parent().parent().attr('data-url');
+                                                    $("#register").attr("action", url);
+                                                });
+                                                $('.fa-remove').click(function () {
+                                                    $('.lighbox_content, .lightbox, .add_folder, .send_to_mail').fadeOut();
+                                                });
+                                                $('.add-to-folder').click(function () {
+                                                    $('.lighbox_content, .lightbox, .add_to_folder').fadeIn();
+                                                });
+                                                $('.addNewFolder a').click(function () {
+                                                    var folder = $('.newFolder').val();
+                                                    var folderName = '<li>' + folder + '</li>';
+                                                    $('.folders').append(folderName);
+                                                });
+                                            });
+    </script>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}{{ privacy.title }}{% endblock %}
+
+{% block content %}
+<div class="home-carousel-one carousel-second-style owl-carousel">
+    {{ render(controller('CMSBundle:FrontEnd/Banner:Banner' , {'placment' : 1 })) }}
+</div>
+<div class="page-banner">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <h2 class="page-title">{{ privacy.title }} </h2>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <ol class="breadcrumb">
+                    <li><a href="{{ path('fe_home') }}">الرئيسية</a></li>
+                    <li class="active">{{ privacy.title }}</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<section class="recipe-search">
+    <div class="container">
+        <div class="recipe-search-inner">
+            <h2 class="title">{{ privacy.title }}</span></h2>
+            <p> {{ privacy.post.content.description|raw }} </p>
+            <!-- .recipe-search-form -->
+        </div>
+        <!-- .recipe-search-inner -->
+    </div>
+    <!-- .container -->
+    <div class="bottom-shadows">
+        <div class="container"></div>
+    </div>
+</section>
+{% endblock %}

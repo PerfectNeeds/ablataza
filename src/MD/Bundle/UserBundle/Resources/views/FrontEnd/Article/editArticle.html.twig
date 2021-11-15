@@ -1,0 +1,332 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}{% trans %}تعديل المقالة{% endtrans %}{% endblock %}
+
+{% block breadcrumb %}
+    <div class="home-carousel-one carousel-second-style owl-carousel hidden-xs">
+        {{ render(controller('CMSBundle:FrontEnd/Banner:Banner' , {'placment' : 1 })) }}
+    </div>
+    <div class="page-banner" style="background: #d7790b;">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2 class="page-title"><i class="fa fa-plus"></i> تعديل المقالة</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li><a href="{{ path('fe_home') }}">الرئيسية</a></li>
+                        <li><a href="{{ path('fe_my_articale') }}">مقالاتي</a></li>
+                        <li class="active">تعديل المقالة</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    <div id="page-layer-styled" class="page-wrapper">
+        <div id="left-layer"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-main">
+                    <main id="main" class="main">
+                        <div class="row">
+                            <form id="register" class="register-form" action="{{ path('fe_article_update', {'slug':entity.seo.slug}) }}" method="post" novalidate="novalidate"  enctype="multipart/form-data">
+                                <div class="col-md-8 forms-wrapper" style="padding-top: 30px;">
+                                    <div class="register-form-wwrapper">
+                                        <h2 class="form-heading heading-bottom-line">تعديل المقالة</h2>
+                                        <p class="alert alert-warning" style="padding:3px 7px;margin:0 15px 10px">لن ينشر المقال على الموقع قبل مرور ٢٤ ساعة حتى يتم مراجعته أولا قبل النشر.</p>
+                                        <div class="clearfix">
+                                            <p class="col-md-6 col-sm-6 col-xs-12">
+                                                <label>عنوان المقال<span class="requir"><span class="requir">*</span></span></label>
+                                                <input id="fName" class="required" name="data[title]" value="{{ entity.title }}" type="text" placeholder="عنوان المقال" data-msg-required="برجاء كتابة إسم الوصفة">
+                                            </p>
+                                            <p class="col-md-6 col-sm-6 col-xs-12">
+                                                <label>التصنيف</label>
+                                                <select id="recipe-skill-level" name="data[superCategories][]" class="form-control chosen-select">
+                                                    {% for superCategory in superCategories %}
+                                                        <option {% if entity.isArticleHasSuperCategory(superCategory.id) == true %}selected=""{% endif %} value="{{ superCategory.id }}">{{ superCategory.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </p>
+                                        </div>
+                                        <div class="clearfix">
+                                            <p class="col-md-12 col-sm-12 col-xs-12">
+                                                {{ tinymce_init() }} 
+                                                <label>تفاصيل المقال  </label> 
+                                                <textarea class="required tinymce" data-theme="bbcode" id="recipe-description" name="post[description]" data-msg-required="الرجاء كتابة طريقة عمل الوصفة " data-rule-required="true" aria-required="true">{% if entity.post.content.description is defined %}{{ entity.post.content.description }}{% endif %}</textarea>
+                                            </p>
+                                            <p class="col-md-12 text-center">
+                                                <span>
+                                                    <input id="remember-me" name="data[draft]" type="checkbox" value="1" {% if entity.draft == true %}checked=""{% endif %}>
+                                                    <label for="remember-me">حفظ كمسودة</label>
+                                                </span> 
+                                            </p>
+                                        </div>
+                                        {#<div class="clearfix">
+                                            <p class="col-md-12 col-sm-12 col-xs-12">
+                                                <label>فيديو</label>
+                                                <input id="video" class="required" name="video" type="text" placeholder="فيديو">
+                                            </p>
+                                        </div>#}
+                                        <div class="clearfix col-md-12 col-sm-12 col-xs-12 text-center">
+                                            <button type="submit" value="submit" name="action" class="submit-btn btn btn-success" style="display: inline-block; padding: 7px 30px;">تعديل المقال</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <div class="col-md-4 col-sidebar">
+                                <div class="clearfix">
+                                    <div class="col-md-12 col-sm-12">
+                                        <label>تحميل الصور</label>
+                                        <p>يرجى إضافة الصور التى تريدينها ان تظهر فالصفحات الخاصة</p> 
+                                    </div>
+                                    <div class="col-md-12 col-sm-12 submit-image">
+                                        <div class="pics_photos">
+                                            {% include "FileUploaderBundle::basic-plusjs.html.twig" %}
+                                            <ul class="imglist photos" style="overflow: hidden;padding: 0;width: 100%;list-style: none;">
+                                                {% for image in entity.post.images %}
+                                                    <li class="col-md-6 col-sm-6 col-xs-6 text-center" style="padding: 0">
+                                                        <a style="margin:0 10px;display:block;text-align: right;" href="javascript:del({{image.id}})" id="delete_link"><div class="fa fa-remove"></div></a>
+                                                            {% if image %} 
+                                                            <img src="{{ asset("uploads/article/image/" ~ entity.post.id ~ "/"  ~ image.id) }}" width="150" height="100" style="display:block;margin: 5px auto;height: 100px;" />
+                                                            <input  {% if entity.post.mainImage != false  %}{% if image.id == entity.post.mainImage.id %} checked  {% endif %}{% endif %} type="radio" name="main" class="set_main skip" id="{{ image.id }}" value="{{ image.id }}" > 
+                                                            <label for="{{ image.id }}"> الصورة الرئيسية</label>
+                                                        {% endif %}
+                                                    </li>
+                                                {%endfor%} 
+                                            </ul>
+                                        </div><!--/.pics_photos -->
+                                    </div>
+                                </div>
+                                {#<figure class="img-wrapper">
+                                    <figure id="img-wrapper">
+                                        {% if entity.post.mainImage %}
+                                        <img src="{{ asset("uploads/article/image/" ~ entity.post.id ~ "/"  ~ entity.post.mainImage.id) }}" alt="article-image"/>
+                                        {% else %}
+                                        <img src="{{ asset('bundles/fe/images/placeholders/homeArticle-placeholder.jpg') }}" alt="article-image"/>
+                                        {% endif %}
+                                    </figure>
+                                    <div class="controllers">
+                                            {{ form_row(form._token) }}
+                                        <div class="col-md-6 col-sm-6 col-xs-6 edit">
+                                            <a href="javascript:;" id="get_image"><i class="fa fa-edit"></i> تغيير</a>
+                                            <input type="file" id="my_image" accept="image/*" name="file" style="display: none;">
+                                        </div>
+                                        <div class="col-md-6 col-sm-6 col-xs-6 remove">
+                                            <a href="javascript:;"><i class="fa fa-remove"></i> مسح</a>
+                                        </div>
+                                    </div>
+                                </figure>#}
+                            </div>
+                            <form name="delete_form" id="delete_form" action="{{ path('fe_article_edit_images_delete', { 'id': entity.id }) }}" method="POST" >
+                                <input type="hidden" name="id" id="imageId" />
+                            </form>
+
+                            <!-- .sidebar -->
+                        </div>
+                        <!-- .forms-wrapper -->
+                    </main>
+                    <!-- .main -->
+                </div>
+                <!-- .col-main -->
+            </div>
+            <!-- .row -->
+        </div>
+        <!-- .container -->
+    </div>
+
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+    {% include "FileUploaderBundle::basejs.html.twig" %}
+    <script type="text/javascript">
+        $(function () {
+            'use strict';
+            // Change this to the location of your server-side upload handler:
+            var url = '{{ path('fe_article_edit_create_images' , { 'id': entity.id }) }}',
+                    uploadButton = $('<button/>').addClass('btn btn-success').prop('disabled', true).text('Processing...').on('click', function () {
+                $(this).parent().find('.cancelUpload').hide();
+                var $this = $(this),
+                        data = $this.data();
+                $this.hide().off('click').text('Abort').on('click', function () {
+                    $this.remove();
+                    data.abort();
+                });
+                data.submit().always(function () {
+                    $this.remove();
+                });
+            }), cancelButton = $('<button/>').addClass('btn btn-danger cancelUpload ').on('click', function () {
+                $(this).parent().parent('div').remove();
+                var $this = $(this),
+                        data = $this.data();
+                $this.text('{% trans %}Cancel{% endtrans %}').remove();
+                data.hide();
+            });
+            $('#fileupload').fileupload({
+                url: url,
+                dataType: 'json',
+                autoUpload: false,
+                acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+                maxFileSize: 5000000, // 5 MB
+                // Enable image resizing, except for Android and Opera,
+                // which actually support image resizing, but fail to
+                // send Blob objects via XHR requests:
+                disableImageResize: /Android(?!.*Chrome)|Opera/
+                        .test(window.navigator.userAgent),
+                previewMaxWidth: 100,
+                previewMaxHeight: 100,
+                previewCrop: true
+            }).on('fileuploadadd', function (e, data) {
+                data.context = $('<div class="col-md-6 col-sm-6 col-xs-6 text-center" style="padding: 0"/>').appendTo('#files');
+                $('#progress .progress-bar').show();
+                $.each(data.files, function (index, file) {
+                    var node = $('<p/>')
+                            .append($('<span/>').text(file.name));
+                    if (!index) {
+                        node
+                                .append('<br>')
+                                .append(uploadButton.clone(true).data(data))
+                                .append(cancelButton.clone(true).data(node));
+                    }
+                    node.appendTo(data.context);
+                });
+            }).on('fileuploadprocessalways', function (e, data) {
+                var index = data.index,
+                        file = data.files[index],
+                        node = $(data.context.children()[index]);
+                if (file.preview) {
+                    node
+                            .prepend('<br>')
+                            .prepend(file.preview);
+                }
+                if (file.error) {
+                    node
+                            .append('<br>')
+                            .append($('<span class="text-danger"/>').text(file.error));
+                }
+                if (index + 1 === data.files.length) {
+                    data.context.find('button')
+                            .text('{% trans %}Upload{% endtrans %}')
+                            .prop('disabled', !!data.files.error);
+                    data.context.find('.cancelUpload')
+                            .text('{% trans %}Cancel{% endtrans %}')
+                            .prop('disabled', !!data.files.error);
+                }
+            }).on('fileuploadprogressall', function (e, data) {
+                var progress = parseInt(data.loaded / data.total * 100, 10);
+                $('#progress .progress-bar').css(
+                        'width',
+                        progress + '%'
+                        );
+            }).on('fileuploaddone', function (e, data) {
+                $.each(data.result.files, function (index, file) {
+                    if (file.url) {
+                        var link = $('<a>').attr('target', '_blank').prop('href', file.url).addClass('hello');
+                        $('#progress .progress-bar').css(
+                                'width',
+                                0 + '%'
+                                );
+                        var deleteLink = '<a style="margin:0 10px;display:block;text-align: right;" href="javascript:del(' + file.id + ')" id="delete_link"><div class="fa fa-remove"></div></a>';
+                        var mainImage = '<input type="radio" name="main" class="set_main skip"  value="' + file.id + '" id="' + file.id + '">';
+                        var mainImagelabel = "<label for=" + file.id + ">الصورة الرئيسية </label>";
+                        var imageUrl = '<img src=' + file.url + ' width="150" height="100" style="display:block;margin: 5px auto;height: 100px;">';
+                        var appendHtml = '<li class="col-md-6 col-sm-6 col-xs-6 text-center">'
+                                + deleteLink
+                                + imageUrl
+                                + mainImage
+                                + mainImagelabel
+                                + '<br class="clear"/></li>';
+
+                        $(".imglist").append(appendHtml);
+                        $(data.context.children()[index])
+                                .wrap(link);
+                        $('a.hello').parent('div').hide();
+                    } else if (file.error) {
+                        var error = $('<span class="text-danger"/>').text(file.error);
+                        $(data.context.children()[index])
+                                .append('<br>')
+                                .append(error);
+                    }
+                });
+            }).on('fileuploadfail', function (e, data) {
+                $.each(data.files, function (index, file) {
+                    var error = $('<span class="text-danger"/>').text('File upload failed.');
+                    $(data.context.children()[index])
+                            .append('<br>')
+                            .append(error);
+                });
+            }).prop('disabled', !$.support.fileInput)
+                    .parent().addClass($.support.fileInput ? undefined : 'disabled');
+
+
+            $(".imglist").on("click", ".set_main", function (event) {
+                var image_id = $(this).val();
+                $.ajax({
+                    type: "POST",
+                    url: "{{ path('fe_article_edit_main_image_ajax') }}",
+                    data: {'id':{{ entity.post.id }}, 'image_id': image_id},
+                    success: function (result) {
+                    }});
+            });
+        });
+        function del(id) {
+            if (confirm("Are you sure you want to delete?")) {
+                $('#imageId').val(id);
+                $('#delete_form').submit();
+            }
+        }
+
+        $(document).ready(function () {
+            $('.controllers .remove').click(function () {
+                var placeholder = '<img src="{{ asset('bundles/fe/images/placeholders/homeArticle-placeholder.jpg') }}" alt"userName"/>';
+                $('#img-wrapper').empty().append(placeholder);
+                $(this).hide();
+                $('.edit').removeClass('col-md-6 col-sm-6 col-xs-6').addClass('col-md-12 col-sm-12 col-xs-12');
+            });
+            document.getElementById('get_image').onclick = function () {
+                document.getElementById('my_image').click();
+            };
+            $("#my_image").on('change', function () {
+
+                var countFiles = $(this)[0].files.length;
+
+                var imgPath = $(this)[0].value;
+                var extn = imgPath.substring(imgPath.lastIndexOf('.') + 1).toLowerCase();
+                var image_holder = $("#img-wrapper");
+                image_holder.empty();
+
+                if (extn == "gif" || extn == "png" || extn == "jpg" || extn == "jpeg") {
+                    if (typeof (FileReader) != "undefined") {
+
+                        //loop for each file selected for uploaded.
+                        for (var i = 0; i < countFiles; i++) {
+
+                            var reader = new FileReader();
+                            reader.onload = function (e) {
+                                $("<img />", {
+                                    "src": e.target.result
+                                }).appendTo(image_holder);
+                                $('.controllers .remove').show();
+                                $('.edit').removeClass('col-md-12 col-sm-12 col-xs-12').addClass('col-md-6 col-sm-6 col-xs-6');
+                            }
+                            reader.readAsDataURL($(this)[0].files[i]);
+                        }
+
+                    } else {
+                        alert("This browser does not support FileReader.");
+                    }
+                } else {
+                    alert("Pls select only images");
+                }
+            });
+        });
+    </script>
+{% endblock %}

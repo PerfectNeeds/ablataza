@@ -1,0 +1,144 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}طباخ الشهر{% endblock %}
+
+{% block breadcrumb %}
+    <div class="home-carousel-one carousel-second-style owl-carousel hidden-xs">
+        {{ render(controller('CMSBundle:FrontEnd/Banner:Banner' , {'placment' : 1 })) }}
+    </div>
+    <div class="page-banner" style="background: #e82327;;">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2 class="page-title pull-right"><i class="fa fa-user"></i> طباخ الشهر</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li><a href="{{ path('fe_home') }}">الرئيسية</a></li>
+                        <li>طباخ الشهر</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    {% if chefOfTheMonth != null %}
+        <section class="user-profile">
+            <div class="container" style="background: url('{{ asset('bundles/fe/images/cotm.jpg') }}')!important;">
+                <div class="row">
+                    <div class="col-md-12">
+                        <figure class="user-photo thumbnail-hover" style="display: block;margin:-44px auto 0;float: none;">
+                            <a href="{{ path('fe_show_profile', {'slug':chefOfTheMonth.seo.slug}) }}">
+                                {% if chefOfTheMonth.image != null %}
+                                    {% set chefImage = asset('uploads/person/'~chefOfTheMonth.id~'/'~chefOfTheMonth.image.id) %}
+                                {% else %}
+                                    {% set chefImage = asset('bundles/fe/images/user-2.jpg') %}
+                                {% endif %}
+                                {% if chefOfTheMonth.firstAccount.userFacebook != null %}
+                                    <img src="https://graph.facebook.com/{{ chefOfTheMonth.firstAccount.userFacebook.facebookId }}/picture?type=large" alt="{{ chefOfTheMonth.firstName~ ' '~ chefOfTheMonth.familyname }}"/>
+                                {% else %}
+                                    <img src="{{ chefImage }}" alt="{{ chefOfTheMonth.firstName~ ' '~ chefOfTheMonth.familyname }}"> 
+                                {% endif %}
+                            </a>
+                        </figure>
+                        <div style="overflow: hidden" class="text-center">
+                            <div class="col-md-12" data-url="{{ path('fe_follow_user', {'slug':chefOfTheMonth.seo.slug}) }}">
+                                <h2 style="padding: 7px 20px;right: 0px;" class="user-name">{{ chefOfTheMonth.firstName~ ' '~ chefOfTheMonth.familyname }}</h2>
+                                {% if app.user != null and app.user.person.id != chefOfTheMonth.id %}
+                                    {% if app.user.person.isFollower(chefOfTheMonth.id) == false %}
+                                        <a style="margin: 0 auto 10px!important;width: 100px" href="javascript:;" class="btn btn-info btn-block follow">تابعنى</a>
+                                    {% else %}
+                                        <a href="javascript:;" class="btn btn-warning btn-block cf follow" style="margin: 0 auto 10px!important;width: 100px">إلغاء المتابعة</a>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                            <div class="col-md-12 text-center">
+                                <div class="col-md-5" style="float: none;margin: 0 auto">
+                                    <div class="statistic">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <div style="margin:0 0 10px 0;padding: 20px 10px 15px 0;" class="wrapper">
+                                                    <i class="fa fa-cutlery"></i><span>{{ chefOfTheMonthRecipeCount }}</span>
+                                                    <h6>عدد الوصفات</h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    {% endif %}
+    <div class="page-wrapper user-accounts myAccount">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 recipe-request-form-column">
+                    <h3 class="heading-bottom-line">أفضل {{ topPersons|length }} طباخ </h3>
+                    {% for topPerson in topPersons %}
+                        <div class="text-center col-md-3 col-xs-12" style="height: 400px;" data-url="{{ path('fe_follow_user', {'slug':topPerson.seo.slug}) }}">
+                            <a href="{{ path('fe_show_profile', {'slug':topPerson.seo.slug}) }}">
+                                {% if topPerson.image != null %}
+                                    {% set chefImageTop = asset('uploads/person/'~topPerson.id~'/'~topPerson.image.id) %}
+                                {% else %}
+                                    {% set chefImageTop = asset('bundles/fe/images/user-2.jpg') %}
+                                {% endif %}
+                                {% if topPerson.firstAccount.userFacebook != null %}
+                                    <img src="https://graph.facebook.com/{{ topPerson.firstAccount.userFacebook.facebookId }}/picture?type=large" style="width: 100%; height: 255px;" alt="{{topPerson.firstName}}"/>
+                                {% else %}
+                                    <img src="{{ chefImageTop }}" style="width: 100%; height: 255px;" alt="{{topPerson.firstName}}"> 
+                                {% endif %}
+                            </a>
+                            <h3 style="margin:5px auto;"><a href="{{ path('fe_show_profile', {'slug':topPerson.seo.slug}) }}">{{ topPerson.firstName }}</a></h3>
+                            <h4 style="margin:5px auto;">{{ topPerson.recipeCount }} وصفة</h4>
+                            {% if app.user != null and app.user.person.id != topPerson.id %}
+                                {% if app.user.person.isFollower(topPerson.id) == false %}
+                                    <a style="margin: 0 auto 10px!important;width: 100px" href="javascript:;" class="btn btn-info btn-block follow">تابعنى</a>
+                                {% else %}
+                                    <a href="javascript:;" class="btn btn-warning btn-block us follow" style="margin: 0 auto 10px!important;width: 100px">إلغاء المتابعة</a>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    {% endfor %} 
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block javascript %}
+    {{ parent() }}
+    <script>
+        $('.follow').click(function () {
+            $this = $(this);
+            var data_url = $(this).parent().attr('data-url');
+            $this.attr("disabled", 'disabled');
+            $.ajax({
+                type: "POST",
+                url: data_url,
+                success: function (result) {
+                    if (result == 1) {
+                        $this.empty().text('إلغاء المتابعة');
+                        $('.follow').removeAttr("disabled");
+                        $this.removeClass('btn-info');
+                        $this.addClass('btn-warning');
+                    }
+                    if (result == 0) {
+                        $this.empty().text('تابعني');
+                        $('.follow').removeAttr("disabled");
+                        $this.addClass('btn-info');
+                        $this.removeClass('btn-warning');
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

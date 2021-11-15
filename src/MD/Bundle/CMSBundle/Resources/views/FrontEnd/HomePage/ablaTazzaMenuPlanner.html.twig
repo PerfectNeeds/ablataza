@@ -1,0 +1,66 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}{% if page %}{{ page.title }}{% endif %}{% endblock %}
+
+{% block breadcrumb %}
+    <div class="home-carousel-one carousel-second-style owl-carousel hidden-xs">
+        {{ render(controller('CMSBundle:FrontEnd/Banner:Banner' , {'placment' : 1 })) }}
+    </div>
+    <div class="page-banner" style="background: #79b22b;">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2 class="page-title pull-right"><i class="fa fa-user"></i> {% if page %}{{ page.title }}{% endif %}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li><a href="{{ path('fe_home') }}">الرئيسية</a></li>
+                        <li class="active">{% if page %}{{ page.title }}{% endif %}</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    <div class="page-wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-main">
+                    <main id="main" class="main">
+                        <div class="row recipe-wrapper">
+                            {% for menuPlanner in menuPlanners %}
+                                <div class="col-xs-6 col-md-4 recipe-column">
+                                    <article class="recipe recipe-grid hentry clearfix">
+                                        <figure class="recipe-thumbnail thumbnail-hover">
+                                            {% if menuPlanner.menuPlannerHasRecipes|length > 0 %}
+                                                {% set recipe = menuPlanner.recipe %}
+                                                {% if recipe.post.mainImage %}
+                                                    {% set mainImage = asset("uploads/recipe/image/" ~ recipe.post.id ~ "/"  ~ recipe.post.mainImage.id)  %}
+                                                {% else %}
+                                                    {% set mainImage = asset('bundles/fe/images/placeholders/recipe-placeholder.jpg') %}
+                                                {% endif %}
+                                            {% else %}
+                                                {% set mainImage = asset('bundles/fe/images/placeholders/recipe-placeholder.jpg') %}
+                                            {% endif %}
+                                            <img class="img-responsive" src="{{ mainImage }}" alt="{{ menuPlanner.title }}" style="height: 202px;"> 
+                                            <h2 class="ezoma recipe-title">{{ menuPlanner.title }}</h2>
+                                            <a class="view-thumbnail" href="{{ path('fe_menu_planner_show_abla_tazza', {'slug':menuPlanner.seo.slug}) }}" style="background-color:rgba(232,35,39, 0.75);">
+                                                <i class="fa fa-eye thumbnail-view-icon"></i>
+                                            </a>
+                                        </figure>
+                                    </article>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </main>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

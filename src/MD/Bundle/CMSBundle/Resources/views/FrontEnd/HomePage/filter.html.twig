@@ -1,0 +1,143 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}Search results{% endblock %}
+
+{% block content %}
+    <div class="page_content_offset">
+        <div class="container">
+            <div class="clearfix">
+                <section class="col-lg-9 col-md-9 col-sm-9 categories" style="padding-left:0px">
+                    <div class="seperators"></div>
+                    <div class="clearfix">
+                        <h2 class="color_dark tt_uppercase f_left m_bottom_15 f_mxs_none heading5 animate_ftr">{% trans %}Search Results{% endtrans %}</h2>
+                    </div>
+                    <nav class="m_bottom_40">
+                        <ul class="horizontal_list clearfix categories_nav_list m_xs_right_0 t_mxs_align_c">
+                            {% for product in products %}
+                                <li class="col-md-4 col-sm-6 col-xs-12 t_align_c m_bottom_20">
+                                    <div class="photoframe r_corners shadow">
+                                        <a href="{{ path('fe_product', {'slug':product.seo.slug}) }}" class="d_block tr_all_hover color_dark ">
+                                            <span class="d_block wrapper">
+                                                {% if product.post.mainImage %}
+                                                    <img class="tr_all_long_hover" src="{{ asset('uploads/product/' ~ product.post.id ~ "/"  ~ product.post.mainImage.id) }}" alt="{{ product.name }}">
+                                                {% else %}
+                                                    <img class="tr_all_long_hover" src="{{ asset('bundles/fe/images/placeholder.png') }}" alt="{{ product.name }}">
+                                                {% endif %}
+                                            </span>
+                                            {% if product.post.mainImage %}
+                                            <div class="f_left f_size_large tr_all_hover view-product"><a href="{{ asset('uploads/product/' ~ product.post.id ~ "/"  ~ product.post.mainImage.id) }}" role="button" class="color_dark box_s_none d_block jackbox" data-group="portfolio" data-title="{{ product.name }}"><i class="fa fa-camera"></i></a></div>
+                                            {% endif %}
+                                            <h5 class="names">{{ product.name }}</h5>
+                                            <h4 class="prices bold">
+                                                {% if product.discount > 0 %}
+                                                    <s class="v_align_b old-price">
+                                                        {{ product.priceWithoutDiscount|currencyWithFormat }}
+                                                    </s>
+                                                {% endif %}
+                                                {{ product.price|currencyWithFormat }}
+                                            </h4>
+                                            <p class="scheme_color f_size_large m_bottom_15">{{ product.post.content.description|striptags|slice(0,75) }} ...</p>
+                                        </a>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </nav>
+                    <div class="col-md-12 t_align_r t_xs_align_l">
+                        {{ include('CMSBundle:FrontEnd/HomePage:Pagination.html.twig', {'paginator':paginator}) }}
+                    </div>
+                </section>
+                <aside class="col-lg-3 col-md-3 col-sm-3 m_xs_bottom_30">
+                    <figure class="widget shadow r_corners wrapper m_bottom_30">
+                        <figcaption>
+                            <h3 class="color_light">{% trans %}Filter{% endtrans %}</h3>
+                        </figcaption>
+                        <div class="widget_content">
+                            <form action="{{ path('fe_search') }}">
+                                <fieldset class="m_bottom_20">
+                                    <input type="text" placeholder="{% trans %}Search{% endtrans %}" autocomplete="off" name="search" class="r_corners f_size_medium full_width" {% if search is defined and search.string is defined %}value="{{ search.string }}"{% endif %}>
+                                </fieldset>
+                                <!--price-->
+                                <fieldset class="m_bottom_20">
+                                    <legend class="default_t_color f_size_large m_bottom_15 clearfix full_width relative">
+                                        <b class="f_left">{% trans %}Price range{% endtrans %} ({{ app.session.get('currency').symbol }} )</b>
+                                    </legend>
+                                    <div id="price" class="m_bottom_5"></div>
+                                    <div class="clearfix range_values">
+                                        <input class="f_left a-l first_limit" readonly name="priceMin" type="text" value="{% if search is defined and search.priceMin is defined and search.priceMax != '' %}{{ search.priceMin }}{% else %}0{% endif %}">
+                                        <input class="f_right a-r last_limit t_align_r" readonly name="priceMax" type="text" value="{% if search is defined and search.priceMax is defined and search.priceMax != '' %}{{ search.priceMax }}{% else %}250{% endif %}">
+                                    </div>
+                                </fieldset>
+                                <fieldset class="m_bottom_20">
+                                    <select name="artisan">
+                                        <option value="">{% trans %}Artisans{% endtrans %}</option>
+                                        {% for artisan in artisans %}
+                                            <option {% if search is defined and search.artisan is defined and search.artisan == artisan.id %}selected=""{% endif %} value="{{ artisan.id }}">{{ artisan.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </fieldset>
+                                <fieldset class="m_bottom_20">
+                                    <select name="heritage">
+                                        <option value="">{% trans %}Heritage{% endtrans %}</option>
+                                        {% for heritage in heritages %}
+                                            <option {% if search is defined and search.heritage is defined and search.heritage == heritage.id %}selected=""{% endif %} value="{{ heritage.id }}">{{ heritage.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </fieldset>
+                                <fieldset class="m_bottom_20">
+                                    <select name="collection">
+                                        <option value="">{% trans %}Collection{% endtrans %}</option>
+                                        {% for collection in collections %}
+                                            <option {% if search is defined and search.collection is defined and search.collection == collection.id %}selected=""{% endif %} value="{{ collection.id }}">{{ collection.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </fieldset>
+                                <fieldset class="m_bottom_20">
+                                    <select name="superCategory">
+                                        <option value="">{% trans %}Categories{% endtrans %}</option>
+                                        {% for superCategory in superCategories %}
+                                            <option {% if search is defined and search.superCategory is defined and search.superCategory == superCategory.id %}selected=""{% endif %} value="{{ superCategory.id }}">{{ superCategory.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </fieldset>
+                                <fieldset class="t_align_c">
+                                    <button class="button_type_4 bg_scheme_color r_corners tr_all_hover color_light mw_0 d_sm_inline_middle" type="submit">{% trans %}Search{% endtrans %}</button>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </figure>
+                </aside>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/fe/js/jquery-ui.min.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.sorting select').bind('change', function() {
+                var url = $(this).val();
+                if (url) {
+                    window.location = url;
+                }
+                return false;
+            });
+            var slider;
+            if ($('#price').length) {
+                slider = $('#price').slider({
+                    orientation: "horizontal",
+                    range: true,
+                    values: [0, 237],
+                    min: 0,
+                    max: 250,
+                    slide: function(event, ui) {
+                        $(this).next().find('.first_limit').val(ui.values[0]);
+                        $(this).next().find('.last_limit').val(ui.values[1]);
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock %}

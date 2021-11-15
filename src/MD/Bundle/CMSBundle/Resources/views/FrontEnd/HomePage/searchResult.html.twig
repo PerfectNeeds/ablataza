@@ -1,0 +1,335 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}{% trans %}نتيجة البحث{% endtrans %}{% endblock %}
+
+{% block breadcrumb %}
+    <div class="home-carousel-one carousel-second-style owl-carousel hidden-xs">
+        {{ render(controller('CMSBundle:FrontEnd/Banner:Banner' , {'placment' : 1 })) }}
+    </div>
+    <div class="page-banner" style="background: #8dc63f;">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2 class="page-title"><i class="fa fa-search"></i> نتيجة البحث</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li><a href="{{ path('fe_home') }}">الرئيسية</a></li>
+                        <li class="active">نتيجة البحث</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    <div class="page-wrapper user-accounts">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-main">
+                    <main id="main" class="main">
+                        <div class="tabs-wrapper">
+                            <div class="tabs-contents">
+                                <div class="tab-block our-blog" style="display: block">
+                                    <div class="row user-account-wrapper">
+                                        {% if recipes|length > 0 %}
+                                        <div>
+                                            <h3 class="title heading-bottom-line">بحث<span> الوصفات</span></h3>
+                                        </div>
+                                            {% for recipe in recipes %}
+                                                <div class="col-xs-12 col-sm-6 col-md-4 recipe-column res" id="{{ recipe.id }}">
+                                                    <article class="recipe recipe-grid hentry clearfix">
+                                                        {% if recipe.post.mainImage %}
+                                                            {% set mainImage = asset("uploads/recipe/image/" ~ recipe.post.id ~ "/"  ~ recipe.post.mainImage.id)  %}
+                                                        {% elseif recipe.youtubeUrl != null %}
+                                                            {% set mainImage = asset('bundles/fe/images/placeholders/recipe-placeholderVideo.jpg') %}
+                                                        {% else %}
+                                                            {% set mainImage = asset('bundles/fe/images/placeholders/recipe-placeholder.jpg') %}
+                                                        {% endif %}
+                                                        <figure class="recipe-thumbnail thumbnail-hover">
+                                                            {% if recipe.youtubeUrl != null %}
+                                                            <img src="{{ asset('bundles/fe/images/play-btn.png') }}" class="plays">
+                                                            {% endif %}
+                                                            {% if recipe.youtubeUrl != null %}
+                                                            <img src="{{ asset('bundles/fe/images/play-btn.png') }}" class="plays">
+                                                            {% endif %}
+                                                            <img class="img-responsive" src="{{ mainImage }}" alt="{{ recipe.title }}" style="height: 202px;"> 
+                                                            {% if recipe.youtubeUrl != null %}
+                                                                <a class="swipebox-video view-thumbnail" data-gallery="youtubevideos" data-toggle="lightbox" href="{{ recipe.youtubeUrl }}"><i class="fa fa-youtube-play thumbnail-view-icon"></i></a>
+                                                                {% else %}
+                                                                <a class="view-thumbnail" href="{{ path('fe_show_recipe', {'slug':recipe.seo.slug}) }}">
+                                                                    <i class="fa fa-eye thumbnail-view-icon"></i>
+                                                                </a>
+                                                            {% endif %}
+                                                        </figure>
+                                                        <div class="recipe-top-meta clearfix">
+                                                            <span class="entry-author author vcard pull-right"><span class="screen-reader-text">بواسطة:</span> <a href="{{ path('fe_show_profile', {'slug':recipe.person.seo.slug}) }}">{{ recipe.person.firstName }}</a></span>
+                                                            <a href="{{ path('fe_show_profile', {'slug':recipe.person.seo.slug}) }}">
+                                                            {% if recipe.person.image != null %}
+                                                                <img src="{{ asset('uploads/person/'~recipe.person.id~'/'~recipe.person.image.id) }}" class="img-circle user" alt="{{recipe.person.firstName}}"/>
+                                                            {% elseif recipe.person.firstAccount.userFacebook != null %}
+                                                                <img src="https://graph.facebook.com/{{ recipe.person.firstAccount.userFacebook.facebookId }}/picture?type=large&width=201&height=201" class="img-circle user" alt="{{recipe.person.firstName}}"/>
+                                                            {% else %}    
+                                                                <img src="{{ asset('bundles/fe/images/user-2.jpg') }}" class="img-circle user" alt="{{recipe.person.firstName}}"/>
+                                                            {% endif %}
+                                                            </a>
+                                                            <div class="rating pull-left" data-rating="{{ recipe.generalRationg }}">
+                                                                <i class="fa fa-star-o one"></i> <i class="fa fa-star-o two"></i> <i class="fa fa-star-o three"></i> <i class="fa fa-star-o four"></i> <i class="fa fa-star-o five"></i>
+                                                            </div>
+                                                        </div>
+                                                        <div class="recipe-details">
+                                                            <h2 class="entry-title recipe-title"><a href="{{ path('fe_show_recipe', {'slug':recipe.seo.slug}) }}">{{ recipe.title }}</a></h2>
+                                                            <div class="recipe-desc">
+                                                                {% if recipe.post.content.recipe|length > 75 %}
+                                                                    <p>{% if recipe.post.content.recipe is defined %}{{ recipe.post.content.recipe|striptags|replace({'&nbsp;':' '})|slice(0, 75) }}...{% endif %}</p>
+                                                                {% else %}
+                                                                    <p>{% if recipe.post.content.recipe is defined %}{{ recipe.post.content.recipe|striptags|replace({'&nbsp;':' '}) }}{% endif %}</p>
+                                                                {% endif %}
+                                                            </div>
+                                                            <footer class="entry-meta recipe-entry-meta recipe-bottom-meta clearfix">
+                                                                <span class="published-date">
+                                                                    <i class="fa fa-clock-o"></i> <time class="entry-date published">{{ recipe.preparationTime }} دقيقة</time>
+                                                                </span> 
+                                                                <div class="share-icons">
+                                                                    <div class="social-media-icons">
+                                                                        <a class="facebook" target="_blank" href="#"><i class="fa fa-facebook fa-lg"></i></a>
+                                                                        <a class="twitter" target="_blank" href="#"><i class="fa fa-twitter fa-lg"></i></a>
+                                                                        <a class="linkedin" target="_blank" href="#"><i class="fa fa-pinterest fa-lg"></i></a>
+                                                                        <a class="gplus" target="_blank" href="#"><i class="fa fa-google-plus fa-lg"></i></a>
+                                                                        <a class="mail" target="_blank" href="#"><i class="fa fa-envelope fa-lg"></i></a>
+                                                                        <span class="close-share-icons close"><i class="fa fa-close fa-lg"></i></span>
+                                                                    </div>
+                                                                </div>
+                                                                <a href="javascript:;" class="share-this read-more"><i class="fa fa-share-alt"></i> مشاركة</a> 
+                                                                {% if app.user is not null %}
+                                                                <a href="javascript:;" class="read-more fav active"><i class="fa fa-heart"></i> تفضيل</a>
+                                                                {% endif %}
+                                                            </footer>
+                                                        </div>
+                                                    </article>
+                                                </div>
+                                            {% endfor %}
+                                        <p class="col-md-12 text-center" style="clear: both">عدد الوصفات : {{ recipeCount }} | <a href="{{ path('fe_search_recipe',app.request.query.all) }}">للمزيد من الوصفات المتعلقة</a></p>
+                                        {% endif %}
+
+                                        {% if articles|length > 0 %}
+                                            <div class="clearfix"></div>
+                                            <div>
+                                                <h3 class="title heading-bottom-line">بحث<span> المقالات</span></h3>
+                                            </div>
+                                            {% for article in articles %}
+                                                <article class="col-md-6 col-sm-6 col-xs-12 art" id="{{ article.id }}">
+                                                    <div class="hentry home-blog-post clearfix">
+                                                        <figure class="col-xs-4 post-thumbnail thumbnail-hover">
+                                                            {% if article.youtubeUrl != null %}
+                                                            <img src="{{ asset('bundles/fe/images/play-btn.png') }}" class="plays">
+                                                            {% endif %}
+                                                            {% if article.youtubeUrl != null %}
+                                                            <img src="{{ asset('bundles/fe/images/play-btn.png') }}" class="plays">
+                                                            {% endif %}
+                                                            {% if article.post.mainImage %}
+                                                                {% set mainImage = asset("uploads/article/image/" ~ article.post.id ~ "/"  ~ article.post.mainImage.id)  %}
+                                                            {% else %}
+                                                                {% set mainImage = asset('bundles/fe/images/placeholders/homeArticle-placeholder.jpg') %}
+                                                            {% endif %}
+                                                            <img class="img-responsive" src="{{ mainImage }}" alt="{{ article.title }}" style="height: 175px;"> 
+                                                            {% if article.youtubeUrl != null %}
+                                                                <a class="swipebox-video view-thumbnail" data-gallery="youtubevideos" data-toggle="lightbox" href="{{ article.youtubeUrl }}"><i class="fa fa-youtube-play thumbnail-view-icon"></i></a>
+                                                                {% else %}
+                                                                <a class="view-thumbnail" href="{{ path('fe_show_article', {'slug':article.seo.slug}) }}">
+                                                                    <i class="fa fa-eye thumbnail-view-icon"></i>
+                                                                </a>
+                                                            {% endif %}
+                                                        </figure>
+                                                        <div class="col-xs-8 post-content">
+                                                            <h2 class="entry-title post-title"><a href="{{ path('fe_show_article', {'slug':article.seo.slug}) }}">
+                                                            {% if article.title|length > 34 %}
+                                                                {{ article.title|slice(0, 34) }} ...
+                                                            {% else %}
+                                                                {{ article.title }}
+                                                            {% endif %}
+                                                            </a></h2>
+                                                            <div class="art-home">
+                                                                {% if article.post.content.description|length > 80 %}
+                                                                    <p>{% if article.post.content.description is defined %}{{ article.post.content.description|striptags|replace({'&hellip;':' '})|slice(0, 80) }}...{% endif %}</p>
+                                                                {% else %}
+                                                                    <p>{% if article.post.content.description is defined %}{{ article.post.content.description|striptags|replace({'&hellip;':' '}) }}{% endif %}</p>
+                                                                {% endif %}
+                                                            </div>
+                                                            <div class="entry-meta arts">
+                                                                <span class="published-date"><i class="fa fa-clock-o"></i> <time class="entry-date published">{{ article.created|date('d/m/Y') }}</time></span>
+                                                                <div data-rating="{{ article.generalRationg }}" class="rating" style="display: inline-block;margin:0px 11px">
+                                                                    <i class="fa fa-star-o one"></i> <i class="fa fa-star-o two"></i> <i class="fa fa-star-o three"></i> <i class="fa fa-star-o four"></i> <i class="fa fa-star-o five"></i>
+                                                                </div>
+                                                                <div class="share-icons">
+                                                                    <div class="social-media-icons">
+                                                                        <a class="facebook" target="_blank" href="#"><i class="fa fa-facebook fa-lg"></i></a>
+                                                                        <a class="twitter" target="_blank" href="#"><i class="fa fa-twitter fa-lg"></i></a>
+                                                                        <a class="linkedin" target="_blank" href="#"><i class="fa fa-pinterest fa-lg"></i></a>
+                                                                        <a class="gplus" target="_blank" href="#"><i class="fa fa-google-plus fa-lg"></i></a>
+                                                                        <a class="mail" target="_blank" href="#"><i class="fa fa-envelope fa-lg"></i></a>
+                                                                        <span class="close-share-icons close"><i class="fa fa-close fa-lg"></i></span>
+                                                                    </div>
+                                                                </div>
+                                                                <a href="javascript:;" class="share-this"><i class="fa fa-share-alt"></i> مشاركة</a>
+                                                                {% if app.user is not null %}
+                                                                <a href="javascript:;" class="read-more fav active"><i class="fa fa-heart"></i> تفضيل</a>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </article>
+                                            {% endfor %}
+                                             <p class="col-md-12 text-center" style="clear: both">عدد المقالات : {{ articleCount }} | <a href="{{ path('fe_search_article',app.request.query.all) }}">للمزيد من المقالات المتعلقة</a></p>
+                                        {% endif %}
+
+                                        {% if ablaTazzaTips != false %}
+                                             <div class="clearfix"></div>
+                                            <div>
+                                                <h3 class="title heading-bottom-line">بحث<span> النصائح</span></h3>
+                                            </div>
+
+                                            {% for ablaTazzaTip in ablaTazzaTips %}
+                                            <div class="col-md-6 col-sm-12 col-xs-12" style="margin-bottom:20px;">
+                                                <div class="talkbubble col-md-8 col-sm-8 col-xs-8 tips">
+                                                    <h3 class="widget-title heading-bottom-line">أبلة طازة بتقولك</h3>
+                                                    <p style="margin: 0px; height: 93px;">{{ ablaTazzaTip.tip|raw|slice(0, 193) }}</p> 
+                                                </div>
+                                                <div class="col-md-3 col-sm-3 col-xs-4">
+                                                    <figure class="img-circle" style="width: 120px;height:120px;overflow:hidden;margin-right:20px;">
+                                                        {% if ablaTazzaTip.person.image != null %}
+                                                            <img src="{{ asset('uploads/person/'~ablaTazzaTip.person.id~'/'~ablaTazzaTip.person.image.id) }}" style="width: 100%;" alt="{{ablaTazzaTip.person.firstName}}"/>
+                                                        {% else %}
+                                                            <img src="{{ asset('bundles/fe/images/footer-logo.png') }}" style="width: 100%;" alt="{{ablaTazzaTip.person.firstName}}"/>
+                                                        {% endif %}
+                                                    </figure>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                            <p class="col-md-12 text-center" style="clear: both">عدد النصائح : {{ tipCount }} | <a href="{{ path('fe_search_tip',app.request.query.all) }}">للمزيد من النصائح المتعلقة</a></p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                    <!-- .main -->
+                </div>
+                <!-- .col-main -->
+            </div>
+            <!-- .row -->
+        </div>
+        <!-- .container -->
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+    <script>
+        $('.art .fav').click(function () {
+            var article_id = $(this).parent().parent().parent().parent().attr("id");
+            $this = $(this);
+            $.ajax({
+                type: "POST",
+                url: "{{ path('fe_article_favorite_ajax') }}",
+                data: {'id': article_id},
+                success: function (result) {
+                    if (result == 1) {
+                        $this.addClass('active');
+                    }
+                    if (result == 0) {
+                        $this.removeClass('active');
+                    }
+                }
+            });
+        });
+        $('.res .fav').click(function () {
+            var mostView_id = $(this).parent().parent().parent().parent().attr("id");
+            $this = $(this);
+            $.ajax({
+                type: "POST",
+                url: "{{ path('fe_recipe_favorite_ajax') }}",
+                data: {'id': mostView_id},
+                success: function (result) {
+                    if (result == 1) {
+                        $this.addClass('active');
+                    }
+                    if (result == 0) {
+                        $this.removeClass('active');
+                    }
+                }
+            });
+        });
+        $('.current-user .fav').click(function () {
+            var fadfada_id = $(this).parent().parent().parent().attr("id");
+            $this = $(this);
+            $.ajax({
+                type: "POST",
+                url: "{{ path('fe_fadfada_favorite_ajax') }}",
+                data: {'id': fadfada_id},
+                success: function (result) {
+                    if (result == 1) {
+                        $this.addClass('active');
+                    }
+                    if (result == 0) {
+                        $this.removeClass('active');
+                    }
+                }
+            });
+        });
+        $(document).ready(function ($) {
+
+            $(document).delegate('*[data-toggle="lightbox"]:not([data-gallery="navigateTo"])', 'click', function(event) {
+                event.preventDefault();
+                return $(this).ekkoLightbox({
+                    onShown: function() {
+                            if (window.console) {
+                                    return console.log('onShown event fired');
+                            }
+                    },
+                    onContentLoaded: function() {
+                            if (window.console) {
+                                    return console.log('onContentLoaded event fired');
+                            }
+                    },
+                    onNavigate: function(direction, itemIndex) {
+                            if (window.console) {
+                                    return console.log('Navigating '+direction+'. Current item: '+itemIndex);
+                            }
+                    }
+                });
+            });
+
+            $('#open-image').click(function (e) {
+                    e.preventDefault();
+                    $(this).ekkoLightbox();
+            });
+            $('#open-youtube').click(function (e) {
+                    e.preventDefault();
+                    $(this).ekkoLightbox();
+            });
+
+            $(document).delegate('*[data-gallery="navigateTo"]', 'click', function(event) {
+                    event.preventDefault();
+                    return $(this).ekkoLightbox({
+                            onShown: function() {
+                                    var lb = this;
+                                    $(lb.modal_content).on('click', '.modal-footer a#jumpit', function(e) {
+                                            e.preventDefault();
+                                            lb.navigateTo(2);
+                                    });
+                                    $(lb.modal_content).on('click', '.modal-footer a#closeit', function(e) {
+                                            e.preventDefault();
+                                            lb.close();
+                                    });
+                            }
+                    });
+            });
+        });
+    </script>
+{% endblock %}

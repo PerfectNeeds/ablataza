@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>أبلة طازة | طباعة</title>
+    <link rel="icon" type="image/png" href="{{ asset('bundles/fe/images/favicon.png') }}" />
+    <link href="{{ asset('bundles/fe/css/animate.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/fe/css/font-awesome.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/fe/js/owl.carousel/owl.carousel.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/fe/js/slick/slick.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/fe/js/slick/slick-theme.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/fe/js/bxslider/jquery.bxslider.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/fe/js/slickNav/slicknav.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/fe/js/swipebox/css/swipebox.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/fe/js/chosen/chosen.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('bundles/fe/css/bootstrap.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('bundles/fe/css/recipex.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('bundles/fe/css/nanoscroller.css') }}"/>
+    <style media="print">
+        .printing
+        {
+            display: none !important;
+        }
+    </style>
+</head>
+<div id="page-layer-styled" class="page-wrapper submit-recipe">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-main">
+                <main id="main" class="main">
+                    <a href="javascript:window.print()" class="btn btn-danger printing"><i class="fa fa-print"></i> طباعة</a>
+                    {% for ingredientCategory in ingredientCategories if ingredientCategory.supermarkItems|length > 0 %}
+                        <article class="hentry">
+                            <div class="ingredients" data-id="{{ ingredientCategory.id }}">
+                                <h4 class="title">{{ ingredientCategory.title }}</h4>
+                                <div class="olsss">
+                                    {% for supermarkItem in ingredientCategory.supermarkItems %}
+                                        <div class="recipe-top-meta {% if supermarkItem.checked ==true %}ches{% endif %}" data-id="{{ supermarkItem.id }}" style="overflow: hidden">
+                                            <div style="width: 15px;float: right;margin:0 15px"> 
+                                                <i class="fa {% if supermarkItem.checked ==true %}fa-check{% endif %}"></i>
+                                            </div>
+                                            {{ supermarkItem.title }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </main>
+            </div>
+        </div>
+    </div>
+</div>

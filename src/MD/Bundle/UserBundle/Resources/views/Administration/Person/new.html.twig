@@ -1,0 +1,61 @@
+{% extends 'AdminTemplateBundle::base.html.twig' %}
+{% set page_title %}User Creation{% endset %}
+{% block body %}
+    {% if errorMessage %}<div class="error">{{errorMessage}}</div>{% endif %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h6 class="panel-title"><i class="icon-bubble4"></i> {{ page_title }}</h6>
+        </div>
+        <div class="panel-body">
+
+            <form class="form bootstrap-validator-form" id="validation" action="{{ path('person_create') }}" method="post" >
+                <div class="form-group">
+                    <label for="firstName" class="required">First Name</label>
+                    <input name="firstName" placeholder="First Name" id="firstName" required="required" maxlength="225" class="form-control" type="text">
+                </div>
+                <div class="form-group">
+                    <label for="familyName" class="required">Family Name</label>
+                    <input name="familyName" placeholder="Family Name" id="familyName" required="required" maxlength="225" class="form-control" type="text">
+                </div>
+                <div class="form-group">
+                    <label for="phone" class="required">Phone</label>
+                    <input name="phone" id="phone" placeholder="Phone" class="form-control" type="text">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="text" placeholder="Email Address" class="form-control" id="email" name="email"/>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" placeholder="Password" class="form-control" id="pasword" name="password"/>
+                </div>
+                <div class="form-group">
+                    <label>Gender</label>
+                    <select class="form-control" name="gender">
+                        <option value="1">Male</option>
+                        <option value="2">Female</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>State</label>
+                    <select class="form-control" name="active">
+                        <option value="1">Active</option>
+                        <option value="0">Block</option>
+                    </select>
+                </div>
+                <br class="clear"/>
+                </span>
+                <div class="form-group text-right">
+                    <button class="btn btn-success" type="submit"><i class="fa fa-check"></i> Create</button>
+                    <button class="btn btn-danger" type="reset"><i class="fa fa-refresh"></i> Reset</button>
+                </div>
+            </form>
+            <div >
+                <a href="{{ path('person_admin') }}" class="btn btn-warning">Back to the list</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+{% endblock %}

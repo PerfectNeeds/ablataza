@@ -1,0 +1,104 @@
+{% extends 'AdminTemplateBundle::base.html.twig' %}
+{% set page_title %}Recipe Edit{% endset %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/admintemplate/assets/plugins/chosen/chosen.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/admintemplate/assets/plugins/validator/bootstrapValidator.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/admintemplate/assets/css/select2.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/admintemplate/assets/plugins/timepicker/bootstrap-timepicker.min.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block body -%}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h6 class="panel-title"><i class="icon-bubble4"></i> {{ page_title }}</h6>
+        </div>
+        <div class="panel-body">
+            <div class="form-group text-right">
+                <a class="btn btn-shadow btn-warning" href="{{ path('post_set_images', { 'id': entity.post.id,'pageType' : 9 ,'parentId' : entity.id }) }}"><i class="icon-picture"></i> Manage Images Gallery</a>
+            </div>
+            <form class="form bootstrap-validator-form" id="yadaweyaform" action="{{ path('recipe_update', { 'id': entity.id}) }}" role="form" method="POST">
+                <input type="hidden" name="_method" value="PUT" />  
+                {{ form_widget(edit_form) }}
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group mu">
+                            <label>مطبخ طازة</label>
+                            <div class="bootstrap-duallistbox-container row moveonselect col-md-12" style="padding-right: 0;width: 101%!important"> 
+                                <select multiple="multiple" size="10" name="data[categories][]" style="height: 196px;">
+                                    {% for supperCategory in supperCategories %}
+                                        {% for category in supperCategory.categories %}
+                                            <option {% if entity.isRecpieHasCategory(category.id) == true %}selected=""{% endif %} value="{{ category.id }}">{{ supperCategory.name }}-{{ category.name }}</option>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group mu">
+                            <label>تصنيف</label>
+                            <div class="bootstrap-duallistbox-container row moveonselect col-md-12" style="padding-right: 0;width: 101%!important"> 
+                                <select multiple="multiple" size="10" name="data[subCategories][]" style="height: 196px;">
+                                    {% for subCategory in subCategories %}
+                                        <option {% if entity.isRecpieHasSubCategory(subCategory.id) == true %}selected=""{% endif %} value="{{ subCategory.id }}">{{ subCategory.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <fieldset>
+                    <legend>About This Recipe</legend>
+                    {{tinymce_init()}} 
+                    <div class="form-group">
+                        <label>User ID : {% if entity.person != null %}{{ entity.person.id }}{% endif %}</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="dynamicpagetype_ingredients" class="required">Ingredients</label>
+                        <textarea id="dynamicpagetype_ingredients" name="post[ingredients]" class="tinymce" data-theme="bbcode" >{% if entity.post.content.ingredients is defined %}{{ entity.post.content.ingredients }}{% endif %}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="dynamicpagetype_recipe" class="required">the recipe</label>
+                        <textarea id="dynamicpagetype_recipe" name="post[recipe]" class="tinymce" data-theme="bbcode" >{% if entity.post.content.recipe is defined %}{{ entity.post.content.recipe }}{% endif %}</textarea>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>SEO</legend>
+                    {{ form_widget(formSeo) }}
+                </fieldset>
+                <div class="form-group text-right">
+                    <button class="btn btn-success" type="submit"><i class="fa fa-check"></i> Update</button>
+                    <button class="btn btn-danger" type="reset"><i class="fa fa-refresh"></i> Reset</button>
+                </div>
+            </form>
+            <div>
+                <a href="{{ path('recipe') }}" class="btn btn-warning">Back to the list</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('bundles/admintemplate/assets/plugins/slug/jquery.slug.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/admintemplate/assets/plugins/chosen/chosen.jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/admintemplate/assets/plugins/validator/bootstrapValidator.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/admintemplate/assets/js/select2.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/admintemplate/assets/plugins/timepicker/bootstrap-timepicker.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/admintemplate/assets/js/jquery.bootstrap-duallistbox.js') }}"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('#yadaweyaform').validate();
+
+            $("#md_bundle_cmsbundle_recipe_title").slug({
+                slug: 'slug', // class of input / span that contains the generated slug 
+                hide: false        // hide the text input, true by default 
+            });
+            $(document).ready(function () {
+                $(".js-example-basic-single").select2();
+                $('select[name="data[categories][]"]').bootstrapDualListbox();
+                $('select[name="data[subCategories][]"]').bootstrapDualListbox();
+            });
+        });
+    </script>   
+{% endblock %}

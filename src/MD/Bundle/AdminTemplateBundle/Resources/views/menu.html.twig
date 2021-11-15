@@ -1,0 +1,84 @@
+{% set cr = app.request.attributes.get('_route') %}
+<li {% if ('sitesetting' == cr or 'sitesetting_edit' == cr ) %}class="active"{% endif %}>
+    <a href="{{ path('sitesetting') }}">
+        <i class="fa fa-gear icon-sidebar"></i>Site Setting
+    </a>
+</li>
+{% if is_granted('ROLE_SUPER_ADMIN') or is_granted('ROLE_ADMIN') %}
+    <li {% if ('person_admin' == cr or 'user_edit' == cr or 'user_new' == cr ) %}class="active"{% endif %}>
+        <a href="{{ path('person_admin') }}">
+            <i class="fa fa-user icon-sidebar"></i>Admins
+        </a>
+    </li>
+    <li {% if ('person_user' == cr or 'person_edit' == cr ) %}class="active"{% endif %}>
+        <a href="{{ path('person_user') }}">
+            <i class="fa fa-user icon-sidebar"></i>Users
+        </a>
+    </li>
+{% endif %}
+
+<li {% if ('foodmeasurement' == cr or 'foodmeasurement_edit' == cr or 'foodmeasurement_new' == cr or 'foodmeasurement_rate' == cr) %}class="active"{% endif %}>
+    <a href="{{ path('foodmeasurement') }}">
+        <i class="fa fa-file-o icon-sidebar"></i>Food Measurement
+    </a>
+</li>
+<li {% if ('supercategory' == cr or 'supercategory_edit' == cr or 'category' == cr or 'category_edit' == cr or 'subcategory' == cr or 'subcategory_edit' == cr) %}class="active"{% endif %}>
+    <a href="{{ path('supercategory') }}">
+        <i class="fa fa-file-o icon-sidebar"></i>Categories
+    </a>
+</li>
+<li {% if ('quote' == cr or 'quote_edit' == cr or 'quote_new' == cr ) %}class="active"{% endif %}>
+    <a href="{{ path('quote') }}">
+        <i class="fa fa-quote-left icon-sidebar"></i>Quotes
+    </a>
+</li>
+<li {% if ('ingredientcategory' == cr or 'ingredientcategory_edit' == cr or 'ingredientcategory_new' == cr ) %}class="active"{% endif %}>
+    <a href="{{ path('ingredientcategory') }}">
+        <i class="fa fa-quote-left icon-sidebar"></i>Ingredient Category
+    </a>
+</li>
+<li {% if ('recipe' == cr or 'recipe_edit' == cr or 'recipe_new' == cr or 'recipecomment' == cr) %}class="active"{% endif %}>
+    <a href="{{ path('recipe') }}">
+        <i class="fa fa-cutlery icon-sidebar"></i>Recipes
+    </a>
+</li>
+<li {% if ('article' == cr or 'article_edit' == cr or 'article_new' == cr or 'articlecomment' == cr) %}class="active"{% endif %}>
+    <a href="{{ path('article') }}">
+        <i class="fa fa-comments icon-sidebar"></i>Articles
+    </a>
+</li>
+<li {% if ('fadfadavideo' == cr or 'fadfadavideo_edit' == cr or 'fadfadavideo_new' == cr ) %}class="active"{% endif %}>
+    <a href="{{ path('fadfadavideo') }}">
+        <i class="fa fa-film icon-sidebar"></i>Fadfada Videos
+    </a>
+</li>
+<li {% if ('fadfada' == cr or 'fadfada_edit' == cr or 'fadfada_new' == cr or 'fadfadacomment' == cr) %}class="active"{% endif %}>
+    <a href="{{ path('fadfada') }}">
+        <i class="fa fa-comments icon-sidebar"></i>Fadfada
+    </a>
+</li>
+<li {% if ('survey' == cr or 'survey_edit' == cr or 'survey_new' == cr) %}class="active"{% endif %}>
+    <a href="{{ path('survey') }}">
+        <i class="fa fa-question icon-sidebar"></i>Survey
+    </a>
+</li>
+<li {% if ('tip' == cr or 'tip_edit' == cr or 'tip_new' == cr) %}class="active"{% endif %}>
+    <a href="{{ path('tip') }}">
+        <i class="fa fa-comment icon-sidebar"></i>Tips
+    </a>
+</li>
+<li {% if ('ask' == cr or 'ask_edit' == cr or 'ask_new' == cr) %}class="active"{% endif %}>
+    <a href="{{ path('ask') }}">
+        <i class="fa fa-question icon-sidebar"></i>Ask Abla Tazza
+    </a>
+</li>
+<li {% if ('dynamicpage' == cr or 'dynamicpage_edit' == cr or 'dynamicpage_new' == cr ) %}class="active"{% endif %}>
+    <a href="{{ path('dynamicpage') }}">
+        <i class="fa fa-file-o icon-sidebar"></i>Dynamic Pages
+    </a>
+</li>
+<li {% if ( 'banner' == cr or 'banner_edit' == cr or 'banner_new' == cr ) %}class="active"{% endif %}>
+    <a href="{{ path('banner') }}">
+        <i class="fa fa-magic icon-sidebar"></i>Banner
+    </a>
+</li>

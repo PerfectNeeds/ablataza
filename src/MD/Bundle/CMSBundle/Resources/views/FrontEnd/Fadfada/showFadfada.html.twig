@@ -1,0 +1,233 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% if entity.maritalStatus == 1 %}
+    {% set status = 'متجوزه' %}
+{% elseif entity.maritalStatus == 2 %}
+    {% set status = 'مخطوبه' %}
+{% elseif entity.maritalStatus == 3 %}
+    {% set status = 'مصاحبه' %}
+{% elseif entity.maritalStatus == 4 %}
+    {% set status = 'سينجل' %}
+{% else %}
+    {% set status = 'أخرى' %}
+{% endif %}
+
+{% block title %}{{ entity.id }}# | {{ status }}{% endblock %}
+{% block metaTag %}
+    <meta property="og:title" content="{{ entity.id }}# | {{ status }}" />
+    {% if entity.text is defined and entity.text|replace({"\n":' ', "\r":' '})|length > 1 %}
+        <meta property="og:description" content="{{ entity.text|replace({"\n":' ', "\r":' '})|slice(0, 180) }}" />
+    {% endif %}
+    <meta property="article:author" content="http://www.facebook.com/AblaTazza.Kitchen">
+    {% if entity.seo.metaTag is defined %}{{ entity.seo.metaTag|raw }}{% endif %}
+{% endblock %}
+
+{% block breadcrumb %}
+    <div class="home-carousel-one carousel-second-style owl-carousel hidden-xs">
+        {{ render(controller('CMSBundle:FrontEnd/Banner:Banner' , {'placment' : 1 })) }}
+    </div>
+    <div class="page-banner" style="background: rgba(228, 0, 52, 1) none repeat scroll 0 0;">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2 class="page-title"><i class="fa fa-comments"></i> فضفضة</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+
+                        <li><a href="{{ path('fe_home') }}">الرئيسية</a></li>
+                        <li><a href="{{ path('fe_fadfada') }}">فضفضة</a></li>
+                        <li class="active">{{ entity.id }}# | {{ status }}</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    <section class="user-profile">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7">
+                    <h3 class="widget-title heading-bottom-line" style="margin-bottom: 20px;">فضفضة</h3>
+                    <div class="current-user" id="{{ entity.id }}">
+                        <div class="user-details" style="width: 100%">
+                            <h2 class="user-name">{{ entity.id }}# | {{ status }}</h2>
+                            <p>{{ entity.text }}</p>
+                            <div class="sharing-wrapper">
+                                <div class="share-icons">
+                                    <div class="social-media-icons">
+                                        <a class="facebook" target="_blank" href="http://www.facebook.com/sharer/sharer.php?u={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_fadfada_show', {'id':entity.id}) }}" title="Share on Facebook"><i class="fa fa-facebook fa-lg"></i></a>
+                                        <a class="twitter" target="_blank" href="http://twitter.com/share?text={{ status }}&url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_fadfada_show', {'id':entity.id}) }}"><i class="fa fa-twitter fa-lg"></i></a>
+                                        <a class="linkedin" target="_blank" href="https://www.pinterest.com/pin/create/button/?url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_fadfada_show', {'id':entity.id}) }}&description={{ status }}"><i class="fa fa-pinterest fa-lg"></i></a>
+                                        <a class="gplus" target="_blank" href="https://plus.google.com/share?url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_fadfada_show', {'id':entity.id}) }}"><i class="fa fa-google-plus fa-lg"></i></a>
+                                        <a class="mail" target="_blank" href="mailto:?subject={{ entity.id }}# | {{ status }}&body={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_fadfada_show', {'id':entity.id}) }}"><i class="fa fa-envelope fa-lg"></i></a>
+                                        <span class="close-share-icons close"><i class="fa fa-close fa-lg"></i></span>
+                                    </div>
+                                </div>
+                                <a href="javascript:;" class="share-this pull-left"><i class="fa fa-share-alt"></i> مشاركة</a>
+                                {% if app.user is not null %}
+                                    <a href="javascript:;" class="read-more pull-left like fav {% if entity.isFadfadaFavByUserId(app.user.person.id) == true %}active{% endif %}"><i class="fa fa-heart"></i> تفضيل</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div id="comments">
+                        <div class="comment-respond" id="respond">
+                            <form id="register" class="register-form" method="post" action="{{ path('fe_fadfadacomment_create', {'id':entity.id}) }}">
+                                <div class="col-md-12">
+                                    <h3 class="comment-reply-title pull-right" id="reply-title">ضيفى تعليق </h3>
+                                </div>
+                                <div class="col-md-12">
+                                    <p class="comment-form-author">
+                                        {% if app.user %}
+                                            <input type="text" aria-required="true" value="{{ app.user.person.firstName~ ' '~ app.user.person.familyname }}" name="name" style="clear: both;display: block" id="author" placeholder="الإسم" data-msg-required="برجاء كتابة الإسم">
+                                        {% else %}
+                                            <input type="text" aria-required="true" value="" name="name" style="clear: both;display: block" id="author" placeholder="الإسم" data-msg-required="برجاء كتابة الإسم">
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                <div class="col-md-12">
+                                    <p class="comment-form-comment">
+                                        <textarea data-rule-required="true" aria-required="true" name="comment" id="comment" class="required" placeholder=" أكتبى تعليق ..." data-msg-required="برجاء كتابة تعليقك"></textarea>
+                                    </p>
+                                </div>
+                                <p class="form-submit col-md-12 text-center">
+                                    <button data-sitekey="6Le8GZsUAAAAABEnIj6SPfvYmRvddmUAHGquJFAF" data-callback="onSubmitComment" type="button" class="g-recaptcha submi">إرسال</button>
+                                </p>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="about-author">
+                        <div class="top-wrapper clearfix">
+                            <div>
+                                <h2 id="comments-title">التعليقات ({{ comments|length }})</h2>
+                                <ol class="commentlist">
+
+                                    {% for comment in comments %}
+                                        <li class="comment odd depth-1">
+                                            <article class="comment-body">
+                                                <div class="comment-wrapper">
+                                                    <div class="comment-author vcard">
+                                                        <h5 class="fn">{{ comment.name }}</h5>
+                                                    </div>
+                                                    <div class="comment-content">
+                                                        <p style="margin-bottom: 0px;">{{ comment.comment|nl2br }}</p>
+                                                    </div>
+                                                    <div class="comment-meta pull-left"  style="display: block">
+                                                        <div class="comment-meta">
+                                                            <time><i class="fa fa-clock-o"></i> {{ comment.created|date('d/m/Y') }}</time>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </article>
+                                        </li>
+                                    {% endfor %}
+                                    <!-- End loop -->
+
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5 recipe-request-form-column">
+                    {% for flashMessage in app.session.flashbag.get('errorFadfada') %}
+                        <div role="alert" class="alert alert-danger">{{ flashMessage }}</div>
+                    {% endfor %}
+                    {% for flashMessage in app.session.flashbag.get('successFadfada') %}
+                        <div role="alert" class="alert alert-success ">تم إضافة فضفتك بنجاح وسوف يتم الرد في أسرع وقت</div>
+                    {% endfor %}
+                    <h3 class="form-heading heading-bottom-line">فضفضي يا حبيبتي</h3>
+                    <h4 style="margin-bottom: 5px;color:#000;">الحالة الإجتماعية؟ : </h4>
+                    <form class="que" method="POST" action="{{ path('fe_fadfada_create') }}">
+                        <div class="form-group col-md-12">
+                            <label><input type="radio" name="data[maritalStatus]" value="1"> متجوزه</label>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label><input type="radio" name="data[maritalStatus]" value="2"> مخطوبه</label>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label><input type="radio" name="data[maritalStatus]" value="3"> مصاحبه</label>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label><input type="radio" name="data[maritalStatus]" value="4"> سينجل</label>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label><input type="radio" name="data[maritalStatus]" value="5"> اخري</label>
+                        </div>
+                        <div style="margin: 0px auto 5px; padding:0 10px ! important;display: none;" class="alert alert-danger quesAlert col-md-12">برجاء تحديد إختيار</div>
+                        <div class="form-group col-md-12">
+                            <textarea id="message" class="required" name="data[text]" placeholder="فضفضي مع ابله طازة" data-msg-required="برجاء كتابة الفضفضة"></textarea>
+                            <label class="error askEror" style="display:none;" for="comment">برجاء كتابة تعليقك</label>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <button data-sitekey="6Le8GZsUAAAAABEnIj6SPfvYmRvddmUAHGquJFAF" data-callback="onSubmit" type="button" class="g-recaptcha submit-recipe-search-button submi">فضفضي مع ابله طازه</button>
+                        </div>
+                    </form>
+                    <aside id="sidebar" class="sidebar">
+                        <section class="widget">
+                            <img height="auto" alt="" style="margin:0 auto;display:block" src="//lh5.ggpht.com/XJZJYLBAMMyyV3e0oY1jTiBxmA17G4BI_2KLG3MlEsVFUjHBBB1VHy1SgCd9gWwbZnlitH3T=w234">
+                            {{ render(controller('CMSBundle:FrontEnd/Banner:showOneBanner' , {'placment' : 4 })) }}
+                        </section>
+                    </aside>
+                </div>
+            </div>
+        </div>
+        <!-- .container -->
+    </section>
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/fe/js/contact.js') }}"></script>
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+    <script>
+        function onSubmit(token) {
+            $("#que").submit();
+        }
+        function onSubmitComment(token) {
+            $("#register").submit();
+        }
+        $('.que').submit(function () {
+            var choose = $('.que input:checked').val();
+            var msaag = $('#message').val();
+            if (choose == null) {
+                $('.quesAlert').show();
+                return false;
+            } else {
+                $('.quesAlert').hide();
+            }
+            if (msaag.length === 0) {
+                $('.askEror').show();
+                return false;
+            } else {
+                $('.askEror').hide();
+            }
+        });
+        $('.submi').click(function () {
+            $('.que').submit();
+        });
+        $('.current-user .fav').click(function () {
+            var fadfada_id = $(this).parent().parent().parent().attr("id");
+            $this = $(this);
+            $.ajax({
+                type: "POST",
+                url: "{{ path('fe_fadfada_favorite_ajax') }}",
+                data: {'id': fadfada_id},
+                success: function (result) {
+                    if (result == 1) {
+                        $this.addClass('active');
+                    }
+                    if (result == 0) {
+                        $this.removeClass('active');
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

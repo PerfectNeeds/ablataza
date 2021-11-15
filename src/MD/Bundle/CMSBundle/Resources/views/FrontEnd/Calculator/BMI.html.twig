@@ -1,0 +1,213 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}{% trans %}موشر كتلة الجسم{% endtrans %}{% endblock %}
+{% block stylesheet %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/fe/css/datepicker.min.css') }}"/>
+{% endblock %} 
+{% block breadcrumb %}
+    <div class="home-carousel-one carousel-second-style owl-carousel hidden-xs">
+        {{ render(controller('CMSBundle:FrontEnd/Banner:Banner' , {'placment' : 1 })) }}
+    </div>
+    <div class="page-banner" style="background: #536c9f;">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2 class="page-title pull-right"><img src="{{ asset('bundles/fe/images/bmi.png') }}" alt="موشر كتلة الجسم" /> موشر كتلة الجسم</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li><a href="{{ path('fe_home') }}">الرئيسية</a></li>
+                        <li class="active">موشر كتلة الجسم</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    <div id="page-layer-styled" class="page-wrapper blog">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <h3 class="heading-bottom-line" style="padding-bottom: 16px;">موشر كتلة الجسم</h3>
+                    <div class="row">
+                        <form id="register">
+                            <div class="col-sm-4">
+                                <p style="margin-bottom:3px">
+                                    <label>النوع</label>
+                                    <select id="cuisine" name="g" class="form-control chosen-select">
+                                        <option {% if gender == 1 %}selected=""{% endif %} value="1">ذكر</option>
+                                        <option {% if gender == 2 %}selected=""{% endif %} value="2">أنثى</option>
+                                    </select>
+                                </p>
+                            </div>
+                            <div class="col-sm-4">
+                                <p style="margin-bottom:3px">
+                                    <label>الطول (سنتيمتر)</label>
+                                    <input name="h" id="height" value="{{ height }}" type="number" placeholder="الطول">
+                                    <div class="alert alert-danger hid" style="padding:2px 5px;">برجاء تحديد الطول</div>
+                                </p>
+                            </div>
+                            <div class="col-sm-4">
+                                <p style="margin-bottom:3px">
+                                    <label>الوزن (كيلوجرام)</label>
+                                    <input name="w" id="weight" value="{{ weight }}" type="number" placeholder="الوزن">
+                                    <div class="alert alert-danger hid" style="padding:2px 5px;">برجاء تحديد الوزن</div>
+                                </p>
+                            </div>
+                            <div class="col-sm-12 text-center">
+                                <p>
+                                    <button type="submit" class="btn btn-success">إحسب</button>
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                    <div>
+                        <div class="alert alert-info" style="padding: 0;overflow:hidden;border-color: #31708f;">
+                            <div class="pull-right col-md-2" style="padding: 0;">
+                                <img src="{{ asset('bundles/fe/images/woman1.png') }}" style="width: 100%" alt="نحافة"/>
+                            </div>
+                            <div class="col-md-10" style="padding-top: 15px;padding-bottom: 15px">
+                                <strong>مؤشر كتلة الجسم أقل من 18.5 كجم/ m2</strong><br/>
+                               مؤشر كتلة الجسم أقل من 18.5 يشير إلى أنك نحيفة ، لذلك قد يحتاج الوضع إلى زيادة بعض الوزن. و ينصح لك أن تسألى طبيبك أو أخصائي التغذية لتحصلى على نصيحته
+                            </div>
+                        </div>
+                        <div class="alert alert-success" style="padding: 0;overflow:hidden;background:#bbf5bc ;border-color: #3c763d;">
+                            <div class="pull-right col-md-2" style="padding: 0;">
+                                <img src="{{ asset('bundles/fe/images/woman2.png') }}" style="width: 100%" alt="وزن طبيعى"/>
+                            </div>
+                            <div class="col-md-10" style="padding-top: 15px;padding-bottom: 15px">
+                                <strong>مؤشر كتلة الجسم من  18.5 حتي 25 كجم / m2</strong><br/>
+                                مؤشر كتلة الجسم من 18.5 حتي  25  يشير إلى أنك على وزن صحي لطولك. من خلال المحافظة على وزنك الصحي يمكنك خفض خطر إصابتك بمشاكل صحية خطيرة.
+                            </div>
+                        </div>
+                        <div class="alert alert-warning" style="padding: 0;overflow:hidden;background:#fde2b0 ;border-color: #8a6d3b;">
+                            <div class="pull-right col-md-2" style="padding: 0;">
+                                <img src="{{ asset('bundles/fe/images/woman3.png') }}" style="width: 100%" alt="وزن زائد"/>
+                            </div>
+                            <div class="col-md-10" style="padding-top: 15px;padding-bottom: 15px">
+                                <strong>مؤشر كتلة الجسم من 25 - 30 كجم / m2</strong><br/>
+                                مؤشر كتلة الجسم من 25 - 30 يشير إلى أنك زائدة  فى الوزن قليلا. و يستحسن أن تفقدى بعض الوزن للأسباب الصحية. و ينصح لك التحدث إلى طبيبك أو أخصائي التغذية للحصول على نصيحته.
+                            </div>
+                        </div>
+                        <div class="alert alert-danger" style="padding: 0;overflow:hidden;background:#fdc4c2 ;border-color: #a94442;">
+                            <div class="pull-right col-md-2" style="padding: 0;">
+                                <img src="{{ asset('bundles/fe/images/woman4.png') }}" style="width: 100%" alt="سمنة"/>
+                            </div>
+                            <div class="col-md-10" style="padding-top: 15px;padding-bottom: 10px">
+                                <strong>مؤشر كتلة الجسم أكثرمن 30 كجم / m2</strong><br/>
+                                مؤشر كتلة الجسم أكثر من 30 يشير إلى أنك زائدة فى الوزن بشكل كبير. قد تكون صحتك فى خطر إذا كنتى لا تفقدى الوزن الزائد. و ينصح لك التحدث إلى طبيبك أو أخصائي التغذية للحصول على نصيحته لحياة صحية أفضل و تجنب الأمراض
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- .col-main -->
+                <div class="col-md-4 col-sidebar">
+                    {% if bmi != null %}
+                    <aside id="sidebar" class="sidebar">
+                        <section class="widget category-widget myBox">
+                            <article class="hentry">
+                                <h3 class="widget-title heading-bottom-line">نتيجة المعادلة</h3>
+                                <div class="entry-content">
+                                    <h4>مؤشر كتلة جسمك هو ... <span class="text-danger" style="font-size: 30px;">{{ bmi|number_format(2) }}</span> </h4>
+                                    <p>الحد الأقصى لوزن صحي على أساس مؤشر كتلة الجسم من 25 هو  {{ bestWeight }} كجم * </p>
+                                </div>
+                                <table>
+                                    <tbody>
+                                        <tr {% if bmi < 18.5 %}class="label-info"{% endif %}>
+                                            <td>أقل من 18.5</td>
+                                            <td>نحافة</td>
+                                        </tr>
+                                        <tr {% if bmi >= 18.5 and bmi <= 25 %}class="label-success"{% endif %}>
+                                            <td>18.5 - 25</td>
+                                            <td>وزن طبيعى</td>
+                                        </tr>
+                                        <tr {% if bmi > 25 and bmi <= 30 %}class="label-warning"{% endif %}>
+                                            <td>25 - 30</td>
+                                            <td>وزن زائد</td>
+                                        </tr>
+                                        <tr {% if bmi > 30 %}class="label-danger"{% endif %}>
+                                            <td>أكبر من 30</td>
+                                            <td>سمنة</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <p>النوع: {% if gender == 1 %}ذكر{% else %}أنثى{% endif %} |  الطول: {{ height }}سنتيمتر  |  الوزن: {{ weight }} كيلوجرام.</p>
+                            </article>
+                            {% if bmi < 18.5 %}
+                            <div class="alert alert-info" style="border-color: #31708f;">
+                                <strong>مؤشر كتلة الجسم أقل من 18.5 كجم/ m2</strong><br/>
+                               مؤشر كتلة الجسم أقل من 18.5 يشير إلى أنك نحيفة ، لذلك قد يحتاج الوضع إلى زيادة بعض الوزن. و ينصح لك أن تسألى طبيبك أو أخصائي التغذية لتحصلى على نصيحته
+                            </div>
+                            {% endif %}
+                            {% if bmi >= 18.5 and bmi <= 25 %}
+                            <div class="alert alert-success" style="background:#bbf5bc ;border-color: #3c763d;">
+                                <strong>مؤشر كتلة الجسم من  18.5 حتي 25 كجم / m2</strong><br/>
+                                مؤشر كتلة الجسم من 18.5 حتي  25  يشير إلى أنك على وزن صحي لطولك. من خلال المحافظة على وزنك الصحي يمكنك خفض خطر إصابتك بمشاكل صحية خطيرة.
+                            </div>
+                            {% endif %}
+                            {% if bmi > 25 and bmi <= 30 %}
+                            <div class="alert alert-warning" style="background:#fde2b0 ;border-color: #8a6d3b;">
+                                <strong>مؤشر كتلة الجسم من 25 - 30 كجم / m2</strong><br/>
+                                مؤشر كتلة الجسم من 25 - 30 يشير إلى أنك زائدة  فى الوزن قليلا. و يستحسن أن تفقدى بعض الوزن للأسباب الصحية. و ينصح لك التحدث إلى طبيبك أو أخصائي التغذية للحصول على نصيحته.
+                            </div>
+                            {% endif %}
+                            {% if bmi > 30 %}
+                            <div class="alert alert-danger" style="background:#fdc4c2 ;border-color: #a94442;">
+                                <strong>مؤشر كتلة الجسم أكثرمن 30 كجم / m2</strong><br/>
+                                مؤشر كتلة الجسم أكثر من 30 يشير إلى أنك زائدة فى الوزن بشكل كبير. قد تكون صحتك فى خطر إذا كنتى لا تفقدى الوزن الزائد. و ينصح لك التحدث إلى طبيبك أو أخصائي التغذية للحصول على نصيحته لحياة صحية أفضل و تجنب الأمراض
+                            </div>
+                            {% endif %}
+                        </section>
+                    </aside>
+                    {% endif %}
+                    <!-- .sidebar -->
+                </div>
+                <!-- .col-sidebar -->
+            </div>
+            <!-- .row -->
+        </div>
+        <!-- .container -->
+    </div>
+{% endblock %}
+{% block javascript %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/fe/js/bootstrap-datepicker.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            $(function () {
+                $('#datepicker').datepicker();
+            });
+            {#$('#register').submit(function(){
+                var height = $('#height').val();
+                var weight = $('#weight').val();
+                if ( height || weight == ('') ) {
+                    if ( height == ('') ) {
+                        $('#height').parent().next('.hid').show();
+                    }
+                    if ( weight == ('') ) {
+                        $('#weight').parent().next('.hid').show();
+                    }
+                    return false;
+                } else {
+                    if ( height != ('') ) {
+                        $('#height').parent().next('.hid').hide();
+                    }
+                    if ( weight != ('') ) {
+                        $('#weight').parent().next('.hid').hide();
+                    }
+                    $('#register').submit();
+                }
+            });#}
+            $('#height, #weight').change(function(){
+                $(this).parent().next('.hid').hide();
+            });
+        });
+    </script>
+{% endblock %}

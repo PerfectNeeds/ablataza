@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>E-mail</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body style="background: #efefef;direction: rtl; text-align:right;font-family:Helvetica;padding: 15px 0;">
+        <div style="width: 640px;margin: 30px auto">
+            <div style="clear: both;text-align: center;">
+                <img src="{{ app.request.scheme ~ "://" ~ app.request.host }}{{ asset('bundles/fe/images/logo.png') }}" alt="أبلة طازة"/>
+                <div style="background-color: #dff0d8;border:1px solid #d6e9c6;color: #3c763d;padding: 10px 0; font-weight: bold;width: 90%;margin: 0 auto;">تم إضافة تعليق جديد</div>
+            </div>
+            <div style="border: 1px solid #cdcbcc;overflow: hidden;background: #fff;width: 90%;margin: 0 auto;">
+                <div style="width: 90%;margin-top: 10px;padding: 0 5%;clear: both;overflow: hidden">
+                    <div style="width: 100%;clear: both;">
+                        <div style="float:right;width: 100%;">
+                            <h3 style="font-weight: bold;color: #373737;margin:0;font-weight: bold;font-size: 20px;">الإسم : {{ parm.name }}</h3>
+                            <h3 style="font-weight:bold;color:#373737;margin:5px auto;font-weight:bold;font-size:20px">التعليق : {{ parm.comment }}</h3>
+                        </div>
+                    </div>
+                    <div style="width: 100%;clear: both;">
+                        <div style="float:right;width: 100%;">
+                            <h3 style="font-weight: bold;color: #373737;margin:0;font-weight: bold;font-size: 20px;">رقم التعليق : {{ entity.id }}</h3>
+                        </div>
+                    </div>
+                    <div style="width: 100%;clear: both;margin:40px auto 25px;">
+                        <div style="width: 100%;">
+                            <a href="{{ app.request.scheme ~ "://" ~ app.request.host }}{{ path('fadfadacomment', {'id':fadfada.id}) }}" style="text-decoration:none;background: #e82327;color:#fff;text-align: center;cursor: pointer;font-size: 14px;padding: 6px 12px;font-weight: 400;border-radius: 4px;-webkit-border-radius: 4px;-o-border-radius: 4px;-ms-border-radius: 4px;-moz-border-radius: 4px;">
+                                لمشاهدة التعليق
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

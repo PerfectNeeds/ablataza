@@ -1,0 +1,160 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}{{ page.seo.title }}{% endblock %}
+
+{% block content %}
+    <div class="content ">
+        <div class="content_inner">
+            <div class="title_outer title_without_animation title_text_shadow with_image" data-height="350">
+                <div class="title title_size_large  position_center">
+                    <div class="image responsive">
+                        {% if page.post.mainImage %}
+                            <img src="{{ asset("uploads/dynamic-page/image/" ~ page.post.id ~ "/"  ~ page.post.mainImage.id) }}" style="max-height: 570px;" alt="{{ page.title }}" /> 
+                        {% else %}
+                            <img src="{{ asset('bundles/fe/images/placeholder.png') }}" style="max-height: 570px;" alt="{{ page.title }}" /> 
+                        {% endif %}
+                    </div>
+                    <div class="title_holder" >
+                        <div class="container">
+                            <div class="container_inner clearfix">
+                                <div class="title_subtitle_holder" style="padding-top:43px;">
+                                    <div class="title_subtitle_holder_inner">
+                                        <h1><span>{{ page.title }}</span></h1>
+                                        <span class="separator small center"></span>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="container_inner default_template_holder clearfix page_container_inner">
+                    <div class="vc_row wpb_row section vc_row-fluid grid_section" style=" text-align:left;">
+                        <div class=" section_inner clearfix">
+                            <div class="section_inner_margin clearfix">
+                                <div class="vc_col-sm-12 wpb_column vc_column_container">
+                                    <div class="wpb_wrapper">
+                                        <div class="wpb_text_column wpb_content_element ">
+                                            <div class="wpb_wrapper">
+                                                <h1 style="text-align: center;">{{ page.title }}</h1>
+                                            </div> 
+                                        </div> 
+                                        <div class="separator  small center  " style="margin-top: 14px;margin-bottom: 12px;opacity: 1;"></div>
+                                    </div> 
+                                </div> 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="vc_row wpb_row section vc_row-fluid" style=" text-align:left;">
+                        <div class=" full_section_inner clearfix">
+                            <div class="vc_col-sm-12 wpb_column vc_column_container">
+                                <div class="wpb_wrapper">
+                                    <div class="wpb_text_column wpb_content_element ">
+                                        <div class="wpb_wrapper">
+                                            {% if page.post.content.description %}
+                                                <p>{{ page.post.content.description|raw }}</p>
+                                            {% else %}
+                                                <div class="alert alert-warning">There is no Records for now</div>
+                                            {% endif %}
+                                        </div> 
+                                    </div> 
+                                    <div class="vc_empty_space" style="height: 100px" ><span class="vc_empty_space_inner"></span></div>
+                                </div> 
+                            </div> 
+                        </div>
+                    </div>
+                    <section  data-q_id="##ABOUT" data-speed="1" class="parallax_section_holder">
+                        <div class="parallax_content left">
+                            <div class="parallax_section_inner_margin clearfix">
+                                <div class="vc_col-sm-6 wpb_column vc_column_container">
+                                    <div class="wpb_wrapper">
+                                        <div class="wpb_single_image wpb_content_element vc_align_right  element_from_left">
+                                            <div style="transition-delay:0.3s">
+                                                <div class="wpb_wrapper">
+                                                    {% if mission.post.mainImage %}
+                                                        <img src="{{ asset("uploads/dynamic-page/image/" ~ mission.post.id ~ "/"  ~ mission.post.mainImage.id) }}" style="max-height: 750px;" alt="{{ mission.title }}" /> 
+                                                    {% else %}
+                                                        {% image '@FEBundle/Resources/public/images/placeholder.png' filter="cssrewrite" %}<img class="alignnone  wp-image-15903" src="{{ asset_url }}" alt="{{ mission.title }}"/>{% endimage %}
+                                                    {% endif %} 
+                                                </div> 
+                                            </div>
+                                        </div> 
+                                    </div> 
+                                </div> 
+
+                                <div class="vc_col-sm-6 wpb_column vc_column_container">
+                                    <div class="wpb_wrapper">
+                                        <div class="separator  small left  " style="margin-top: 14px;margin-bottom: 12px;opacity: 1;"></div>
+
+                                        <div class="wpb_text_column wpb_content_element ">
+                                            <div class="wpb_wrapper">
+                                                <h3>{{ mission.title }}</h3>
+                                            </div> 
+                                        </div> 
+                                        <div class="separator  small left  " style="margin-top: 14px;margin-bottom: 12px;opacity: 1;"></div>
+
+                                        <div class="wpb_text_column wpb_content_element ">
+                                            <div class="wpb_wrapper">
+                                                {% if mission.post.content.description %}
+                                                    <p>{{ mission.post.content.description|raw }}</p>
+                                                {% else %}
+                                                    <div class="alert alert-warning">There is no Records for now</div>
+                                                {% endif %}
+                                            </div> 
+                                        </div> 
+                                        <div class="separator  transparent center  " style="margin-top: 69px;margin-bottom: 0px;"></div>
+                                    </div> 
+                                </div> 
+                            </div>
+                        </div>
+                    </section>
+                    <div class="vc_row wpb_row section vc_row-fluid grid_section" style="background-color:#ffffff; padding-top:20px; padding-bottom:40px; text-align:left;">
+                        <div class=" section_inner clearfix">
+                            <div class="section_inner_margin clearfix respo">
+                                <div class="vc_col-sm-6 wpb_column vc_column_container tex" style="float: right;">
+                                    <div class="wpb_wrapper">
+                                        <div class="wpb_single_image wpb_content_element vc_align_left  element_from_right">
+                                            <div style="transition-delay:0.6s">
+                                                <div class="wpb_wrapper">
+                                                    {% if vision.post.mainImage %}
+                                                        <img src="{{ asset("uploads/dynamic-page/image/" ~ vision.post.id ~ "/"  ~ vision.post.mainImage.id) }}" style="max-height: 750px;" alt="{{ vision.title }}" /> 
+                                                    {% else %}
+                                                        {% image '@FEBundle/Resources/public/images/placeholder.png' filter="cssrewrite" %}<img class="alignnone  wp-image-15903" src="{{ asset_url }}" alt="{{ vision.title }}"/>{% endimage %}
+                                                    {% endif %} 
+                                                </div> 
+                                            </div>
+                                        </div> 
+                                    </div> 
+                                </div> 
+
+                                <div class="vc_col-sm-6 wpb_column vc_column_container">
+                                    <div class="wpb_wrapper">
+                                        <div class="separator  small left  " style="margin-top: 14px;margin-bottom: 12px;opacity: 1;"></div>
+                                        <div class="wpb_text_column wpb_content_element ">
+                                            <div class="wpb_wrapper">
+                                                <h3>{{ vision.title }}</h3>
+                                            </div> 
+                                        </div> 
+                                        <div class="separator  small left  " style="margin-top: 14px;margin-bottom: 12px;opacity: 1;"></div>
+
+                                        <div class="wpb_text_column wpb_content_element ">
+                                            <div class="wpb_wrapper">
+                                                {% if vision.post.content.description %}
+                                                    <p>{{ vision.post.content.description|raw }}</p>
+                                                {% else %}
+                                                    <div class="alert alert-warning">There is no Records for now</div>
+                                                {% endif %}
+                                            </div> 
+                                        </div> 
+                                    </div> 
+                                </div> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

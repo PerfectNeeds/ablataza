@@ -1,0 +1,14 @@
+<span class="btn btn-success fileinput-button">
+    <i class="glyphicon glyphicon-plus"></i>
+    <span>{% if buttonName is defined %}{{buttonName}}{% else %}upload File{% endif %}</span>
+    <!-- The file input field used as target for the file upload widget -->
+    <input id="{% if buttonId is defined %}{{buttonId}}{% else %}SingleFileupload{% endif %}" type="file" name="files[]" >
+</span>
+<br>
+<br>
+<!-- The global progress bar -->
+<div id="{% if prograss is defined %}{{prograss}}{% else %}SingleProgress{% endif %}" class="progress">
+    <div class="progress-bar progress-bar-success"></div>
+</div>
+<!-- The container for the uploaded files -->
+<div id="{% if filesContainer is defined %}{{ filesContainer }}{% else %}SingleFiles{% endif %}" class="singleFiles"></div>

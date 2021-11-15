@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>E-mail</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body style="background: #efefef;direction: rtl; text-align:right;font-family:Helvetica;padding: 15px 0;">
+        <div style="width: 640px;margin: 30px auto">
+            <div style="clear: both;text-align: center;">
+                <img src="{{ app.request.scheme ~ "://" ~ app.request.host }}{{ asset('bundles/fe/images/logo.png') }}" alt="أبلة طازة"/>
+                <p style="color:#373737;margin:5px auto;font-weight:bold;font-size:16px">
+                    <span style='border-top:1px solid #373737;border-bottom:1px solid #373737;padding: 10px 0;display: block;'>
+                صديقتك تريد مشاركة وصفات {{ menuPlanner.person }} معك     </span><br/>
+                    {{ msg }}
+                </p>
+            </div>
+            <div style="border: 1px solid #cdcbcc;overflow: hidden;background: #fff;width: 90%;margin: 0 auto;">
+                <div style="width: 90%;margin-top: 10px;padding: 0 5%;clear: both;overflow: hidden">
+                    <div style="width: 100%;clear: both;">
+                        <div style="float:right;width: 100%;">
+                            <h2 style="font-weight: bold;color: #373737;margin:5px auto;font-weight: bold;font-size: 18px;text-decoration: underline;">{{ menuPlanner.title }}</h2>
+                            {% for menuPlannerHasRecipe in menuPlanner.menuPlannerHasRecipes %}
+                                <h3 style="font-weight: bold;color: #373737;margin:5px auto;font-weight: bold;font-size: 16px;">
+                                    {{ menuPlannerHasRecipe.recipe.title }} : <a href="{{ app.request.scheme ~ "://" ~ app.request.host }}{{ path('fe_show_article', {'slug':menuPlannerHasRecipe.recipe.seo.slug})|url_decode }}" style="text-decoration:none;color: #e82327;cursor: pointer;font-size: 14px;font-weight: 400;direction: ltr;text-align: right;" target="_blank">
+                                    <span style="direction:ltr!important;text-align:right!important;display:inline-block">
+                                    {{ app.request.scheme ~ "://" ~ app.request.host }}{{ path('fe_show_article', {'slug':menuPlannerHasRecipe.recipe.seo.slug})|url_decode }}
+                                    </span>
+                                    </a></h3>
+                                {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

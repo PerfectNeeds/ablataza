@@ -1,0 +1,83 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}على رأى أبلة طازة{% endblock %}
+
+{% block breadcrumb %}
+    <div class="home-carousel-one carousel-second-style owl-carousel">
+        {{ render(controller('CMSBundle:FrontEnd/Banner:Banner' , {'placment' : 1 })) }}
+    </div>
+    <div class="page-banner" style="background: #555555;">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2 class="page-title pull-right"><i class="fa fa-quote-left"></i> على رأى أبلة طازة</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li><a href="{{ path('fe_home') }}">الرئيسية</a></li>
+                        <li>على رأى أبلة طازة</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    <div class="page-wrapper user-accounts">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-main">
+                    <main id="main" class="main">
+                        <div class="tabs-wrapper">
+                            <div class="tabs-contents">
+                                <div class="tab-block" style="display: block">
+                                    <section class="our-blog">
+                                        <div class="row">
+                                            {% if entities|length > 0 %}
+                                                {% for entity in entities %}
+                                                    <div class="col-md-6 col-sm-12 col-xs-12">
+                                                        <div class="talkbubble col-md-8 col-sm-8 col-xs-8">
+                                                            <h3 class="widget-title heading-bottom-line">على رأى أبلة طازة</h3>
+                                                            <p style="margin: 0px; height: 115px;">{{ entity.quote|slice(0, 193) }}</p> 
+                                                        </div>
+                                                        <div class="col-md-3 col-sm-3 col-xs-4">
+                                                            <figure class="img-circle" style="width: 120px;height:120px;overflow:hidden;margin-right:20px;">
+                                                                <a href="{{ path('fe_show_profile', {'slug':person.seo.slug}) }}">
+                                                                    {% if person.image != null %}
+                                                                        <img src="{{ asset('uploads/person/'~person.id~'/'~person.image.id) }}" style="width: 100%;" alt="{{person.firstName ~ ' ' ~ person.familyname}}"/>
+                                                                    {% elseif person.firstAccount.userFacebook != null %}
+                                                                        <img src="https://graph.facebook.com/{{ person.firstAccount.userFacebook.facebookId }}/picture?type=large&width=201&height=201" style="width: 100%;" alt="{{person.firstName ~ ' ' ~ person.familyname}}"/>
+                                                                    {% else %}
+                                                                        <img src="{{ asset('bundles/fe/images/footer-logo.png') }}" style="width: 100%;" alt="{{person.firstName ~ ' ' ~ person.familyname}}"/>
+                                                                    {% endif %}
+                                                                </a>
+                                                            </figure>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                                <div class="col-md-12 t_align_r t_xs_align_l">
+                                                    {{ include('CMSBundle:FrontEnd/HomePage:Pagination.html.twig', {'paginator':paginator}) }}
+                                                </div>
+                                            {% else %}
+                                                <div class="alert alert-warning" style="padding: 2px 5px;">لا توجد أى أراء الأن</div>
+                                            {% endif %}
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                    <!-- .main -->
+                </div>
+                <!-- .col-main -->
+            </div>
+            <!-- .row -->
+        </div>
+        <!-- .container -->
+    </div>
+{% endblock %}

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html;charset=UTF-8"/>
+        <meta charset="utf-8"/>
+        <title>Farm Frites Egypt | {% block title %}{% endblock %}</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
+
+         {% stylesheets '@FEBundle/Resources/public/css/font-awesome.min.css' %}
+        <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
+        {% endstylesheets %}
+        
+        {% block stylesheet %}
+            <link rel="shortcut icon" type="image/x-icon" href="{{ asset('bundles/fe/images/farmfrites_box-logo.png') }}">
+            <link rel="stylesheet" href="{{ asset('bundles/fe/css/layerslider.css') }}" type="text/css" media="all" />
+            <link rel="stylesheet" href="{{ asset('bundles/fe/css/resume-styles.css') }}" type="text/css" media="all" />
+            <link rel="stylesheet" href="{{ asset('bundles/fe/css/style.css') }}" type="text/css" media="all" />
+{#            <link rel="stylesheet" href="{{ asset('bundles/fe/css/font-awesome.min.css') }}" type="text/css" media="all" />#}
+            <link rel="stylesheet" href="{{ asset('bundles/fe/css/stylesheet.min.css') }}" type="text/css" media="all" />
+            <link rel="stylesheet" href="{{ asset('bundles/fe/css/style_dynamic.css') }}" type="text/css" media="all" />
+            <link rel="stylesheet" href="{{ asset('bundles/fe/css/responsive.min.css') }}" type="text/css" media="all" />
+            <link rel="stylesheet" href="{{ asset('bundles/fe/css/style_dynamic_responsive.css') }}" type="text/css" media="all" />
+            <link rel="stylesheet" href="{{ asset('bundles/fe/css/js_composer.css') }}" type="text/css" media="all" />
+            <link rel="stylesheet" href="{{ asset('bundles/fe/css/custom_css.css') }}" type="text/css" media="all" />
+            <link rel="stylesheet" href="{{ asset('bundles/fe/css/custom.css') }}" type="text/css" media="screen" />
+        {% endblock %}
+    </head>
+
+    <body>
+        <div class="ajax_loader"><div class="ajax_loader_1"><div class="pulse"></div></div></div>
+        <div class="wrapper">
+            <div class="wrapper_inner">
+                <header class=" scroll_top  stick transparent page_header">
+                    <div class="header_inner clearfix">
+
+                        <form role="search" id="searchform" action="{{ path('fe_product_search') }}" class="qode_search_form" method="get">
+                            <div class="container">
+                                <div class="container_inner clearfix">
+
+                                    <i class="fa fa-search"></i>
+                                    <input type="text" placeholder="Search" name="str" class="qode_search_field" autocomplete="off" />
+                                    <input type="submit" value="Search" />
+
+                                    <div class="qode_search_close">
+                                        <a href="#">
+                                            <i class="fa fa-times"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div class="header_top_bottom_holder">
+                            <div class="header_bottom clearfix" style=" background-color:rgba(255, 255, 255, 0);" >
+                                <div class="container">
+                                    <div class="container_inner clearfix">
+                                        <div class="header_inner_left">
+                                            <div class="mobile_menu_button"><span><i class="fa fa-bars"></i></span></div>
+                                            <div class="logo_wrapper">
+                                                <div class="q_logo">
+                                                    <a href="{{ path('fe_home') }}">
+                                                        <img class="normal" src="{{ asset('bundles/fe/images/logo.png') }}" alt="Logo"/>
+                                                        <img class="sticky" src="{{ asset('bundles/fe/images/logo.png') }}" alt="Logo"/>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="header_inner_right">
+                                            <div class="side_menu_button_wrapper right">
+                                                <div class="side_menu_button">
+                                                    <a class="search_button" href="javascript:void(0)">
+                                                        <i class="fa fa-search"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% set cr = app.request.attributes.get('_route') %}
+                                        <nav class="main_menu drop_down right">
+                                            <ul id="menu-farm-frites_menu">
+                                                <li class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-14869 current_page_item menu-item-has-children  has_sub narrow"><a href="#" {% if ('fe_history' == cr ) or ('fe_values' == cr ) or ('fe_certificate' == cr ) %}class="current"{% endif %}><i class="menu_icon fa blank"></i><span>About Us</span><span class="plus"></span></a>
+                                                    <div class="second">
+                                                        <div class="inner">
+                                                            <ul>
+                                                                <li class="menu-item menu-item-type-post_type menu-item-object-page "><a href="{{ path('fe_history') }}"><i class="menu_icon fa blank"></i><span>HISTORY</span><span class="plus"></span></a></li>
+                                                                <li class="menu-item menu-item-type-post_type menu-item-object-page "><a href="{{ path('fe_values') }}"><i class="menu_icon fa blank"></i><span>OUR VALUES</span><span class="plus"></span></a></li>
+                                                                <li class="menu-item menu-item-type-post_type menu-item-object-page "><a href="{{ path('fe_certificate') }}"><i class="menu_icon fa blank"></i><span>Certificates and awards</span><span class="plus"></span></a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children  has_sub narrow"><a href="#" {% if ('fe_agriculture' == cr ) or ('fe_manufacturing' == cr ) or ('fe_quality' == cr ) or ('fe_environment' == cr ) %}class="current"{% endif %}><i class="menu_icon fa blank"></i><span>what we do</span><span class="plus"></span></a>
+                                                    <div class="second">
+                                                        <div class="inner">
+                                                            <ul>
+                                                                <li class="menu-item menu-item-type-post_type menu-item-object-page "><a href="{{ path('fe_agriculture') }}"><i class="menu_icon fa blank"></i><span>Agriculture</span><span class="plus"></span></a></li>
+                                                                <li class="menu-item menu-item-type-post_type menu-item-object-page "><a href="{{ path('fe_manufacturing') }}"><i class="menu_icon fa blank"></i><span>Manufacturing</span><span class="plus"></span></a></li>
+                                                                <li class="menu-item menu-item-type-post_type menu-item-object-page "><a href="{{ path('fe_quality') }}"><i class="menu_icon fa blank"></i><span>Quality</span><span class="plus"></span></a></li>
+                                                                <li class="menu-item menu-item-type-post_type menu-item-object-page "><a href="{{ path('fe_environment') }}"><i class="menu_icon fa blank"></i><span>Environment</span><span class="plus"></span></a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children  has_sub narrow"><a href="#"  {% if ('fe_product_category' == cr ) %}class="current"{% endif %} class=" no_link" style="cursor: default;" onclick="JavaScript: return false;"><i class="menu_icon fa blank"></i><span>Products</span><span class="plus"></span></a>
+                                                    <div class="second">
+                                                        <div class="inner">
+                                                            <ul>
+                                                                {{ render(controller('CMSBundle:FrontEnd/HomePage:productMenuWidget')) }}
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="menu-item menu-item-type-post_type menu-item-object-page  narrow"><a href="{{ path('fe_contact') }}" {% if ('fe_contact' == cr ) %}class="current"{% endif %}><i class="menu_icon fa blank"></i><span>Contact Us</span><span class="plus"></span></a></li>
+                                                <li class="menu-item menu-item-type-post_type menu-item-object-page  narrow"><a href="{{ path('fe_career') }}" {% if ('fe_career' == cr ) %}class="current"{% endif %}><i class="menu_icon fa blank"></i><span>Careers</span><span class="plus"></span></a></li>
+                                            </ul>						
+                                        </nav>
+                                        <nav class="mobile_menu">
+                                            <ul id="menu-farm-frites_menu-1">
+                                                <li class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-14869 current_page_item menu-item-has-children has_sub"><a href="#" {% if ('fe_history' == cr ) or ('fe_values' == cr ) or ('fe_certificate' == cr ) %}class="current"{% endif %}><span>About Us</span></a><span class="mobile_arrow"><i class="fa fa-angle-right"></i><i class="fa fa-angle-down"></i></span>
+                                                    <ul class="sub_menu">
+                                                        <li class="menu-item menu-item-type-post_type menu-item-object-page "><a href="{{ path('fe_history') }}"><span>HISTORY</span></a><span class="mobile_arrow"><i class="fa fa-angle-right"></i><i class="fa fa-angle-down"></i></span></li>
+                                                        <li class="menu-item menu-item-type-post_type menu-item-object-page "><a href="{{ path('fe_values') }}"><span>OUR VALUES</span></a><span class="mobile_arrow"><i class="fa fa-angle-right"></i><i class="fa fa-angle-down"></i></span></li>
+                                                        <li class="menu-item menu-item-type-post_type menu-item-object-page "><a href="{{ path('fe_certificate') }}"><span>Certificates and awards</span></a><span class="mobile_arrow"><i class="fa fa-angle-right"></i><i class="fa fa-angle-down"></i></span></li>
+                                                    </ul>
+                                                </li>
+                                                <li class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-14869 current_page_item menu-item-has-children has_sub"><a href="#" {% if ('fe_agriculture' == cr ) or ('fe_manufacturing' == cr ) or ('fe_quality' == cr ) or ('fe_environment' == cr ) %}class="current"{% endif %}><span>what we do</span></a><span class="mobile_arrow"><i class="fa fa-angle-right"></i><i class="fa fa-angle-down"></i></span>
+                                                    <ul class="sub_menu">
+                                                        <li class="menu-item menu-item-type-post_type menu-item-object-page "><a href="{{ path('fe_agriculture') }}"><span>Agriculture</span></a><span class="mobile_arrow"><i class="fa fa-angle-right"></i><i class="fa fa-angle-down"></i></span></li>
+                                                        <li class="menu-item menu-item-type-post_type menu-item-object-page "><a href="{{ path('fe_manufacturing') }}"><span>Manufacturing</span></a><span class="mobile_arrow"><i class="fa fa-angle-right"></i><i class="fa fa-angle-down"></i></span></li>
+                                                        <li class="menu-item menu-item-type-post_type menu-item-object-page "><a href="{{ path('fe_quality') }}"><span>Quality</span></a><span class="mobile_arrow"><i class="fa fa-angle-right"></i><i class="fa fa-angle-down"></i></span></li>
+                                                        <li class="menu-item menu-item-type-post_type menu-item-object-page "><a href="{{ path('fe_environment') }}"><span>Environment</span></a><span class="mobile_arrow"><i class="fa fa-angle-right"></i><i class="fa fa-angle-down"></i></span></li>
+                                                    </ul>
+                                                </li>
+                                                <li class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-14869 current_page_item menu-item-has-children has_sub"><a href="#" {% if ('fe_product_category' == cr ) %}class="current"{% endif %}><span>Products</span></a><span class="mobile_arrow"><i class="fa fa-angle-right"></i><i class="fa fa-angle-down"></i></span>
+                                                    <ul class="sub_menu">
+                                                        {{ render(controller('CMSBundle:FrontEnd/HomePage:sidebarResponsiveWidget')) }}
+                                                    </ul>
+                                                </li>
+                                                <li class="menu-item menu-item-type-post_type menu-item-object-page "><a href="{{ path('fe_contact') }}" {% if ('fe_contact' == cr ) %}class="current"{% endif %}><span>Contact Us</span></a><span class="mobile_arrow"><i class="fa fa-angle-right"></i><i class="fa fa-angle-down"></i></span></li>
+                                                <li class="menu-item menu-item-type-post_type menu-item-object-page "><a href="{{ path('fe_career') }}" {% if ('fe_career' == cr ) %}class="current"{% endif %}><span>Careers</span></a><span class="mobile_arrow"><i class="fa fa-angle-right"></i><i class="fa fa-angle-down"></i></span></li>
+                                            </ul>					
+                                        </nav>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                {% block content %}
+
+                {%  endblock %}
+
+                <footer>
+                    <div class="footer_inner clearfix">
+                        <div class="footer_bottom_holder">
+                            <div class="footer_bottom">
+                                <div class="textwidget">
+                                    <a href="{{ asset('bundles/fe/images/logo.png') }}">
+                                        <img class="alignnone  wp-image-15903" src="{{ asset('bundles/fe/images/logo.png') }}" alt="Farm Frites Logo " width="200" height="70" />
+                                    </a>
+                                </div>
+                                <div class="textwidget">
+                                    <span class="q_social_icon_holder normal_social" ><a href="https://www.youtube.com/channel/UCozrEn3gqju-IQ7spB15uSg" target="_blank"><i class="fa fa-youtube fa-lg simple_social" style="color: #ffffff;"></i></a></span>
+                                    <span class="q_social_icon_holder normal_social" ><a href="https://twitter.com/farmfriteseg" target="_blank"><i class="fa fa-twitter fa-lg simple_social" style="color: #ffffff;"></i></a></span>
+                                    <span class="q_social_icon_holder normal_social" ><a href="https://www.facebook.com/farmfritesegypt" target="_blank"><i class="fa fa-facebook fa-lg simple_social" style="color: #ffffff;"></i></a></span>
+                                    <span class="q_social_icon_holder normal_social" ><a href="https://instagram.com/farmfriteseg/" target="_blank"><i class="fa fa-instagram fa-lg simple_social" style="color: #ffffff;"></i></a></span>
+                                    <span class="q_social_icon_holder normal_social" ><a href="{{ path('fe_contact') }}"><i class="fa fa-envelope fa-lg simple_social" style="color: #ffffff;"></i></a></span></div>
+                                <div class="textwidget"><span style="color: #ffffff;font-size: 13px;letter-spacing: 1px;">© 2015 Copyright. All Rights Reserved. Farm Frites Egypt </span></div>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+
+    {% block javascript %}
+        <script src="{{ asset('bundles/fe/js/jquery-2.1.0.min.js') }}"></script>
+        <script src="{{ asset('bundles/fe/js/jquery-migrate-1.2.1.min.js') }}"></script>
+        <script src="{{ asset('bundles/fe/js/jquery.js') }}"></script>
+        <script src="{{ asset('bundles/fe/js/jquery-migrate.min.js') }}"></script>
+         <script src="{{ asset('bundles/fe/js/greensock.js') }}"></script>
+         <script src="{{ asset('bundles/fe/js/layerslider.kreaturamedia.jquery.js') }}"></script>
+         <script src="{{ asset('bundles/fe/js/layerslider.transitions.js') }}"></script>
+         <script src="{{ asset('bundles/fe/js/jquery.multi-file.js') }}"></script>
+         <script src="{{ asset('bundles/fe/js/qode-like.js') }}"></script>
+         <script src="{{ asset('bundles/fe/js/plugins.js') }}"></script>
+         <script src="{{ asset('bundles/fe/js/jquery.carouFredSel-6.2.1.js') }}"></script>
+         <script src="{{ asset('bundles/fe/js/lemmon-slider.js') }}"></script>
+         <script src="{{ asset('bundles/fe/js/jquery.fullPage.min.js') }}"></script>
+         <script src="{{ asset('bundles/fe/js/jquery.mousewheel.min.js') }}"></script>
+         <script src="{{ asset('bundles/fe/js/jquery.touchSwipe.min.js') }}"></script>
+         <script src="{{ asset('bundles/fe/js/isotope.pkgd.min.js') }}"></script>
+         <script src="{{ asset('bundles/fe/js/TweenLite.min.js') }}"></script>
+         <script src="{{ asset('bundles/fe/js/ScrollToPlugin.min.js') }}"></script>
+         <script src="{{ asset('bundles/fe/js/smoothPageScroll.js') }}"></script>
+         <script src="{{ asset('bundles/fe/js/default_dynamic.js') }}"></script>
+         <script src="{{ asset('bundles/fe/js/default.min.js') }}"></script>
+         <script src="{{ asset('bundles/fe/js/comment-reply.min.js') }}"></script>
+         <script src="{{ asset('bundles/fe/js/ajax.min.js') }}"></script>
+         <script src="{{ asset('bundles/fe/js/js_composer_front.js') }}"></script>
+         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <script>
+          (adsbygoogle = window.adsbygoogle || []).push({
+            google_ad_client: "ca-pub-4026762125058832",
+            enable_page_level_ads: true
+          });
+        </script>
+    {%  endblock %}
+    </body>
+</html>

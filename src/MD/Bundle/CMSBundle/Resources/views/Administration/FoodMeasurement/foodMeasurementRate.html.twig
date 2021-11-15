@@ -1,0 +1,46 @@
+{% extends 'AdminTemplateBundle::base.html.twig' %}
+{% set page_title %}Food Measurement Rate{% endset %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/admintemplate/assets/plugins/chosen/chosen.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/admintemplate/assets/plugins/validator/bootstrapValidator.min.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block body -%}
+    <div class="the-box full no-border" style="overflow: hidden">
+        <div class="table-responsive">
+            <form class="form bootstrap-validator-form" id="validation" action="{{ path('foodmeasurement_rate_update') }}" role="form" method="POST">
+                <input type="hidden" name="_method" value="PUT" />  
+                <table class="table table-th-block">
+                    <thead>
+                        <tr>
+                            <th>From\To</th>
+                                {% for foodMeasurement in foodMeasurements %}
+                                <th>
+                                    {{ foodMeasurement.title }}
+                                </th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for foodMeasurementTo in foodMeasurements %}
+                            <tr>
+                                <td>{{ foodMeasurementTo.title }}</td>
+                                {% for foodMeasurementFrom in foodMeasurements %}
+                                    <td>
+                                        <input type="text" name="rate[{{ foodMeasurementTo.id }}][{{ foodMeasurementFrom.id }}]" class="form-control" value="{{ foodMeasurementFrom.measurementRate(foodMeasurementTo.id) }}" />
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+                <div class="col-md-12 text-right" style="margin: 10px;">
+                    <button class="btn btn-success" type="submit"><i class="fa fa-check"></i> Update</button>
+                    <button class="btn btn-danger" type="reset"><i class="fa fa-refresh"></i> Reset</button>
+                </div>
+            </form>
+        </div><!-- /.table-responsive -->
+    </div>
+{% endblock %}

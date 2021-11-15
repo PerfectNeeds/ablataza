@@ -1,0 +1,91 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}{% trans %}إحسبي ميعاد الولادة{% endtrans %}{% endblock %}
+{% block stylesheet %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/fe/css/datepicker.min.css') }}"/>
+{% endblock %} 
+{% block breadcrumb %}
+    <div class="home-carousel-one carousel-second-style owl-carousel hidden-xs">
+        {{ render(controller('CMSBundle:FrontEnd/Banner:Banner' , {'placment' : 1 })) }}
+    </div>
+    <div class="page-banner" style="background: #658e15;">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2 class="page-title pull-right"><img src="{{ asset('bundles/fe/images/dueIcon.png') }}" alt="إحسبي ميعاد الولادة" /> إحسبي ميعاد الولادة</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li><a href="{{ path('fe_home') }}">الرئيسية</a></li>
+                        <li class="active">إحسبي ميعاد الولادة</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    <div id="page-layer-styled" class="page-wrapper blog">
+        <div style="width: 516.5px;" id="left-layer"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <h3 class="heading-bottom-line" style="padding-bottom: 16px;">إحسبي ميعاد الولادة</h3>
+                    <div class="row">
+                        <form>
+                            <div class="col-sm-9">
+                                <p style="margin-bottom:3px">
+                                    <label style="font-size: 16px" class="text-danger">أول يوم لأخر دورة شهرية</label>
+                                    <input style="font-size: 16px" id="datepicker" name="date" value="{{ date }}" type="text" placeholder="إختر تاريخ أول يوم لأخر دورة شهرية" data-format="MM dd, yyyy">
+                                </p>
+                            </div>
+                            <div class="col-sm-3">
+                                <p>
+                                    <label></label>
+                                    <button type="submit" style="margin: 8px auto 0;" class="btn btn-success btn-block">إحسبي</button>
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- .col-main -->
+                <div class="col-md-4 col-sidebar">
+                    <aside id="sidebar" class="sidebar">
+                        <section class="widget category-widget">
+                            {% if dueDate != null %}
+                            <article class="hentry col-md-12">
+                                <h3 class="entry-title heading-bottom-line">ميعاد الولادة المتوقع</h3>
+                                <h4 class="btn btn-success btn-block text-center" style="font-size: 22px;cursor: auto;">
+                                    <img src="{{ asset('bundles/fe/images/due-date.png') }}" alt="ميعاد الولادة المتوقع" style="display: block;margin: 5px auto 0;" />
+                                     {{ dueDate|date('D')|localizedDate }}, {{ dueDate|date('d') }} {{ dueDate|date('M')|localizedDate }}, {{ dueDate|date('Y') }}
+                                </h4>
+                            </article>
+                            {% endif %}
+                        </section>
+                    </aside>
+                    <!-- .sidebar -->
+                </div>
+                <!-- .col-sidebar -->
+            </div>
+            <!-- .row -->
+        </div>
+        <!-- .container -->
+    </div>
+{% endblock %}
+{% block javascript %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/fe/js/bootstrap-datepicker.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            $(function() {
+                $('#datepicker').datepicker();
+            });
+        });
+    </script>
+{% endblock %}

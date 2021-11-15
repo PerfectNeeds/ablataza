@@ -1,0 +1,209 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}السوق{% endblock %}
+
+{% block breadcrumb %}
+    <div class="home-carousel-one carousel-second-style owl-carousel">
+        {{ render(controller('CMSBundle:FrontEnd/Banner:Banner' , {'placment' : 1 })) }}
+    </div>
+    <div class="page-banner" style="background: #79b22b;">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2 class="page-title pull-right"><i class="fa fa-shopping-cart"></i> السوق</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li><a href="{{ path('fe_home') }}">الرئيسية</a></li>
+                        <li class="active">السوق</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+
+    <div id="page-layer-styled" class="page-wrapper submit-recipe">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 col-main">
+                    <main id="main" class="main">
+                        {% if ingredientCategories|length > 0 %}
+                            {% for ingredientCategory in ingredientCategories %}
+                                <article class="hentry">
+                                    <div class="ingredients" data-id="{{ ingredientCategory.id }}">
+                                        {% if ingredientCategory.image %}
+                                        <div class="col-md-2">
+                                            <img src="{{ asset("uploads/ingredient-category/" ~ ingredientCategory.id ~ "/"  ~ ingredientCategory.image.id) }}" style="max-width:100%;">
+                                        </div>
+                                        <div class="col-md-10">
+                                            <h2 class="text-primary">{{ ingredientCategory.title }}</h2>
+                                        </div>
+                                        {% else %}
+                                        <h2 class="text-primary">{{ ingredientCategory.title }}</h2>
+                                        {% endif %}
+                                        <div class="olsss" style="clear: both">
+                                            {% if ingredientCategory.supermarkItems|length > 0 %}
+                                                {% for supermarkItem in ingredientCategory.supermarkItems %}
+                                                    <div class="recipe-top-meta {% if supermarkItem.checked ==true %}ches{% endif %}" data-id="{{ supermarkItem.id }}">
+                                                        <div class="col-md-1">
+                                                            <a href="javascript:;" class="check col-md-1" {% if supermarkItem.checked ==true %}style="display:block"{% endif %}><i class="fa fa-check"></i></a>
+                                                        </div>
+                                                        <label>{{ supermarkItem.title }}</label>
+                                                        <a href="javascript:;" class="delt pull-left" {% if supermarkItem.checked ==true %}style="display:block"{% endif %}><i class="fa fa-remove"></i></a>
+                                                    </div>
+                                                {% endfor %}
+                                            {% else %}
+                                                <div class="alert alert-warning" style="padding:2px 5px;">لا توجد مكونات الأن</div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-itemm recipe-top-meta text-center" style="overflow: hidden">
+                                            <div class="col-md-10">
+                                                <input type="text" placeholder="أضف مكون جديد" class="elme">
+                                            </div>
+                                            <div class="col-md-2">
+                                                <a class="btn btn-danger btn-block addElement" href="javascript:;">إضافة</a> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                </article>
+                            {% endfor %}
+                        {% else %}
+                            <div class="alert alert-warning" style="padding:2px 5px;">لا توجد بيانات الأن</div>
+                        {% endif %}
+                    </main>
+                </div>
+                <div class="col-md-4 col-sidebar"> 
+                    <aside id="sidebar" class="sidebar">
+                        <section class="widget category-widget myBox">
+                            <ul>
+                                <li class="text-center">
+                                    <a href="javascript:;" class="btn btn-success btn-block share-mail"><i class="fa fa-share-alt"></i> مشاركة</a>
+                                    <form action="{{ path('fe_super_market_send_mail') }}" method="post" class="seND">
+                                        <h4>مشاركة بواسطة البريد الإلكتروني</h4>
+                                        <div style="margin-bottom:15px;">
+                                            <input id="email" class="email required" name="email" type="text" placeholder="البريد الإلكتروني" data-msg-required="برجاء كتابة بريدك الإلكتروني." data-msg-email="برجاء كتابة بريدك الإلكتروني صحيح.">
+                                        </div>
+                                        <div style="margin-bottom:15px;">
+                                            <textarea style="height: 92px;" placeholder="أكتب رسالتك" class="required" data-msg-required="برجاء كتابة رسالتك" name="message"></textarea>
+                                        </div>
+                                        <div class="text-center">
+                                            <button type="submit" class="btn btn-danger" value="">إرسال</button>
+                                            <a href="javascript:;" class="btn share-mail-cancel">إلغاء</a> 
+                                        </div>
+                                    </form>
+                                    <a href="javascript:poptastic('{{ path('fe_super_market_print') }}');" class="btn btn-primary btn-block Printing"><i class="fa fa-print"></i> طباعة</a>
+                                </li>
+                            </ul>
+                        </section>
+                    </aside>
+                </div>
+            </div>
+            <!-- .row -->
+        </div>
+        <!-- .container -->
+    </div>
+{% endblock %}
+{% block javascript %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.recipe-top-meta').hover(function () {
+                $(this).children('.check').show();
+            }, function () {
+                $(this).children('.check').hide();
+            });
+            $('.addElement').click(function () {
+                var title = $(this).parent().prev().children('.elme').val();
+                var data_id = $(this).parent().parent().parent().data('id');
+                var thiss = $(this);
+                var btnn = $(this).parent().parent().children('.col-md-10').children('.elme');
+                createNew(data_id, title, thiss, btnn);
+            });
+            $('input.elme').keypress(function (e) {
+                var key = e.which;
+                if (key == 13) {  // the enter key code
+                    var title = $(this).val();
+                    var data_id = $(this).parent().parent().parent().data('id');
+                    var thiss = $(this);
+                    var btnn = $(this).parent().parent().children('.col-md-10').children('.elme');
+                    createNew(data_id, title, thiss, btnn);
+                }
+            });
+
+            function createNew(data_id, title, thiss, btnn) {
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ path('fe_super_market_create') }}',
+                    data: {'id': data_id, 'title': title},
+                    success: function (result) {
+                        obj = JSON.parse(result);
+                        if (obj.error == 1) {
+                        } else {
+                            thiss.parent().parent().parent().children('.olsss').append(obj.message);
+                            thiss.parent().parent().parent().children('.olsss').children('.alert-warning').hide();
+                            btnn.val('');
+                        }
+                    }
+                });
+            }
+            $('body').on('click', '.check', function () {
+                var item_id = $(this).parent().parent().data('id');
+                $this = $(this);
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ path('fe_super_market_change_state') }}',
+                    data: {'id': item_id},
+                    success: function (result) {
+                        its = JSON.parse(result);
+                        if (its.message == 0) {
+                            $this.removeClass('fixes');
+                            $this.parent().parent('.recipe-top-meta').children('.delt').hide();
+                            $this.parent().parent('.recipe-top-meta').removeClass('ches');
+                        }
+                        if (its.message == 1) {
+                            $this.addClass('fixes');
+                            $this.parent().parent('.recipe-top-meta').children('.delt').show();
+                            $this.parent().parent('.recipe-top-meta').addClass('ches');
+                        }
+                    }
+                });
+            });
+
+            $('body').on('click', '.delt', function () {
+                var del_id = $(this).parent().data('id');
+                $this = $(this);
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ path('fe_super_market_delete') }}',
+                    data: {'id': del_id},
+                    success: function (result) {
+                        remv = JSON.parse(result);
+                        if (remv.error == 0) {
+                            $this.parent('.recipe-top-meta').remove();
+                        }
+                    }
+                });
+            });
+            
+        $('.share-mail').click(function () {
+            $('.seND').slideToggle();
+        });
+        $('.share-mail-cancel').click(function () {
+            $('.seND').slideUp();
+        });
+    });
+    var newwindow;
+    function poptastic(url)
+    {
+        newwindow=window.open(url,'name','height=500,width=500');
+        if (window.focus) {newwindow.focus()}
+    }
+    </script>
+{% endblock %}

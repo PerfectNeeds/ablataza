@@ -1,0 +1,87 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}إتصل بنا{% endblock %}
+
+{% block breadcrumb %}
+<div class="home-carousel-one carousel-second-style owl-carousel">
+    {{ render(controller('CMSBundle:FrontEnd/Banner:Banner' , {'placment' : 1 })) }}
+</div>
+<div class="page-banner" style="background: #79b22b;">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <h2 class="page-title"><i class="fa fa-phone"></i> إتصل بنا</h2>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <ol class="breadcrumb">
+                    <li><a href="{{ path('fe_home') }}">الرئيسية</a></li>
+                    <li class="active">إتصل بنا</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+<div class="page-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-main">
+                <main id="main" class="main">
+                    <div id="contact-us-form-wrapper">
+                        <h2 class="form-heading">الرجاء ملء البيانات المطلوبة وإرسال رسالتك</h2>
+                        <form id="register" class="contact-us-form" action="{{ path('fe_contact_submit') }}" method="post" novalidate="novalidate">
+                            <p>
+                                <label>الإسم بالكامل</label>
+                                <input id="name" class="required" name="name" value="{% if name is defined %}{{ name }}{% endif %}" type="text" placeholder="الإسم بالكامل" data-msg-required="برجاء كتابة الإسم">
+                            </p>
+                            <p>
+                                <label>البريد الإلكتروني</label>
+                                <input id="email" class="email required" name="email" value="{% if email is defined %}{{ email }}{% endif %}" type="email" placeholder="البريد الإلكتروني" data-msg-required="برجاء كتابة بريدك الإلكتروني." data-msg-email="برجاء كتابة بريدك الإلكتروني صحيح.">
+                            </p>
+                            <p>
+                                <label>الرسالة</label>
+                                <textarea id="comment" class="required" name="message" placeholder="الرسالة" data-msg-required="برجاء كتابة الرسالة">{% if msg is defined %}{{ msg }}{% endif %}</textarea>
+                            </p>
+                            <p class="clearfix text-center">
+								<button data-sitekey="6Le8GZsUAAAAABEnIj6SPfvYmRvddmUAHGquJFAF" data-callback="onSubmit" type="button" class="g-recaptcha submi">إرسال</button>
+                            </p>
+                            <div id="form-status"></div>
+                        </form>
+                    </div>
+                </main>
+                <!-- .main -->
+            </div>
+            <!-- .col-main -->
+            <div class="col-md-4 col-sidebar">
+                <aside id="sidebar" class="sidebar">
+                    <section class="widget">
+                        <a href="#" class="ads" style="margin-top: 0px;"><img src="{{ asset('bundles/fe/images/ads.jpg') }}" alt="add"/></a>
+                        {{ render(controller('CMSBundle:FrontEnd/Banner:showOneBanner' , {'placment' : 2 })) }}
+                    </section>
+                </aside>
+                <!-- .sidebar -->
+            </div>
+            <!-- . col-sidebar -->
+        </div>
+        <!-- .row -->
+    </div>
+    <!-- .container -->
+</div>
+{% endblock%}
+
+{% block javascript %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/fe/js/contact.js') }}"></script>
+<script src='https://www.google.com/recaptcha/api.js'></script>
+<script type="text/javascript">
+    function onSubmit(token) {
+            $("#register").submit();
+        }
+</script>
+{% endblock %} 

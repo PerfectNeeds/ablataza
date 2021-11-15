@@ -1,0 +1,97 @@
+{% extends 'AdminTemplateBundle::base.html.twig' %}
+{% set page_title %}Ingredient Category creation{% endset %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/admintemplate/assets/plugins/validator/bootstrapValidator.min.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block body -%}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h6 class="panel-title"><i class="icon-bubble4"></i> {{ page_title }}</h6>
+        </div>
+        <div class="panel-body">
+            <form class="form bootstrap-validator-form" id="yadaweyaform" action="{{ path('ingredientcategory_create') }}" role="form" method="POST"  {{ form_enctype(upload_form) }}>
+                {{ form_widget(form) }}
+                <div class="form-group">
+                    <label> Icon</label>
+                    <input id="file" class="btn btn-default btn-square" type="file" accept="image/*" name="file">
+                    <div id="image-holder">
+                        <div id="imgs"></div>
+                        <div class="data-con">
+                            <div id="img-name"></div>
+                            <div id="img-size"></div>
+                        </div>
+                        <div id="img-control"></div>
+                    </div>
+                </div>
+                <div class="form-group text-right">
+                    <button class="btn btn-success" type="submit"><i class="fa fa-check"></i> Create</button>
+                    <button class="btn btn-danger" type="reset"><i class="fa fa-refresh"></i> Reset</button>
+                </div>
+            </form>
+            <div >
+                <a href="{{ path('ingredientcategory') }}" class="btn btn-warning">Back to the list</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('bundles/admintemplate/assets/plugins/validator/bootstrapValidator.min.js') }}"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('#yadaweyaform').validate();
+            $("#file").on('change', function () {
+
+                var countFiles = $(this)[0].files.length;
+
+                var imgPath = $(this)[0].value;
+                var imgSize = $(this)[0].size;
+                var extn = imgPath.substring(imgPath.lastIndexOf('.') + 1).toLowerCase();
+                var image_holder = $("#imgs");
+                image_holder.empty();
+
+                if (extn == "gif" || extn == "png" || extn == "jpg" || extn == "jpeg") {
+                    if (typeof (FileReader) != "undefined") {
+
+                        //loop for each file selected for uploaded.
+                        for (var i = 0; i < countFiles; i++) {
+
+                            var reader = new FileReader();
+                            var remove = '<a href="#" id="remove-img"><i class="fa fa-times icon-circle icon-bordered icon-xs icon-info"></i></a>';
+                            reader.onload = function (e) {
+                                $("#file").hide();
+                                $("#image-holder").show();
+                                $("<img />", {
+                                    "src": e.target.result,
+                                    "class": "thumb-image"
+                                }).appendTo(image_holder);
+                                $('#img-name').empty().append(imgPath);
+                                //$('#img-size').empty().append(imgSize);
+                                $('#img-control').append(remove);
+                            }
+                            reader.readAsDataURL($(this)[0].files[i]);
+                        }
+
+                    } else {
+                        alert("This browser does not support FileReader.");
+                    }
+                } else {
+                    alert("Pls select only images");
+                }
+            });
+            $('#img-control, .btn.btn-danger').on("click", "a#remove-img", function () {
+                $('#image-holder').hide();
+                $("#file").val("").show();
+                $('#img-control').empty();
+            });
+            $('.btn.btn-danger').click(function () {
+                $('#image-holder').hide();
+                $("#file").val("").show();
+                $('#img-control').empty();
+            });
+        });
+    </script>   
+{% endblock %}

@@ -1,0 +1,151 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>Tour Voucher</title>
+        </head>
+        <body bgcolor="#ffffff" style="direction:rtl; " >
+            <table cellpadding="0" cellspacing="0" style="margin-top:35px;" width="620" align="center" border="0">
+                <tr>
+                    <td style="direction: ltr;padding-bottom:10px;">
+                        <span style="text-align:left; font-family:arial; color:#7d7d7d; font-size:12px; line-height:16px;">This is an automated email message; please do not reply. Replies to this message are routed to an unmonitored mailbox. If you have questions please contact us on support@theholidayers.com or call us on: +2010 76876787</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="background:url('http://88.80.188.68:8084/bundles/fe/images/email-banner.png'); width:100%; height:50px;"></td>
+                </tr>
+                <td style="position: relative;">
+                    <p style="float:right;color:ed2024; font-size:25px; font-family:'cocon';">حجز رقم
+                        <span class="numbers_font">{{booking.id}}</span>
+                    </p>
+                    <img style="left: 0;position: absolute;top: -20px;" src="http://88.80.188.68:8084/bundles/fe/images/email-logo.png">
+                </td>
+                <tr>
+                    <td>
+                        <table style=' width: 100%; height: 202px; background:#f2dede; border-radius: 4px; /* -moz-border-radius: 4px; -webkit-border-radius: 4px; */ '>
+                            <tr>
+                                <td style="width:148px; height:105px;padding-right: 28px; ">
+                                    <img src="http://88.80.188.68:8084/bundles/fe/images/email-72.png">
+                                </td>
+                                <td style="padding-right:27px;  padding-left:23px; font-family: 'cocon';">
+                                    <table>
+                                        <tr>
+                                            <td style="padding-top:30px; display:block; color:#ed1f24; font-size:24px;">تم إلغاء الحجز تلقائياً.</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-size:18px;">كان نفسنا تسافر وتلف الدنيا معانا!</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-family:'cocon-light';font-size:16px; width:400px; line-height:28px;">علي العموم لسه في فرصة تانية أنك تكمل أو تعدل حجزك وتلحق رحلتك. قم بتفعيل الحجز مرة أخري وسوف يتواصل معك أحد مسئولي خدمة العملاء للرد علي كل إستفساراتك ومتابعة تفاصيل الحجز.</td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="height:27px; width:100%;"></td>
+                </tr>
+                                {%set days = booking.packageTrip.package.nigthsCount +1 %}
+
+                <tr style="">
+                    <td style="border-top:1px solid #cecfd7;border-bottom:1px solid #cecfd7;">
+                        <table cellspacing="0" cellpadding="0" style=''>
+                            <tr style="font-family: 'cocon';">
+                                <td style="height:187px;">
+                                    <img style="float: right; padding-top: 9px;"  {%if booking.packageTrip.package.mainImage%}src="http://88.80.188.68:8084{{ asset("uploads/packages/" ~ booking.packageTrip.package.id ~ "/" ~ "th" ~ booking.packageTrip.package.mainImage.id) }}"{%else%}src="http://88.80.188.68:8084/bundles/fe/images/email-trip.png" {%endif%}>
+                                    <p style="padding-top:18px; color: #4f3183; font-family: 'cocon';">
+                                        <span style="font-family:'cocon-light'; font-size: 14px;">السعر الإجمالي</span>
+                                        <br>
+                                        <strong class="numbers_font" style="font-size: 30px;">{{booking.getFormatGrandTotal()}}</strong>جنية</p>
+                                </td>
+                                <td valign="top" style="padding-right:13px;padding-left:70px;">
+                                    <h3 style="color: #1c1c1c; font-size: 26px;line-height: 26px; margin-bottom: 5px; margin-top:20px;font-family:'cocon-light';">{{booking.packageTrip.package.name}}</h3>
+                                    <small style="display: block;font-size: 12px;line-height: 24px;color: #898989;">
+                                        <span style="font-size:14px;font-family:'cocon-light';" class="numbers_font">تاريخ الحجز: {{booking.created|arabic_date_format}}</span>
+                                    </small>
+                                </td>
+                                <td style="color: #4f3183;border-right: 1px solid #cccccc; height: inherit; position: relative;">
+                                    <span style="display: block;font-size:13px;font-family:'cocon-light'; margin-right: 11px; background: url(../http://88.80.188.68:8084/bundles/fe/images/plane-right.png) no-repeat right; padding: 0 25px 0 0; margin-top: 21px;">تاريخ السفر</span>
+                                    <span style="display: block;font-size:13px;font-family:'cocon-light';margin-right: 11px;">
+                                        <strong style="font-size: 24px;" class="numbers_font"></strong>{{booking.arrivalDate|arabic_date_format}}</span>
+                                    <hr style="margin-left: 0px;height: 1px;border: none;background: #e5e5e5;margin-top: 20px;">
+                                    <span style="display: block;font-size:13px;font-family:'cocon-light'; margin-right: 11px; background: url(../http://88.80.188.68:8084/bundles/fe/images/plane-left.png) no-repeat right; padding: 0 25px 0 0; margin-top: 21px;">تاريخ الرجوع</span>
+                                    <span  style="display: block;font-size:13px;font-family:'cocon-light';margin-right: 11px;">
+                                        <strong  style="font-size: 24px;" class="numbers_font"  class="numbers_font"></strong>{{booking.arrivalDate|date_modify('+ ' ~days ~ ' days')|arabic_date_format}}</span>
+
+                                </td>
+                                <td>
+                                    <span  class="numbers_font" style="display:block; background:url('http://88.80.188.68:8084/bundles/fe/images/email-days.png')no-repeat;width:67px; color:#b897f3; height:37px; line-height:37px; margin-top: -10px;position: absolute;margin-right: -37px;">&nbsp;&nbsp;&nbsp;&nbsp;{{days}}</span>   
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="height:40px; width:100%;">
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <!-- <input style="width: 332px; height: 53px; font-size:20px; margin:0 auto; background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#71c548), to(#4fab32));
+     background: -webkit-linear-gradient(top, #71c548, #4fab32);
+     background: -moz-linear-gradient(top, #71c548, #4fab32);
+     background: -ms-linear-gradient(top, #71c548, #4fab32);
+     background: -o-linear-gradient(top, #71c548, #4fab32);
+     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#71c548', endColorstr='#4fab32');
+     border: 1px solid #3c8220;
+     -moz-border-radius: 4px;
+     border-radius: 4px;
+     -webkit-border-radius: 4px;
+     color: #ffffff;
+     font-family: 'cocon';
+     text-align: center;
+     display: block;
+     cursor: pointer;" type="submit" id="" onfocus="" value="تفعيل الحجز لمدة 3 أيام أخري">-->
+                    </td>
+                </tr>
+                <tr><td style="height:9px; background:#e6e7eb; width:100%;"></td></tr>
+                <tr>
+                    <td>
+                        <span style="text-align:center; display:block; color:#363636; line-height:23px; font-size:12px;font-family:'cocon-light';padding-top:22px;">
+                            تذكر إنه يمكنك مراجعة حجوزات رحلاتك من خلال حسابك الشخصي في صفحة “رحلاتي”<br>
+                            إذا كان لديك أي إستفسارات، من فضلك لاتتردد أن تزور موقعنا والتحدث مع أحد مسئولي خدمة العملاء<br>.
+                            مرة أخري، شكراً علي إختيارك لموقع ذاهوليدايرز<br>.
+                            إستمتع برحلتك!
+                        </span>
+                <tr>
+                    <td>
+                        <img  style="margin:0 auto; padding-top:15px; padding-bottom:15px; display:block;" src="http://88.80.188.68:8084/bundles/fe/images/email-footer-logo.png">        
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <span style="text-align:center; display:block; color:#363636; line-height:23px; font-size:12px;font-family:'cocon-light';">
+                            فريق عمل ذاهوليدرز <br> 
+                            من فضلك لاترسل إيميل مباشر رداً علي هذه الرسالة، إتصل بنا  <a href="#" style='color:#363636;'> من هنا</a>.
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style=" padding-top: 5px; padding-bottom: 21px; ">
+                        <a href="#" style='margin-right:300px; width:16px; height:16px;'><img src="http://88.80.188.68:8084/bundles/fe/images/facebook2.png"></a>
+                        <a href="#" style='width:16px; height:16px;'><img src="http://88.80.188.68:8084/bundles/fe/images/twitter.png"></a>
+                    </td>
+                </tr>
+            </td>
+        </tr>
+        <tr><td style="height:9px; background:#e6e7eb; width:100%;"></td></tr>
+        <tr>
+            <td>
+                <span style="padding-top:26px;font-size:12px; line-height:20px; color:#b0b0b0; display:block; text-align:center;font-family:'cocon-light';">
+                    موقع ذا الهوليديرز www.theholidayers.com  تحت إدارة شركة توريكو للسياحة. حقوق المحتوي والملكية الفكرية والتصميم والصور محفوظة لشركة VIRAL 21 للإستسمارات والتسويق (شركة مساهمة مصرية)
+                </span>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

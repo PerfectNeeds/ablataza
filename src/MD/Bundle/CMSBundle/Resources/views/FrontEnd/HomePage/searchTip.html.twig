@@ -1,0 +1,80 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}نتيجة البحث{% endblock %}
+
+{% block breadcrumb %}
+    <div class="home-carousel-one carousel-second-style owl-carousel">
+        {{ render(controller('CMSBundle:FrontEnd/Banner:Banner' , {'placment' : 1 })) }}
+    </div>
+    <div class="page-banner" style="background: #8dc63f;">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <h2 class="page-title"><i class="fa fa-search"></i> نتيجة البحث</h2>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <ol class="breadcrumb">
+                    <li><a href="{{ path('fe_home') }}">الرئيسية</a></li>
+                    <li class="active">نتيجة البحث</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+    <div class="page-wrapper user-accounts">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-main">
+                    <main id="main" class="main">
+                        <div class="tabs-wrapper">
+                            <div class="tabs-contents">
+                                <div class="tab-block" style="display: block">
+                                    <section class="our-blog">
+                                        <div class="row">
+                                            {% for entity in entities %}
+                                                <div class="col-md-6 col-sm-12 col-xs-12">
+                                                    <div class="talkbubble col-md-8 col-sm-8 col-xs-8">
+                                                        <h3 class="widget-title heading-bottom-line">حبايبنا بيقولوا</h3>
+                                                        <p style="margin: 0px; height: 93px;">{{ entity.tip|slice(0, 193) }}</p> 
+                                                        {#{% if entity.superCategory.id == 1 %}
+                                                            {% set tipLink = path('fe_recipe') %}
+                                                        {% else %}
+                                                            {% set tipLink = path('fe_article', {'sc':entity.superCategory.id}) %}
+                                                        {% endif %}
+                                                        <a class="read-more" href="{{ tipLink }}">للمزيد من المعلومات</a>#}
+                                                    </div>
+                                                    <div class="col-md-3 col-sm-3 col-xs-4">
+                                                        <figure class="img-circle" style="width: 120px;height:120px;overflow:hidden;margin-right:20px;">
+                                                            {% if entity.person.image != null %}
+                                                                <img src="{{ asset('uploads/person/'~entity.person.id~'/'~entity.person.image.id) }}" style="width: 100%;" alt="{{entity.person.firstName}}"/>
+                                                            {% elseif entity.person.firstAccount.userFacebook != null %}
+                                                                <img src="https://graph.facebook.com/{{ entity.person.firstAccount.userFacebook.facebookId }}/picture?type=large&width=201&height=201" style="width: 100%;" alt="{{entity.person.firstName}}"/>
+                                                            {% else %}
+                                                                <img src="{{ asset('bundles/fe/images/user-2.jpg') }}" style="width: 100%;" alt="{{entity.person.firstName}}"/>
+                                                            {% endif %}
+                                                        </figure>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                    <!-- .main -->
+                </div>
+                <!-- .col-main -->
+            </div>
+            <!-- .row -->
+        </div>
+        <!-- .container -->
+    </div>
+{% endblock %}

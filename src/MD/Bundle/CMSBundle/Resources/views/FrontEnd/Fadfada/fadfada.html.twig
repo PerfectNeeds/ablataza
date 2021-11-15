@@ -1,0 +1,229 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}فضفضة{% endblock %}
+
+{% block breadcrumb %}
+    <div class="home-carousel-one carousel-second-style owl-carousel hidden-xs">
+        {{ render(controller('CMSBundle:FrontEnd/Banner:Banner' , {'placment' : 1 })) }}
+    </div>
+    <div class="page-banner" style="background: rgba(228, 0, 52, 1) none repeat scroll 0 0;">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2 class="page-title"><i class="fa fa-comments"></i> فضفضة</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li><a href="{{ path('fe_home') }}">الرئيسية</a></li>
+                        <li class="active">فضفضة</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    <section class="user-profile">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7">
+                    <h3 class="widget-title heading-bottom-line" style="margin-bottom: 20px;">فضفضة</h3>
+                    {% for entity in entities %}
+                        <div class="current-user" id="{{ entity.id }}">
+                            <div class="user-details" style="width: 100%">
+                                {% if entity.maritalStatus == 1 %}
+                                    {% set status = 'متجوزه' %}
+                                {% elseif entity.maritalStatus == 2 %}
+                                    {% set status = 'مخطوبه' %}
+                                {% elseif entity.maritalStatus == 3 %}
+                                    {% set status = 'مصاحبه' %}
+                                {% elseif entity.maritalStatus == 4 %}
+                                    {% set status = 'سينجل' %}
+                                {% else %}
+                                    {% set status = 'أخرى' %}
+                                {% endif %}
+                                <a href="{{ path('fe_fadfada_show', {'id':entity.id}) }}"><h2 class="user-name">{{ entity.id }}# | {{ status }}</h2></a>
+                                {% if entity.text|length > 245 %}
+                                    <p>{{ entity.text|slice(0, 245) }}...</p>
+                                {% else %}
+                                    <p>{{ entity.text }}</p>
+                                {% endif %}
+                                <div class="sharing-wrapper">
+                                    <div class="share-icons">
+                                        <div class="social-media-icons">
+                                            <a class="facebook" target="_blank" href="http://www.facebook.com/sharer/sharer.php?u={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_fadfada_show', {'id':entity.id}) }}" title="Share on Facebook"><i class="fa fa-facebook fa-lg"></i></a>
+                                            <a class="twitter" target="_blank" href="http://twitter.com/share?text={{ status }}&url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_fadfada_show', {'id':entity.id}) }}"><i class="fa fa-twitter fa-lg"></i></a>
+                                            <a class="linkedin" target="_blank" href="https://www.pinterest.com/pin/create/button/?url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_fadfada_show', {'id':entity.id}) }}&description={{ status }}"><i class="fa fa-pinterest fa-lg"></i></a>
+                                            <a class="gplus" target="_blank" href="https://plus.google.com/share?url={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_fadfada_show', {'id':entity.id}) }}"><i class="fa fa-google-plus fa-lg"></i></a>
+                                            <a class="mail" target="_blank" href="mailto:?subject={{ entity.id }}# | {{ status }}&body={{ app.request.scheme ~ "://" ~ app.request.host ~ path('fe_fadfada_show', {'id':entity.id}) }}"><i class="fa fa-envelope fa-lg"></i></a>
+                                            <span class="close-share-icons close"><i class="fa fa-close fa-lg"></i></span>
+                                        </div>
+                                    </div>
+                                    <a href="javascript:;" class="share-this pull-left"><i class="fa fa-share-alt"></i> مشاركة</a>
+                                    <a href="{{ path('fe_fadfada_show', {'id':entity.id}) }}" class="read-more pull-left like"><i class="fa fa-comments"></i> تعليقات</a>
+                                    {% if app.user is not null %}
+                                        <a href="javascript:;" class="read-more pull-left like fav {% if entity.isFadfadaFavByUserId(app.user.person.id) == true %}active{% endif %}"><i class="fa fa-heart"></i> تفضيل</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    {{ include('CMSBundle:FrontEnd/HomePage:Pagination.html.twig', {'paginator':paginator}) }}
+                </div>
+                <div class="col-md-5 recipe-request-form-column">
+                    {% if videos|length > 0  %}
+                        {%  for video in videos %}
+                            <div class="col-xs-12 col-sm-12 col-md-12 recipe-column">
+                                <article class="recipe recipe-grid hentry clearfix">
+                                    <figure class="recipe-thumbnail thumbnail-hover">
+                                        <img class="img-responsive" src="{{ video.youtubeUrl|youtubeThumb }}" alt="" style="height: 202px;"> 
+                                        <a class="swipebox-video view-thumbnail" data-gallery="youtubevideos" data-toggle="lightbox" href="{{ video.youtubeUrl }}" style="background-color:rgba(232,35,39, 0.75);"><i class="fa fa-youtube-play thumbnail-view-icon"></i></a>
+                                    </figure>
+                                    <div style="border-top-color:#e82327;">
+                                        <p style="background:#fff;margin-bottom:0px;padding:0px 10px 5px">{{ video.description }}</p>
+                                    </div>
+                                </article>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    <aside id="sidebar" class="sidebar" style="clear: both">
+                        <section class="widget">
+                            <img height="auto" alt="" style="margin:0 auto;display:block" src="//lh5.ggpht.com/XJZJYLBAMMyyV3e0oY1jTiBxmA17G4BI_2KLG3MlEsVFUjHBBB1VHy1SgCd9gWwbZnlitH3T=w234">
+                            <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+                            <!-- fadfada landing page -->
+
+                            <ins class="adsbygoogle"
+
+                                 style="display:inline-block;width:336px;height:280px"
+
+                                 data-ad-client="ca-pub-4026762125058832"
+
+                                 data-ad-slot="7650268702"></ins>
+
+                            <script>
+
+                            (adsbygoogle = window.adsbygoogle || []).push({});
+
+                            </script>
+                        </section>
+                    </aside>
+                    <h3 class="form-heading heading-bottom-line">فضفضي يا حبيبتي</h3>
+                    <h4 style="margin-bottom: 5px;color:#000;">الحالة الإجتماعية؟ : </h4>
+                    <form id="recipe-request-form" class="que" method="POST" action="{{ path('fe_fadfada_create') }}">
+                        <div class="form-group col-md-12">
+                            <label><input type="radio" name="data[maritalStatus]" value="1"> متجوزه</label>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label><input type="radio" name="data[maritalStatus]" value="2"> مخطوبه</label>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label><input type="radio" name="data[maritalStatus]" value="3"> مصاحبه</label>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label><input type="radio" name="data[maritalStatus]" value="4"> سينجل</label>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label><input type="radio" name="data[maritalStatus]" value="5"> اخري</label>
+                        </div>
+                        <div style="margin: 0px auto 5px; padding:0 10px ! important;display: none;" class="alert alert-danger quesAlert col-md-12">برجاء تحديد إختيار</div>
+                        <div class="form-group col-md-12">
+                            <textarea id="comments" class="required" name="data[text]" placeholder="فضفضي مع ابله طازة" data-msg-required="برجاء كتابة الفضفضة"></textarea>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <input type="submit" class="submit-recipe-search-button" style="margin: 0 auto;display: block" value="فضفضي مع ابله طازه">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- .container -->
+    </section>
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/fe/js/contact.js') }}"></script>
+    <script>
+        $('.que').submit(function () {
+            var choose = $('.que input:checked').val();
+            if (choose == null) {
+                $('.quesAlert').show();
+                return false;
+            } else {
+                $('.quesAlert').hide();
+            }
+        });
+        $('.current-user .fav').click(function () {
+            var fadfada_id = $(this).parent().parent().parent().attr("id");
+            $this = $(this);
+            $.ajax({
+                type: "POST",
+                url: "{{ path('fe_fadfada_favorite_ajax') }}",
+                data: {'id': fadfada_id},
+                success: function (result) {
+                    if (result == 1) {
+                        $this.addClass('active');
+                    }
+                    if (result == 0) {
+                        $this.removeClass('active');
+                    }
+                }
+            });
+        });
+        $(document).ready(function ($) {
+
+            $(document).delegate('*[data-toggle="lightbox"]:not([data-gallery="navigateTo"])', 'click', function(event) {
+                event.preventDefault();
+                return $(this).ekkoLightbox({
+                    onShown: function() {
+                            if (window.console) {
+                                    return console.log('onShown event fired');
+                            }
+                    },
+                    onContentLoaded: function() {
+                            if (window.console) {
+                                    return console.log('onContentLoaded event fired');
+                            }
+                    },
+                    onNavigate: function(direction, itemIndex) {
+                            if (window.console) {
+                                    return console.log('Navigating '+direction+'. Current item: '+itemIndex);
+                            }
+                    }
+                });
+            });
+
+            $('#open-image').click(function (e) {
+                    e.preventDefault();
+                    $(this).ekkoLightbox();
+            });
+            $('#open-youtube').click(function (e) {
+                    e.preventDefault();
+                    $(this).ekkoLightbox();
+            });
+
+            $(document).delegate('*[data-gallery="navigateTo"]', 'click', function(event) {
+                    event.preventDefault();
+                    return $(this).ekkoLightbox({
+                            onShown: function() {
+                                    var lb = this;
+                                    $(lb.modal_content).on('click', '.modal-footer a#jumpit', function(e) {
+                                            e.preventDefault();
+                                            lb.navigateTo(2);
+                                    });
+                                    $(lb.modal_content).on('click', '.modal-footer a#closeit', function(e) {
+                                            e.preventDefault();
+                                            lb.close();
+                                    });
+                            }
+                    });
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- saved from url=(0050)http://localhost/carols/content/booking_step_4.php -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Farm Frites Egypt | e-mail</title>
+
+        <style type="text/css">
+            <!--
+            body {
+                background-color: #CCC;
+            }
+            -->
+        </style></head>
+    <body>
+        <table width="90%" border="0" align="center" cellpadding="5" cellspacing="5" bgcolor='#e8edf3' id="backgroundTable" 
+               style="font:14px/21px Arial,Helvetica,sans-serif; background:#FFF; color:#2d343e;">
+            <tbody>
+                <tr>
+                    <td align="center" style="border-bottom:1px dotted silver"> <img src="{{ app.request.scheme ~ "://" ~ app.request.host }}{{ asset('bundles/fe/images/farmfrites_box-logo.png')}}" /> </td>
+                </tr>
+                <tr>
+                    <td align="center" valign="top"> Name: {{ name }} <br/>
+                        Email:{{ email }} <br/>
+                        Messsage:{{ msg }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- End of wrapper table -->
+    </body>
+</html>

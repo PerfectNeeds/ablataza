@@ -1,0 +1,56 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}{{ page.seo.title }}{% endblock %}
+
+{% block content %}
+<div class="content ">
+    <div class="content_inner">
+        <div class="title_outer title_without_animation title_text_shadow with_image" data-height="350">
+            <div class="title title_size_large  position_center" style="height:350px;">
+                <div class="image responsive">
+                    {% if page.post.mainImage %}
+                    <img src="{{ asset("uploads/dynamic-page/image/" ~ page.post.id ~ "/"  ~ page.post.mainImage.id) }}" style="max-height: 570px;" alt="{{ page.title }}" /> 
+                    {% else %}
+                    <img src="{{ asset('bundles/fe/images/placeholder.png') }}" style="max-height: 570px;" alt="{{ page.title }}" /> 
+                    {% endif %}
+                </div>
+                <div class="title_holder" >
+                    <div class="container">
+                        <div class="container_inner clearfix">
+                            <div class="title_subtitle_holder" style="padding-top:43px;">
+                                <div class="title_subtitle_holder_inner">
+                                    <h1 style="color:#000000" ><span>{{ page.title }}</span></h1>
+                                    <span class="separator small center"  style="background-color:#000000;"></span>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="container_inner default_template_holder clearfix page_container_inner">
+                <div class="vc_row wpb_row section vc_row-fluid" style=" text-align:left;">
+                    <div class=" full_section_inner clearfix">
+                        <div class="vc_col-sm-12 wpb_column vc_column_container">
+                            <div class="wpb_wrapper">
+                                <div class="wpb_text_column wpb_content_element ">
+                                    <div class="wpb_wrapper">
+                                        {% if page.post.content.description %}
+                                        <p style="text-align: center;">{{ page.post.content.description|raw }}</p>
+                                        {% else %}
+                                        <div class="alert alert-warning">There is no Records for now</div>
+                                        {% endif %}
+                                    </div> 
+                                </div> 
+                                <div class="vc_empty_space"  style="height: 32px" ><span class="vc_empty_space_inner"></span></div>
+                            </div> 
+                        </div> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

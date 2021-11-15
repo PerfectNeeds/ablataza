@@ -1,0 +1,93 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}دخول{% endblock %}
+
+{% block breadcrumb %}
+    <div class="home-carousel-one carousel-second-style owl-carousel hidden-xs">
+        {{ render(controller('CMSBundle:FrontEnd/Banner:Banner' , {'placment' : 1 })) }}
+    </div>
+    <div class="page-banner" style="background: #79b22b;">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2 class="page-title"><i class="fa fa-sign-in"></i> دخول</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li><a href="{{ path('fe_home') }}">الرئيسية</a></li>
+                        <li class="active">دخول</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    <div class="page-wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-main">
+                    <main id="main" class="main">
+                        <div class="row">
+                            <div class="col-md-8 col-xs-12 pull-right forms-wrapper login" style="padding-top: 30px;margin-bottom: 10px;">
+                                {% if error is defined and error.message is defined %}
+                                    <div role="alert" class="alert alert-danger">
+                                        {% if error.message == 'Bad credentials' %}
+                                            برجاء التأكد من إسم المستخدم وكلمة المرور
+                                        {% else %}
+                                            {{ error.message }}
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                                <div class="login-form-wrapper">
+                                    <h2 class="form-heading heading-bottom-line">دخول </h2>
+                                    <form id="register" class="login-form" action="{{ path('login_check') }}" method="post">
+                                        <p class="col-md-4">
+                                            <label>البريد الإلكترونى <span class="requir">*</span></label>
+                                            <input id="user-name" class="required" name="_username" value="{{ last_username }}" type="text" placeholder="البريد الإلكترونى " data-msg-required="برجاء كتابة البريد الإلكترونى أو الأسم ">
+                                        </p>
+                                        <p class="col-md-4">
+                                            <label>كلمة المرور <span class="requir">*</span></label>
+                                            <input id="user-password" class="required" name="_password" type="password" data-msg-required="برجاء كتابة كلمة المرور" placeholder="كلمة المرور">
+                                        </p>
+                                        <p class="col-md-4" style="margin-top: 40px;">
+                                            <span class="pull-right">
+                                                <input id="remember-me" name="_remember_me" type="checkbox">
+                                                <label for="remember-me">تذكرني</label>
+                                            </span>  
+                                            <a href="{{ path("fe_forgot_password") }}" class="pull-right forget-password">نسيت كلمة المرور</a>
+                                        </p>
+                                        <div class="col-md-12">
+                                            <input type="submit" class="submit-btn" name="submit" value="دخول">
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-md-offset-1 col-xs-offset-3 pull-left">
+                                <a href="{{ path('facebook_request') }}"><img alt="Facebook" src="{{ asset('bundles/fe/images/fb_reg_button_ar.png') }}" style="width: auto;max-width: 100%"></a>
+                                <a href="{{ path('fe_user_new') }}" class="btn btn-danger btn-block new-bt" style="margin-top: 15px;">أنا جديدة بالموقع</a>
+                            </div>
+                        </div>
+                        <!-- .forms-wrapper -->
+                    </main>
+                    <!-- .main -->
+                </div>
+                <!-- .col-main -->
+            </div>
+            <!-- .row -->
+        </div>
+        <!-- .container -->
+    </div>
+
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/fe/js/contact.js') }}"></script>
+{% endblock %} 

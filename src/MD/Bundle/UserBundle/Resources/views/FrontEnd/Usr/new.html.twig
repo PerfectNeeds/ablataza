@@ -1,0 +1,148 @@
+{% extends 'FEBundle::base.html.twig' %}
+{% block title %}تسجيل عضوية جديدة{% endblock %}
+
+{% block stylesheet %}
+{{ parent() }}
+<link rel="stylesheet" href="{{ asset('bundles/fe/css/datepicker.min.css') }}"/>
+{% endblock %} 
+
+{% block breadcrumb %}
+<div class="home-carousel-one carousel-second-style owl-carousel hidden-xs">
+    {{ render(controller('CMSBundle:FrontEnd/Banner:Banner' , {'placment' : 1 })) }}
+</div>
+<div class="page-banner" style="background: #79b22b;">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <h2 class="page-title"><i class="fa fa-lock"></i> تسجيل عضوية جديدة</h2>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <ol class="breadcrumb">
+                    <li><a href="{{ path('fe_home') }}">الرئيسية</a></li>
+                    <li class="active">تسجيل عضوية جديدة</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+<div id="page-layer-styled" class="page-wrapper">
+    <div id="left-layer"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-main">
+                <main id="main" class="main">
+                    <div class="row">
+                        <div class="col-md-8 forms-wrapper register" style="padding-top: 30px;">
+                            <div class="register-form-wwrapper">
+                                <h2 class="form-heading heading-bottom-line">تسجيل العضوية</h2>
+                                <p class="alert alert-warning" style="padding:3px 7px;margin:0 15px 10px"> يرجى استيفاء المعلومات الخاصة بك.جميع المعلومات المشار اليها بـ <span class="requir">*</span> مطلوبة.</p>
+                                <form id="register" class="register-form" action="{{path('fe_usr_create')}}" method="post" novalidate="novalidate">
+                                    <div class="clearfix">
+                                        <p class="col-md-6 col-sm-6 col-xs-12">
+                                            <label>الإسم<span class="requir">*</span></label>
+                                            <input id="fName" class="required" name="firstName" type="text" {% if data is defined %}value="{{ data.firstName }}"{% endif %} placeholder="الإسم" data-msg-required="برجاء كتابة الإسم">
+                                        </p>
+                                        <p class="col-md-6 col-sm-6 col-xs-12">
+                                            <label>اللقب<span class="requir">*</span></label>
+                                            <input id="lName" class="required" name="familyname" type="text" placeholder="اللقب" {% if data is defined %}value="{{ data.familyname }}"{% endif %} data-msg-required="برجاء كتابة اللقب">
+                                        </p>
+                                    </div>
+                                    <div class="clearfix">
+                                        <p class="col-md-6 col-sm-6 col-xs-12">
+                                            <label>البريد الإلكتروني<span class="requir">*</span></label>
+                                            <input id="email" class="email required" name="email" type="text" placeholder="البريد الإلكتروني" {% if data is defined %}value="{{ data.email }}"{% endif %} data-msg-required="برجاء كتابة بريدك الإلكتروني." data-msg-email="برجاء كتابة بريدك الإلكتروني صحيح.">
+                                        </p>
+                                        <p class="col-md-6 col-sm-6 col-xs-12">
+                                            <label>تليفون</label>
+                                            <input id="mobile" name="phone" type="number" placeholder="تليفون" maxlength="11" min="0">
+                                        </p>
+                                    </div>
+                                    <div class="clearfix">
+                                        <p class="col-md-6 col-sm-6 col-xs-12">
+                                            <label>كلمة المرور<span class="requir">*</span></label>
+                                            <input id="password" class="required" name="password" type="password" placeholder="كلمة المرور" data-msg-required="برجاء كتابة كلمة المرور.">
+                                        </p>
+                                        <p class="col-md-6 col-sm-6 col-xs-12">
+                                            <label>تأكيد كلمة المرور<span class="requir">*</span></label>
+                                            <input  name="rePassword" id="rePassword" class="required password" type="password" placeholder="تأكيد كلمة المرور" data-msg-required="برجاء إعادة كتابة كلمة المرور ." data-msg-equalTo="برجاء إعادة كتابة كلمة المرور صحيحة .">
+                                        </p>
+                                    </div>
+                                    <div class="clearfix">
+                                        <p class="col-md-6 col-sm-6 col-xs-12">
+                                            <label>تاريخ الميلاد</label>
+                                            <input id="datepicker" name="birthdate" type="text" placeholder="تاريخ الميلاد" {% if data is defined %}value="{{ data.birthdate }}"{% endif %} data-msg-required="برجاء كتابة تاريخ الميلاد.">
+                                        </p>
+                                        <p class="col-md-6 col-sm-6 col-xs-12" style="margin-top: 40px;">
+                                            <span>
+                                                <input id="terms-conditions" name="terms-conditions" {% if data is defined %}checked=""{% endif %} type="checkbox" value="terms-conditions">
+                                                <label for="terms-conditions"></label>
+                                                <a href="#"  class="forget-password" style="margin-right:0px;padding-right: 0px;border-right: 0px">موافق على الشروط والإحكام</a>
+                                            </span>
+                                        </p>
+                                    </div>
+                                    <div class="clearfix">
+                                        <p class="col-md-12 col-sm-12 col-xs-12 alert alert-info" style="padding: 1px;text-align: center">نحمي الخصوصية الخاصة بك! يتم التعامل مع بياناتك الشخصية سرية تماما ولن يتم تقديمها إلى أطراف ثالثة دون إذن منك.</p>
+                                    </div>
+                                    <div class="clearfix col-md-12 col-sm-12 col-xs-12">
+										 <button data-sitekey="6Le8GZsUAAAAABEnIj6SPfvYmRvddmUAHGquJFAF" data-callback="onSubmitComment" type="button" class="g-recaptcha submi">سجلى</button>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sidebar">
+                            <aside id="sidebar" class="sidebar">
+                                <section class="widget category-widget">
+                                    <h3 class="widget-title heading-bottom-line">سجلى حسابك على أبلة طازة</h3>
+                                    <ul class="forms-wrapper" style="background: #fff; padding: 10px 25px;">
+                                        <li style="color:#e82327;"><i class="fa fa-hand-o-down" style="display: block; text-align: center;font-size: 35px;"></i> شاركي أبلة طازة و حبايبها و تفضضفي معانا بسرية تامة و كمان تنزلي وصفاتك و معلوماتك و مقالاتك.</li>
+                                        <li style="color:#658e15;"><i class="fa fa-hand-o-down" style="display: block; text-align: center;font-size: 35px;"></i> تبقي نجمة مطبخ طازة للشهر  و يتابعك حبايب أبلة طازة بالأسم.</li>
+                                        <li style="color:#2fa8c7;"><i class="fa fa-hand-o-down" style="display: block; text-align: center;font-size: 35px;"></i> سجلي كل الوصفات و المقالات عن الحمل, الأطفال, الموضة و أمور حياتنا كل يوم وقصص بنعشها كلنا.</li>
+                                        <li style="color:#536c9f;"><i class="fa fa-hand-o-down" style="display: block; text-align: center;font-size: 35px;"></i> سجلي منيو بالوصفات إلي تختاريها و يكون عندك وصفات العزومة أو الأسبوع كاملة.</li>
+                                    </ul>
+                                </section>
+                                <a href="{{ path('fe_login') }}" class="btn btn-success btn-block new-bt" style="margin-top: 15px;">لدي حساب بالفعل</a>
+                            </aside>
+                            <!-- .sidebar -->
+                        </div>
+                    </div>
+                    <!-- .forms-wrapper -->
+                </main>
+                <!-- .main -->
+            </div>
+            <!-- .col-main -->
+        </div>
+        <!-- .row -->
+    </div>
+    <!-- .container -->
+</div>
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+<script src="{{ asset('bundles/fe/js/jquery-ui/jquery-ui.min.js') }}"></script>
+<script src="{{ asset('bundles/fe/js/plupload.full.min.js') }}"></script>
+<script src="{{ asset('bundles/fe/js/jquery.ui.plupload/jquery.ui.plupload.min.js') }}"></script>
+<script src="{{ asset('bundles/fe/js/plupload.js') }}"></script>
+<script src="{{ asset('bundles/fe/js/contact.js') }}"></script>
+<script src="{{ asset('bundles/fe/js/bootstrap-datepicker.js') }}"></script>
+<script src='https://www.google.com/recaptcha/api.js'></script>
+<script>
+	function onSubmit(token) {
+		$("#register").submit();
+	}
+    $(document).ready(function() {
+        $(function() {
+            $('#datepicker').datepicker({ format: 'yyyy-mm-dd' });
+        });
+    });
+</script>
+{% endblock %} 

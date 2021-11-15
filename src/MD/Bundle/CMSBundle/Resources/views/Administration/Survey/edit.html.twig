@@ -1,0 +1,48 @@
+{% extends 'AdminTemplateBundle::base.html.twig' %}
+{% set page_title %}Survey Edit{% endset %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/admintemplate/assets/plugins/validator/bootstrapValidator.min.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block body -%}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h6 class="panel-title"><i class="icon-bubble4"></i> {{ page_title }}</h6>
+        </div>
+        <div class="panel-body">
+            <form class="form bootstrap-validator-form" id="yadaweyaform" action="{{ path('survey_update', { 'id': entity.id}) }}" role="form" method="POST" {{form_enctype(upload_form)}}>
+                <input type="hidden" name="_method" value="PUT" />  
+                {{ form_widget(edit_form) }}
+                <div class="row">
+                    <div class="col-md-10">
+                        {{ form_widget(upload_form.file) }}
+                        <p class="help-block">Dimensions: 200*300 px</p>
+                    </div>
+                    {% if image %}
+                        <div class="col-md-2">
+                            <img src="{{ asset("uploads/survey/" ~ entity.id ~ "/"  ~ image.id) }}" width="50" height="60">
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="form-group text-right">
+                    <button class="btn btn-success" type="submit"><i class="fa fa-check"></i> Update</button>
+                    <button class="btn btn-danger" type="reset"><i class="fa fa-refresh"></i> Reset</button>
+                </div>
+            </form>
+            <div >
+                <a href="{{ path('survey') }}" class="btn btn-warning">Back to the list</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('bundles/admintemplate/assets/plugins/validator/bootstrapValidator.min.js') }}"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('#yadaweyaform').validate();
+        });
+    </script>   
+{% endblock %}
